@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 05:37:24.
+" Last Change: 2013/03/20 07:11:21.
 " =============================================================================
 "
 
@@ -149,8 +149,13 @@ function! s:newthumbnail()
   endif
   call s:initthumbnail(isnewtab)
   augroup Thumbnail
-    autocmd BufEnter,WinEnter,BufWinEnter,VimResized <buffer>
-          \ silent call s:initthumbnail(1)
+    autocmd!
+    autocmd BufEnter,WinEnter,BufWinEnter *
+          \ call s:update_visible_thumbnail(expand('<abuf>'))
+  augroup END
+  augroup ThumbnailBuffer
+    autocmd BufEnter,BufLeave,WinEnter,WinLeave,VimResized <buffer>
+          \ call s:set_cursor()
   augroup END
 endfunction
 
@@ -192,17 +197,46 @@ function! s:updatethumbnail()
     endfor
   endfor
   call append(0, s)
+  silent call s:set_cursor()
+  setlocal nomodifiable buftype=nofile noswapfile readonly nonumber
+        \ bufhidden=hide nobuflisted filetype=thumbnail
+        \ nofoldenable foldcolumn=0 nolist nowrap
+endfunction
+
+function! s:set_cursor()
+  if !exists('b:thumbnail')
+    return
+  endif
+  let b = b:thumbnail
   let offset = 0
   for j in range(b.select_j)
     let index = b.select_i * b.num_width + j
     let offset += b.bufs[index].firstlinelength + b.offset_left + 4
   endfor
-  silent call cursor(1, 1)
   silent call cursor(b.select_i * (b.offset_top + b.thumbnail_height)
         \ + b.offset_top + 1, offset + b.offset_left + 3)
-  setlocal nomodifiable buftype=nofile noswapfile readonly nonumber
-        \ bufhidden=hide nobuflisted filetype=thumbnail
-        \ nofoldenable foldcolumn=0 nolist nowrap
+endfunction
+
+function! s:search_thumbnail()
+  for buf in tabpagebuflist()
+    if type(getbufvar(buf, 'thumbnail')) == type({})
+      return buf
+    endif
+  endfor
+  return -1
+endfunction
+
+function! s:update_visible_thumbnail(bufnr)
+  let winnr = s:search_thumbnail()
+  let newbuf = bufwinnr(str2nr(a:bufnr))
+  if winnr != -1 && newbuf != -1
+    execute winnr 'wincmd w'
+    call s:initthumbnail(0)
+    if winnr != newbuf
+      silent call cursor(1, 1)
+      execute newbuf 'wincmd w'
+    endif
+  endif
 endfunction
 
 function! s:thumbnail_left()
