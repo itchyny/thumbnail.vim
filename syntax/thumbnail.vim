@@ -3,9 +3,8 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 05:14:55.
+" Last Change: 2013/03/20 07:25:29.
 " =============================================================================
-"
 
 if version < 700
   syntax clear
