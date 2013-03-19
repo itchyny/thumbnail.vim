@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/19 19:09:06.
+" Last Change: 2013/03/19 21:15:01.
 " =============================================================================
 "
 
@@ -85,10 +85,19 @@ function! s:initmapping()
 endfunction
 
 function! s:initthumbnail()
-  tabnew
   let b = s:initbuffer()
   let b:thumbnail = b
   call s:updatethumbnail()
+endfunction
+
+function! s:newthumbnail()
+  tabnew
+  call s:initthumbnail()
+  augroup Thumbnail
+    autocmd!
+    autocmd BufEnter,WinEnter,BufWinEnter <buffer>
+          \ silent call s:initthumbnail()
+  augroup END
 endfunction
 
 function! s:updatethumbnail()
@@ -97,6 +106,7 @@ function! s:updatethumbnail()
   endif
   setlocal modifiable noreadonly
   silent % delete _
+  silent call cursor(1, 1)
   let b = b:thumbnail
   let th = b.height * 2 / 5
   let of = (b.height - th * 2) / 3
@@ -132,7 +142,7 @@ function! s:updatethumbnail()
     let ind = b.select_i * b.num_width + j
     let offset += b.buffirstlinelen[ind] + b.offset_left + 4
   endfor
-  call cursor(b.select_i * (b.offset_top + b.thumbnail_height)
+  silent call cursor(b.select_i * (b.offset_top + b.thumbnail_height)
         \ + b.offset_top + 1, offset + b.offset_left + 3)
   setlocal nomodifiable buftype=nofile noswapfile readonly nonumber
         \ bufhidden=hide nobuflisted filetype=thumbnail
@@ -219,5 +229,5 @@ function! s:thumbnail_select()
   echo b.bufname[i]
 endfunction
 
-command! Thumbnail call s:initthumbnail()
+command! Thumbnail call s:newthumbnail()
 
