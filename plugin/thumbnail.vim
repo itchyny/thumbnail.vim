@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 00:05:49.
+" Last Change: 2013/03/20 00:11:22.
 " =============================================================================
 "
 
@@ -61,13 +61,14 @@ function! s:initbuffer()
     else
       continue
     endif
-    let s = map(lines,
+    let contents = map(lines,
           \ 's:Prelude.truncate(substitute(v:val, "\t",' .
           \ string(repeat(' ', getbufvar(buf.bufnr, '&tabstop'))) .
           \ ', "g") . "' . '", ' .  (b.thumbnail_width - 4) . ')')
     call extend(buf, {
-          \ 'contents': s,
-          \ 'firstlinelength': len(s) > 0 ? len(s[0]) : 0
+          \ 'contents': contents,
+          \ 'firstlinelength': len(contents) > 0 ? len(contents[0])
+          \                                      : b.thumbnail_width - 4
           \ })
   endfor
   call s:initmapping()
