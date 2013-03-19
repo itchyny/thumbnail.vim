@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 07:11:21.
+" Last Change: 2013/03/20 07:19:59.
 " =============================================================================
 "
 
@@ -114,8 +114,10 @@ function! s:initmapping()
 
   nmap <buffer> w <Plug>(thumbnail_move_next)
   nmap <buffer> W w
+  nmap <buffer> <TAB> w
   nmap <buffer> b <Plug>(thumbnail_move_prev)
   nmap <buffer> B b
+  nmap <buffer> <S-Tab> b
   nmap <buffer> 0 <Plug>(thumbnail_move_line_head)
   nmap <buffer> ^ 0
   nmap <buffer> $ <Plug>(thumbnail_move_line_last)
@@ -130,6 +132,7 @@ function! s:initmapping()
   nmap <buffer> <Up> <Plug>(thumbnail_move_up)
 
   nmap <buffer> <CR> <Plug>(thumbnail_select)
+  nmap <buffer> <SPACE> <CR>
 
 endfunction
 
