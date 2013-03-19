@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 01:49:16.
+" Last Change: 2013/03/20 01:54:46.
 " =============================================================================
 "
 
@@ -198,7 +198,7 @@ function! s:updatethumbnail()
   silent call cursor(b.select_i * (b.offset_top + b.thumbnail_height)
         \ + b.offset_top + 1, offset + b.offset_left + 3)
   setlocal nomodifiable buftype=nofile noswapfile readonly nonumber
-        \ bufhidden=hide nobuflisted filetype=thumbnail
+        \ bufhidden=hide nobuflisted filetype=thumbnail foldmethod=manual
 endfunction
 
 function! s:thumbnail_left()
