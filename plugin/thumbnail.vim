@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 00:55:10.
+" Last Change: 2013/03/20 01:03:39.
 " =============================================================================
 "
 
@@ -138,6 +138,8 @@ function! s:updatethumbnail()
   let th = b.height * 2 / 5
   let of = (b.height - th * 2) / 3
   let s = []
+  let thumbnail_white = repeat(' ', b.thumbnail_width - 4)
+  let offset_white = repeat(' ', b.offset_left)
   for i in range(b.num_height)
     for j in range(b.offset_top)
       call add(s, '')
@@ -149,7 +151,7 @@ function! s:updatethumbnail()
         if l < len(b.bufs) && k < len(b.bufs[l].contents)
           let contents = b.bufs[l].contents[k]
         else
-          let contents = repeat(' ', b.thumbnail_width - 4)
+          let contents = thumbnail_white
         endif
         if b.select_i == i && b.select_j == j
           let l = b.bufleft_select
@@ -158,7 +160,7 @@ function! s:updatethumbnail()
           let l = b.bufleft
           let r = b.bufright
         endif
-        let ss .= repeat(' ', b.offset_left) . l . contents . r
+        let ss .= offset_white . l . contents . r
       endfor
       call add(s, ss)
     endfor
@@ -246,6 +248,7 @@ function! s:thumbnail_select()
   endif
   let b = b:thumbnail
   let i = b.select_i * b.num_width + b.select_j
+  let bufnr = bufnr('%')
   if s:thumbnail_exists(i)
     let buf = b.bufs[i].bufname
     let num = bufnr(escape(buf, '*[]?{}, '))
@@ -254,12 +257,14 @@ function! s:thumbnail_select()
         echo num
         if bufwinnr(num) != -1
           execute bufwinnr(num) 'wincmd w'
+          execute bufnr 'bdelete!'
           return
         else
           for i in range(tabpagenr('$'))
             if index(tabpagebuflist(i + 1), num) != -1
               execute 'tabnext' . (i + 1)
               execute bufwinnr(bufnr(escape(buf, '*[]?{}, '))) 'wincmd w'
+              execute bufnr 'bdelete!'
               return
             endif
           endfor
