@@ -55,7 +55,7 @@ function! s:initbuffer()
     if buf.loaded
       let lines = getbufline(buf.bufnr, 1, b.thumbnail_height)
     elseif buf.bufname != '' && filereadable(buf.bufname)
-      let lines = readfile(buf.bufname)
+      let lines = readfile(buf.bufname, 0, b.thumbnail_height)
     else
       continue
     endif
