@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 00:02:40.
+" Last Change: 2013/03/20 00:05:06.
 " =============================================================================
 "
 
@@ -29,7 +29,6 @@ function! s:initbuffer()
     silent bdelete!
     return b
   endif
-  let b.buffirstlinelen = []
   let b.bufleft_select = '[|'
   let b.bufright_select = '|]'
   let b.bufleft = '  '
@@ -67,9 +66,9 @@ function! s:initbuffer()
           \ string(repeat(' ', getbufvar(buf.bufnr, '&tabstop'))) .
           \ ', "g") . "' . '", ' .  (b.thumbnail_width - 4) . ')')
     call extend(buf, {
-          \ 'contents': s
+          \ 'contents': s,
+          \ 'firstlinelength': len(s) > 0 ? len(s[0]) : 0
           \ })
-    call add(b.buffirstlinelen, len(s) > 0 ? len(s[0]) : 0)
   endfor
   call s:initmapping()
   return b
@@ -160,8 +159,8 @@ function! s:updatethumbnail()
   call append(0, s)
   let offset = 0
   for j in range(b.select_j)
-    let ind = b.select_i * b.num_width + j
-    let offset += b.buffirstlinelen[ind] + b.offset_left + 4
+    let index = b.select_i * b.num_width + j
+    let offset += b.bufs[index].firstlinelength + b.offset_left + 4
   endfor
   silent call cursor(b.select_i * (b.offset_top + b.thumbnail_height)
         \ + b.offset_top + 1, offset + b.offset_left + 3)
