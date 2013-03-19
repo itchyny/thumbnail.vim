@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/19 23:14:19.
+" Last Change: 2013/03/20 00:02:40.
 " =============================================================================
 "
 
@@ -29,7 +29,6 @@ function! s:initbuffer()
     silent bdelete!
     return b
   endif
-  let b.bufprev = []
   let b.buffirstlinelen = []
   let b.bufleft_select = '[|'
   let b.bufright_select = '|]'
@@ -67,7 +66,9 @@ function! s:initbuffer()
           \ 's:Prelude.truncate(substitute(v:val, "\t",' .
           \ string(repeat(' ', getbufvar(buf.bufnr, '&tabstop'))) .
           \ ', "g") . "' . '", ' .  (b.thumbnail_width - 4) . ')')
-    call add(b.bufprev, s)
+    call extend(buf, {
+          \ 'contents': s
+          \ })
     call add(b.buffirstlinelen, len(s) > 0 ? len(s[0]) : 0)
   endfor
   call s:initmapping()
@@ -139,8 +140,8 @@ function! s:updatethumbnail()
       let ss = ''
       for j in range(b.num_width)
         let l = i * b.num_width + j
-        if l < len(b.bufprev) && k < len(b.bufprev[l])
-          let contents = b.bufprev[l][k]
+        if l < len(b.bufs) && k < len(b.bufs[l].contents)
+          let contents = b.bufs[l].contents[k]
         else
           let contents = repeat(' ', b.thumbnail_width - 4)
         endif
