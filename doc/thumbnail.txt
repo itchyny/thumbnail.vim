@@ -5,14 +5,35 @@ Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
 
-CONTENTS					*landscape-contents*
+CONTENTS					*thumbnail-contents*
 
-Introduction				|landscape-introduction|
+Introduction				|thumbnail-introduction|
 
 ==============================================================================
-INTRODUCTION					*landscape-introduction*
+INTRODUCTION					*thumbnail-introduction*
 
 The *thumbnail* plug-in is a thumbnail-style buffer selector for Vim.
+
+------------------------------------------------------------------------------
+COMMANDS					*thumbnail-commands*
+
+:Thumbnail
+						*:Thumbnail*
+		Open a new tab and view thumbnails of buffers.
+
+------------------------------------------------------------------------------
+KEY MAPPINGS 					*thumbnail-key-mappings*
+
+Normal mode key mappings.
+
+<Plug>(thumbnail_move_left)			*<Plug>(thumbnail_move_left)*
+<Plug>(thumbnail_move_right)			*<Plug>(thumbnail_move_right)*
+<Plug>(thumbnail_move_down)			*<Plug>(thumbnail_move_down)*
+<Plug>(thumbnail_move_up)			*<Plug>(thumbnail_move_up)*
+		Move the cursor.
+
+<Plug>(thumbnail_close)				*<Plug>(thumbnail_close)*
+		Close the thumbnail buffer.
 
 ==============================================================================
 vim:tw=78:sw=4:ts=8:ft=help:norl:noet:
