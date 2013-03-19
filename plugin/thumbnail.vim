@@ -13,9 +13,18 @@ function! s:initbuffer()
   let b = {}
   let b.height = winheight(0)
   let b.width = winwidth(0)
-  let b.bufloaded = []
-  let b.bufnr = range(1, bufnr('$'))
-  let b.bufname = map(copy(b.bufnr), 'bufname(v:val)')
+  let b.bufs = []
+  for i in range(1, bufnr('$'))
+    let name = bufname(i)
+    if len(name) == 0
+      continue
+    endif
+    call add(b.bufs, {
+    \ 'bufnr': i,
+    \ 'bufname': name,
+    \ 'loaded': bufloaded(i) && bufexists(i) && name != '',
+    \})
+  endfor
   let b.bufprev = []
   let b.buffirstlinelen = []
   let b.bufleft_select = '[|'
@@ -23,14 +32,14 @@ function! s:initbuffer()
   let b.bufleft = '  '
   let b.bufright = '  '
   let b.num_height = 1
-  let b.num_width = len(b.bufname)
+  let b.num_width = len(b.bufs)
   let b.thumbnail_height =
         \ min([b.height * 4 / 5 / b.num_height, b.height * 3 / 5])
   let b.thumbnail_width =
         \ min([b.thumbnail_height * 5, b.width * 4 / 5 / b.num_width])
   while b.thumbnail_height * 2 > b.thumbnail_width
     let b.num_height += 1
-    let b.num_width = (len(b.bufname) + 1) / b.num_height
+    let b.num_width = (len(b.bufs) + 1) / b.num_height
     let b.thumbnail_height =
           \ min([b.height * 4 / 5 / b.num_height, b.height * 3 / 5])
     let b.thumbnail_width =
@@ -42,12 +51,11 @@ function! s:initbuffer()
         \ (b.width - b.num_width * b.thumbnail_width) / (b.num_width + 1)
   let b.select_i = 0
   let b.select_j = 0
-  for i in b.bufnr
-    let name = bufname(i)
-    if bufloaded(i) && bufexists(i) && name != ''
-      let lines = getbufline(i, 1, b.thumbnail_height)
-    elseif name != '' && filereadable(name)
-      let lines = readfile(name)
+  for buf in b.bufs
+    if buf.loaded
+      let lines = getbufline(buf.bufnr, 1, b.thumbnail_height)
+    elseif buf.bufname != '' && filereadable(buf.bufname)
+      let lines = readfile(buf.bufname)
     else
       continue
     endif
@@ -55,7 +63,7 @@ function! s:initbuffer()
           \ 's:Prelude.truncate(v:val . "' . repeat(' ', b.thumbnail_width)
           \ . '", ' .  (b.thumbnail_width - 4) . ')')
     call add(b.bufprev, s)
-    call add(b.buffirstlinelen, len(s[0]))
+    call add(b.buffirstlinelen, len(s) > 0 ? len(s[0]) : 0)
   endfor
   call s:initmapping()
   return b
@@ -194,7 +202,7 @@ function! s:thumbnail_down()
 endfunction
 
 function! s:thumbnail_exists(i)
-  return 0 <= a:i && a:i < len(b:thumbnail.bufname)
+  return 0 <= a:i && a:i < len(b:thumbnail.bufs)
 endfunction
 
 function! s:thumbnail_select_exists()
@@ -203,7 +211,7 @@ function! s:thumbnail_select_exists()
   endif
   let b = b:thumbnail
   let i = b.select_i * b.num_width + b.select_j
-  return 0 <= i && i < len(b:thumbnail.bufname)
+  return 0 <= i && i < len(b:thumbnail.bufs)
 endfunction
 
 function! s:thumbnail_select()
@@ -213,13 +221,13 @@ function! s:thumbnail_select()
   let b = b:thumbnail
   let i = b.select_i * b.num_width + b.select_j
   if s:thumbnail_exists(i)
-    let buf = b.bufname[i]
+    let buf = b.bufs[i].bufname
     let num = bufnr(escape(buf, '*[]?{}, '))
     if num > -1
       execute num 'buffer!'
     endif
   endif
-  echo b.bufname[i]
+  echo b.bufs[i].bufname
 endfunction
 
 command! Thumbnail call s:initthumbnail()
