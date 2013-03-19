@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 05:15:01.
+" Last Change: 2013/03/20 05:24:07.
 " =============================================================================
 "
 
@@ -357,7 +357,9 @@ endfunction
 function! s:thumbnail_exists(i, j)
   let b = b:thumbnail
   let k = a:i * b.num_width + a:j
-  return 0 <= k && k < len(b.bufs)
+  return 0 <= k && k < len(b.bufs) &&
+        \ 0 <= a:i && a:i < b.num_height &&
+        \ 0 <= a:j && a:j < b.num_width
 endfunction
 
 function! s:thumbnail_select()
