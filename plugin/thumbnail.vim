@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/19 17:15:32.
+" Last Change: 2013/03/19 17:33:22.
 " =============================================================================
 "
 
@@ -52,6 +52,10 @@ function! s:initbuffer()
   nnoremap <buffer><silent> l :<C-u>ThumbnailRight<CR>
   nnoremap <buffer><silent> j :<C-u>ThumbnailDown<CR>
   nnoremap <buffer><silent> k :<C-u>ThumbnailUp<CR>
+  nnoremap <buffer><silent> <Left> :<C-u>ThumbnailLeft<CR>
+  nnoremap <buffer><silent> <Right> :<C-u>ThumbnailRight<CR>
+  nnoremap <buffer><silent> <Down> :<C-u>ThumbnailDown<CR>
+  nnoremap <buffer><silent> <Up> :<C-u>ThumbnailUp<CR>
   nnoremap <buffer><silent> <CR> :<C-u>ThumbnailSelect<CR>
   return b
 endfunction
