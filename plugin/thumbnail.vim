@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 00:29:27.
+" Last Change: 2013/03/20 00:39:12.
 " =============================================================================
 "
 
@@ -16,7 +16,7 @@ function! s:initbuffer()
   let b.bufs = []
   for i in range(1, bufnr('$'))
     let name = bufname(i)
-    if len(name) == 0
+    if len(name) == 0 || !buflisted(i)
       continue
     endif
     call add(b.bufs, {
