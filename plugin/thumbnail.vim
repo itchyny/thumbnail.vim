@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/19 21:15:01.
+" Last Change: 2013/03/19 21:23:41.
 " =============================================================================
 "
 
@@ -87,14 +87,13 @@ endfunction
 function! s:initthumbnail()
   let b = s:initbuffer()
   let b:thumbnail = b
-  call s:updatethumbnail()
+  silent call s:updatethumbnail()
 endfunction
 
 function! s:newthumbnail()
   tabnew
   call s:initthumbnail()
   augroup Thumbnail
-    autocmd!
     autocmd BufEnter,WinEnter,BufWinEnter <buffer>
           \ silent call s:initthumbnail()
   augroup END
