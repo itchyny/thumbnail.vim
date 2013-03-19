@@ -8,6 +8,8 @@ Repository: https://github.com/itchyny/thumbnail.vim
 CONTENTS					*thumbnail-contents*
 
 Introduction				|thumbnail-introduction|
+Commands				|thumbnail-commands|
+Key Mappings				|thumbnail-key-mappings|
 
 ==============================================================================
 INTRODUCTION					*thumbnail-introduction*
@@ -30,7 +32,22 @@ Normal mode key mappings.
 <Plug>(thumbnail_move_right)			*<Plug>(thumbnail_move_right)*
 <Plug>(thumbnail_move_down)			*<Plug>(thumbnail_move_down)*
 <Plug>(thumbnail_move_up)			*<Plug>(thumbnail_move_up)*
-		Move the cursor.
+		Move the cursor. These mapping stops at each ends.
+
+<Plug>(thumbnail_move_next)			*<Plug>(thumbnail_move_next)*
+<Plug>(thumbnail_move_prev)			*<Plug>(thumbnail_move_prev)*
+		Move the cursor. These mapping rotates the selection.
+
+<Plug>(thumbnail_move_line_head)		*<Plug>(thumbnail_move_line_head)*
+<Plug>(thumbnail_move_line_last)		*<Plug>(thumbnail_move_line_last)*
+		Move the cursor to head/last of the current line.
+
+<Plug>(thumbnail_move_head)			*<Plug>(thumbnail_move_head)*
+<Plug>(thumbnail_move_last)			*<Plug>(thumbnail_move_last)*
+		Move the cursor to head/last of all the thumbnails.
+
+<Plug>(thumbnail_select)			*<Plug>(thumbnail_select)*
+		Open the selected buffer.
 
 <Plug>(thumbnail_close)				*<Plug>(thumbnail_close)*
 		Close the thumbnail buffer.
