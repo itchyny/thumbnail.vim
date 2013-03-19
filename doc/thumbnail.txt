@@ -1,0 +1,18 @@
+*thumbnail.txt*	A thumbnail buffer selector for Vim
+
+Version: 0.0
+Author: itchyny (https://github.com/itchyny)
+License: MIT License
+Repository: https://github.com/itchyny/thumbnail.vim
+
+CONTENTS					*landscape-contents*
+
+Introduction				|landscape-introduction|
+
+==============================================================================
+INTRODUCTION					*landscape-introduction*
+
+The *thumbnail* plug-in is a thumbnail-style buffer selector for Vim.
+
+==============================================================================
+vim:tw=78:sw=4:ts=8:ft=help:norl:noet:
