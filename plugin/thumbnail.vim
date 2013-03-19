@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/19 17:33:22.
+" Last Change: 2013/03/19 17:45:57.
 " =============================================================================
 "
 
@@ -48,16 +48,29 @@ function! s:initbuffer()
     call add(b.bufprev, s)
     call add(b.buffirstlinelen, len(s[0]))
   endfor
-  nnoremap <buffer><silent> h :<C-u>ThumbnailLeft<CR>
-  nnoremap <buffer><silent> l :<C-u>ThumbnailRight<CR>
-  nnoremap <buffer><silent> j :<C-u>ThumbnailDown<CR>
-  nnoremap <buffer><silent> k :<C-u>ThumbnailUp<CR>
-  nnoremap <buffer><silent> <Left> :<C-u>ThumbnailLeft<CR>
-  nnoremap <buffer><silent> <Right> :<C-u>ThumbnailRight<CR>
-  nnoremap <buffer><silent> <Down> :<C-u>ThumbnailDown<CR>
-  nnoremap <buffer><silent> <Up> :<C-u>ThumbnailUp<CR>
-  nnoremap <buffer><silent> <CR> :<C-u>ThumbnailSelect<CR>
+  call s:initmapping()
   return b
+endfunction
+
+function! s:initmapping()
+
+  nnoremap <buffer><silent> <Plug>(thumbnail_move_left) :<C-u>call <SID>thumbnail_left()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_move_right) :<C-u>call <SID>thumbnail_right()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_move_down) :<C-u>call <SID>thumbnail_down()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_move_up) :<C-u>call <SID>thumbnail_up()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_select) :<C-u>call <SID>thumbnail_select()<CR>
+
+  nmap <buffer> h <Plug>(thumbnail_move_left)
+  nmap <buffer> l <Plug>(thumbnail_move_right)
+  nmap <buffer> j <Plug>(thumbnail_move_down)
+  nmap <buffer> k <Plug>(thumbnail_move_up)
+  nmap <buffer> <Left> <Plug>(thumbnail_move_left)
+  nmap <buffer> <Right> <Plug>(thumbnail_move_right)
+  nmap <buffer> <Down> <Plug>(thumbnail_move_down)
+  nmap <buffer> <Up> <Plug>(thumbnail_move_up)
+
+  nmap <buffer> <CR> <Plug>(thumbnail_select)
+
 endfunction
 
 function! s:initthumbnail()
@@ -193,9 +206,4 @@ function! s:thumbnail_select()
 endfunction
 
 command! Thumbnail call s:initthumbnail()
-command! ThumbnailLeft call s:thumbnail_left()
-command! ThumbnailRight call s:thumbnail_right()
-command! ThumbnailDown call s:thumbnail_down()
-command! ThumbnailUp call s:thumbnail_up()
-command! ThumbnailSelect call s:thumbnail_select()
 
