@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 00:11:22.
+" Last Change: 2013/03/20 00:29:27.
 " =============================================================================
 "
 
@@ -244,7 +244,24 @@ function! s:thumbnail_select()
     let buf = b.bufs[i].bufname
     let num = bufnr(escape(buf, '*[]?{}, '))
     if num > -1
-      execute num 'buffer!'
+      if bufloaded(num)
+        echo num
+        if bufwinnr(num) != -1
+          execute bufwinnr(num) 'wincmd w'
+          return
+        else
+          for i in range(tabpagenr('$'))
+            if index(tabpagebuflist(i + 1), num) != -1
+              execute 'tabnext' . (i + 1)
+              execute bufwinnr(bufnr(escape(buf, '*[]?{}, '))) 'wincmd w'
+              return
+            endif
+          endfor
+          execute num 'buffer!'
+        endif
+      else
+        execute num 'buffer!'
+      endif
     endif
   endif
 endfunction
