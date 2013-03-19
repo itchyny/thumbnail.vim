@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 05:24:07.
+" Last Change: 2013/03/20 05:37:24.
 " =============================================================================
 "
 
@@ -113,8 +113,11 @@ function! s:initmapping()
   nmap <buffer> k <Plug>(thumbnail_move_up)
 
   nmap <buffer> w <Plug>(thumbnail_move_next)
+  nmap <buffer> W w
   nmap <buffer> b <Plug>(thumbnail_move_prev)
+  nmap <buffer> B b
   nmap <buffer> 0 <Plug>(thumbnail_move_line_head)
+  nmap <buffer> ^ 0
   nmap <buffer> $ <Plug>(thumbnail_move_line_last)
   nmap <buffer> gg <Plug>(thumbnail_move_head)
   nmap <buffer> G <Plug>(thumbnail_move_last)
@@ -146,7 +149,7 @@ function! s:newthumbnail()
   endif
   call s:initthumbnail(isnewtab)
   augroup Thumbnail
-    autocmd BufEnter,WinEnter,BufWinEnter <buffer>
+    autocmd BufEnter,WinEnter,BufWinEnter,VimResized <buffer>
           \ silent call s:initthumbnail(1)
   augroup END
 endfunction
@@ -157,7 +160,6 @@ function! s:updatethumbnail()
   endif
   setlocal modifiable noreadonly
   silent % delete _
-  silent call cursor(1, 1)
   let b = b:thumbnail
   let th = b.height * 2 / 5
   let of = (b.height - th * 2) / 3
@@ -195,6 +197,7 @@ function! s:updatethumbnail()
     let index = b.select_i * b.num_width + j
     let offset += b.bufs[index].firstlinelength + b.offset_left + 4
   endfor
+  silent call cursor(1, 1)
   silent call cursor(b.select_i * (b.offset_top + b.thumbnail_height)
         \ + b.offset_top + 1, offset + b.offset_left + 3)
   setlocal nomodifiable buftype=nofile noswapfile readonly nonumber
