@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 01:03:39.
+" Last Change: 2013/03/20 01:41:48.
 " =============================================================================
 "
 
@@ -87,8 +87,23 @@ function! s:initmapping()
         \ :<C-u>call <SID>thumbnail_down()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_up)
         \ :<C-u>call <SID>thumbnail_up()<CR>
+
+  nnoremap <buffer><silent> <Plug>(thumbnail_move_next)
+        \ :<C-u>call <SID>thumbnail_next()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_move_prev)
+        \ :<C-u>call <SID>thumbnail_prev()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_move_line_head)
+        \ :<C-u>call <SID>thumbnail_line_head()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_move_line_last)
+        \ :<C-u>call <SID>thumbnail_line_last()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_move_head)
+        \ :<C-u>call <SID>thumbnail_head()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_move_last)
+        \ :<C-u>call <SID>thumbnail_last()<CR>
+
   nnoremap <buffer><silent> <Plug>(thumbnail_select)
         \ :<C-u>call <SID>thumbnail_select()<CR>
+
   nnoremap <buffer><silent> <Plug>(thumbnail_close)
         \ :<C-u>bdelete!<CR>
 
@@ -96,7 +111,16 @@ function! s:initmapping()
   nmap <buffer> l <Plug>(thumbnail_move_right)
   nmap <buffer> j <Plug>(thumbnail_move_down)
   nmap <buffer> k <Plug>(thumbnail_move_up)
+
+  nmap <buffer> w <Plug>(thumbnail_move_next)
+  nmap <buffer> b <Plug>(thumbnail_move_prev)
+  nmap <buffer> 0 <Plug>(thumbnail_move_line_head)
+  nmap <buffer> $ <Plug>(thumbnail_move_line_last)
+  nmap <buffer> gg <Plug>(thumbnail_move_head)
+  nmap <buffer> G <Plug>(thumbnail_move_last)
+
   nmap <buffer> q <Plug>(thumbnail_close)
+
   nmap <buffer> <Left> <Plug>(thumbnail_move_left)
   nmap <buffer> <Right> <Plug>(thumbnail_move_right)
   nmap <buffer> <Down> <Plug>(thumbnail_move_down)
@@ -229,17 +253,124 @@ function! s:thumbnail_down()
   endif
 endfunction
 
+function! s:thumbnail_next()
+  if !exists('b:thumbnail')
+    return
+  endif
+  let b = b:thumbnail
+  if b.select_j + 1 < b.num_width
+    if s:thumbnail_ij_exists(b.select_i, b.select_j + 1)
+      let b.select_j += 1
+    elseif s:thumbnail_ij_exists(0, 0)
+      let b.select_i = 0
+      let b.select_j = 0
+    else
+      return
+    endif
+  elseif s:thumbnail_ij_exists(b.select_i + 1, 0)
+    let b.select_i += 1
+    let b.select_j = 0
+  elseif s:thumbnail_ij_exists(0, 0)
+    let b.select_i = 0
+    let b.select_j = 0
+  else
+    return
+  endif
+  call s:updatethumbnail()
+endfunction
+
+function! s:thumbnail_prev()
+  if !exists('b:thumbnail')
+    return
+  endif
+  let b = b:thumbnail
+  if b.select_j > 0
+    let b.select_j -= 1
+  elseif s:thumbnail_ij_exists(b.select_i - 1, b.num_width - 1)
+    let b.select_i -= 1
+    let b.select_j = b.num_width - 1
+  elseif s:thumbnail_ij_exists(b.num_height - 1,
+        \ len(b.bufs) - (b.num_height - 1) * b.num_width - 1)
+    let b.select_i = b.num_height - 1
+    let b.select_j = len(b.bufs) - (b.num_height - 1) * b.num_width - 1
+  else
+    return
+  endif
+  call s:updatethumbnail()
+endfunction
+
+function! s:thumbnail_line_head()
+  if !exists('b:thumbnail')
+    return
+  endif
+  let b = b:thumbnail
+  if s:thumbnail_ij_exists(b.select_i, 0)
+    let b.select_j = 0
+  else
+    return
+  endif
+  call s:updatethumbnail()
+endfunction
+
+function! s:thumbnail_line_last()
+  if !exists('b:thumbnail')
+    return
+  endif
+  let b = b:thumbnail
+  if s:thumbnail_ij_exists(b.select_i, b.num_width - 1)
+    let b.select_j = b.num_width - 1
+  elseif s:thumbnail_ij_exists(b.select_i,
+        \ len(b.bufs) - b.select_i * b.num_width - 1)
+    let b.select_j = len(b.bufs) - b.select_i * b.num_width - 1
+  else
+    return
+  endif
+  call s:updatethumbnail()
+endfunction
+
+function! s:thumbnail_head()
+  if !exists('b:thumbnail')
+    return
+  endif
+  let b = b:thumbnail
+  if s:thumbnail_ij_exists(0, 0)
+    let b.select_i = 0
+    let b.select_j = 0
+  else
+    return
+  endif
+  call s:updatethumbnail()
+endfunction
+
+function! s:thumbnail_last()
+  if !exists('b:thumbnail')
+    return
+  endif
+  let b = b:thumbnail
+  if s:thumbnail_ij_exists(b.num_height - 1,
+        \ len(b.bufs) - (b.num_height - 1) * b.num_width - 1)
+    let b.select_i = b.num_height - 1
+    let b.select_j = len(b.bufs) - (b.num_height - 1) * b.num_width - 1
+  else
+    return
+  endif
+  call s:updatethumbnail()
+endfunction
+
 function! s:thumbnail_exists(i)
   return 0 <= a:i && a:i < len(b:thumbnail.bufs)
 endfunction
 
 function! s:thumbnail_select_exists()
-  if !exists('b:thumbnail')
-    return
-  endif
   let b = b:thumbnail
   let i = b.select_i * b.num_width + b.select_j
   return 0 <= i && i < len(b:thumbnail.bufs)
+endfunction
+
+function! s:thumbnail_ij_exists(i, j)
+  let b = b:thumbnail
+  let k = a:i * b.num_width + a:j
+  return 0 <= k && k < len(b:thumbnail.bufs)
 endfunction
 
 function! s:thumbnail_select()
