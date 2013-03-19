@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/19 18:26:12.
+" Last Change: 2013/03/19 19:09:06.
 " =============================================================================
 "
 
@@ -75,8 +75,8 @@ function! s:initmapping()
   nmap <buffer> l <Plug>(thumbnail_move_right)
   nmap <buffer> j <Plug>(thumbnail_move_down)
   nmap <buffer> k <Plug>(thumbnail_move_up)
-  nmap <buffer> <l> <Plug>(thumbnail_move_left)
-  nmap <buffer> <r> <Plug>(thumbnail_move_right)
+  nmap <buffer> <Left> <Plug>(thumbnail_move_left)
+  nmap <buffer> <Right> <Plug>(thumbnail_move_right)
   nmap <buffer> <Down> <Plug>(thumbnail_move_down)
   nmap <buffer> <Up> <Plug>(thumbnail_move_up)
 
