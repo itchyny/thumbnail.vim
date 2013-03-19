@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/19 23:01:52.
+" Last Change: 2013/03/19 23:14:19.
 " =============================================================================
 "
 
@@ -246,7 +246,6 @@ function! s:thumbnail_select()
       execute num 'buffer!'
     endif
   endif
-  echo b.bufs[i].bufname
 endfunction
 
 command! Thumbnail call s:newthumbnail()
