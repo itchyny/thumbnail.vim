@@ -3,9 +3,8 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 07:23:14.
+" Last Change: 2013/03/20 07:25:23.
 " =============================================================================
-"
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
 

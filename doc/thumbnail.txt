@@ -21,7 +21,7 @@ COMMANDS					*thumbnail-commands*
 
 :Thumbnail
 						*:Thumbnail*
-		Open a new tab and view thumbnails of buffers.
+		Open a new buffer and view the thumbnails of the buffers.
 
 ------------------------------------------------------------------------------
 KEY MAPPINGS 					*thumbnail-key-mappings*
@@ -32,19 +32,19 @@ Normal mode key mappings.
 <Plug>(thumbnail_move_right)			*<Plug>(thumbnail_move_right)*
 <Plug>(thumbnail_move_down)			*<Plug>(thumbnail_move_down)*
 <Plug>(thumbnail_move_up)			*<Plug>(thumbnail_move_up)*
-		Move the cursor. These mapping stops at each ends.
+		Move the cursor. These mappings stop the selection each ends.
 
 <Plug>(thumbnail_move_next)			*<Plug>(thumbnail_move_next)*
 <Plug>(thumbnail_move_prev)			*<Plug>(thumbnail_move_prev)*
-		Move the cursor. These mapping rotates the selection.
+		Move the cursor. These mappings rotate the selection.
 
 <Plug>(thumbnail_move_line_head)		*<Plug>(thumbnail_move_line_head)*
 <Plug>(thumbnail_move_line_last)		*<Plug>(thumbnail_move_line_last)*
-		Move the cursor to head/last of the current line.
+		Move the cursor to the head/last of the current line.
 
 <Plug>(thumbnail_move_head)			*<Plug>(thumbnail_move_head)*
 <Plug>(thumbnail_move_last)			*<Plug>(thumbnail_move_last)*
-		Move the cursor to head/last of all the thumbnails.
+		Move the cursor to the head/last of all the thumbnails.
 
 <Plug>(thumbnail_select)			*<Plug>(thumbnail_select)*
 		Open the selected buffer.
