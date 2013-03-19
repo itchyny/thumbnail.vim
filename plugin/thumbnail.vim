@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 00:41:25.
+" Last Change: 2013/03/20 00:47:38.
 " =============================================================================
 "
 
@@ -113,7 +113,9 @@ function! s:initthumbnail()
 endfunction
 
 function! s:newthumbnail()
-  tabnew
+  if bufname('%') != '' || &modified
+    tabnew
+  endif
   call s:initthumbnail()
   augroup Thumbnail
     autocmd BufEnter,WinEnter,BufWinEnter <buffer>
