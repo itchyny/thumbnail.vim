@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/19 22:26:14.
+" Last Change: 2013/03/19 22:29:43.
 " =============================================================================
 "
 
@@ -85,11 +85,14 @@ function! s:initmapping()
         \ :<C-u>call <SID>thumbnail_up()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_select)
         \ :<C-u>call <SID>thumbnail_select()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_close)
+        \ :<C-u>bdelete!<CR>
 
   nmap <buffer> h <Plug>(thumbnail_move_left)
   nmap <buffer> l <Plug>(thumbnail_move_right)
   nmap <buffer> j <Plug>(thumbnail_move_down)
   nmap <buffer> k <Plug>(thumbnail_move_up)
+  nmap <buffer> q <Plug>(thumbnail_close)
   nmap <buffer> <Left> <Plug>(thumbnail_move_left)
   nmap <buffer> <Right> <Plug>(thumbnail_move_right)
   nmap <buffer> <Down> <Plug>(thumbnail_move_down)
