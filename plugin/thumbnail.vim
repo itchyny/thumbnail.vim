@@ -1,9 +1,9 @@
 " =============================================================================
-" Filename: thumbnail.vim
+" Filename: plugin/thumbnail.vim
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 02:02:02.
+" Last Change: 2013/03/20 05:15:01.
 " =============================================================================
 "
 
