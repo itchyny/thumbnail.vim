@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/19 17:45:57.
+" Last Change: 2013/03/19 17:54:59.
 " =============================================================================
 "
 
@@ -30,7 +30,7 @@ function! s:initbuffer()
   let b.num_height = 1
   let b.num_width = len(b.bufname)
   let b.thumbnail_height = min([b.height * 4 / 5 / b.num_height, b.height * 3 / 5])
-  let b.thumbnail_width = min([b.thumbnail_height * 3, b.width * 4 / 5 / b.num_width])
+  let b.thumbnail_width = min([b.thumbnail_height * 5, b.width * 4 / 5 / b.num_width])
   while b.thumbnail_height * 2 > b.thumbnail_width
     let b.num_height += 1
     let b.num_width = (len(b.bufname) + 1) / b.num_height
