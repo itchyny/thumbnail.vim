@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/19 22:29:43.
+" Last Change: 2013/03/19 22:59:53.
 " =============================================================================
 "
 
@@ -64,8 +64,12 @@ function! s:initbuffer()
       continue
     endif
     let s = map(lines,
-          \ 's:Prelude.truncate(v:val . "' . repeat(' ', b.thumbnail_width)
-          \ . '", ' .  (b.thumbnail_width - 4) . ')')
+          \ 's:Prelude.truncate(substitute(v:val, "\t",' . 
+          \ string(repeat(' ', getbufvar(buf.bufnr, '&shiftwidth'))) .
+          \ ', "g") . "' . '", ' .  (b.thumbnail_width - 4) . ')')
+    " let s = map(lines,
+    "       \ 's:Prelude.strwidthpart(v:val . "' . repeat(' ', b.thumbnail_width)
+    "       \ . '", ' .  (b.thumbnail_width - 4) . ')')
     call add(b.bufprev, s)
     call add(b.buffirstlinelen, len(s) > 0 ? len(s[0]) : 0)
   endfor
