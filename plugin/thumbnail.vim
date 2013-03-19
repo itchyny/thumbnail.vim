@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/19 22:07:41.
+" Last Change: 2013/03/19 22:26:14.
 " =============================================================================
 "
 
@@ -25,6 +25,10 @@ function! s:initbuffer()
     \ 'loaded': bufloaded(i) && bufexists(i) && name != '',
     \})
   endfor
+  if len(b.bufs) == 0
+    silent bdelete!
+    return b
+  endif
   let b.bufprev = []
   let b.buffirstlinelen = []
   let b.bufleft_select = '[|'
@@ -97,8 +101,10 @@ endfunction
 
 function! s:initthumbnail()
   let b = s:initbuffer()
-  let b:thumbnail = b
-  silent call s:updatethumbnail()
+  if len(b.bufs) > 0
+    let b:thumbnail = b
+    silent call s:updatethumbnail()
+  endif
 endfunction
 
 function! s:newthumbnail()
