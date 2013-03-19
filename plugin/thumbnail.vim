@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/19 19:09:06.
+" Last Change: 19-Mar-2013.
 " =============================================================================
 "
 
@@ -13,16 +13,11 @@ function! s:initbuffer()
   let b = {}
   let b.height = winheight(0)
   let b.width = winwidth(0)
-  let b.bufnr = []
-  let b.bufname = []
+  let b.bufloaded = []
+  let b.bufnr = range(1, bufnr('$'))
+  let b.bufname = map(copy(b.bufnr), 'bufname(v:val)')
   let b.bufprev = []
   let b.buffirstlinelen = []
-  for i in range(1, bufnr('$'))
-    if bufloaded(i) && bufexists(i) && buflisted(i) && bufname(i) != ''
-      call add(b.bufnr, i)
-      call add(b.bufname, bufname(i))
-    endif
-  endfor
   let b.bufleft_select = '[|'
   let b.bufright_select = '|]'
   let b.bufleft = '  '
@@ -48,7 +43,15 @@ function! s:initbuffer()
   let b.select_i = 0
   let b.select_j = 0
   for i in b.bufnr
-    let s = map(getbufline(i, 1, b.thumbnail_height),
+    let name = bufname(i)
+    if bufloaded(i) && bufexists(i) && name != ''
+      let lines = getbufline(i, 1, b.thumbnail_height)
+    elseif name != '' && filereadable(name)
+      let lines = readfile(name)
+    else
+      continue
+    endif
+    let s = map(lines,
           \ 's:Prelude.truncate(v:val . "' . repeat(' ', b.thumbnail_width)
           \ . '", ' .  (b.thumbnail_width - 4) . ')')
     call add(b.bufprev, s)
