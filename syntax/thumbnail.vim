@@ -1,3 +1,17 @@
+" =============================================================================
+" Filename: syntax/thumbnail.vim
+" Version: 0.0
+" Author: itchyny
+" License: MIT License
+" Last Change: 2013/03/20 05:14:55.
+" =============================================================================
+"
+
+if version < 700
+  syntax clear
+elseif exists('b:current_syntax')
+  finish
+endif
 
 syntax match ThumbnailSelect '\[|.*|\]' contains=ThumbnailSMarker 
 syntax match ThumbnailSMarker '\[|\||\]' contained
@@ -8,4 +22,6 @@ highlight default link ThumbnailSMarker Ignore
 highlight default link ThumbnailMarker Ignore
 
 setlocal nocursorcolumn nocursorline
+
+let b:current_syntax = 'thumbnail'
 
