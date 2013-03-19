@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 01:54:46.
+" Last Change: 2013/03/20 01:56:36.
 " =============================================================================
 "
 
@@ -33,8 +33,8 @@ function! s:initbuffer(isnewtab)
   endif
   let b.bufleft_select = '[|'
   let b.bufright_select = '|]'
-  let b.bufleft = '  '
-  let b.bufright = '  '
+  let b.bufleft = '[\'
+  let b.bufright = '\]'
   let b.num_height = 1
   let b.num_width = len(b.bufs)
   let b.thumbnail_height =
