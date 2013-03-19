@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/19 17:54:59.
+" Last Change: 2013/03/19 18:26:12.
 " =============================================================================
 "
 
@@ -29,22 +29,28 @@ function! s:initbuffer()
   let b.bufright = '  '
   let b.num_height = 1
   let b.num_width = len(b.bufname)
-  let b.thumbnail_height = min([b.height * 4 / 5 / b.num_height, b.height * 3 / 5])
-  let b.thumbnail_width = min([b.thumbnail_height * 5, b.width * 4 / 5 / b.num_width])
+  let b.thumbnail_height =
+        \ min([b.height * 4 / 5 / b.num_height, b.height * 3 / 5])
+  let b.thumbnail_width =
+        \ min([b.thumbnail_height * 5, b.width * 4 / 5 / b.num_width])
   while b.thumbnail_height * 2 > b.thumbnail_width
     let b.num_height += 1
     let b.num_width = (len(b.bufname) + 1) / b.num_height
-    let b.thumbnail_height = min([b.height * 4 / 5 / b.num_height, b.height * 3 / 5])
-    let b.thumbnail_width = min([b.thumbnail_height * 5, b.width * 4 / 5 / b.num_width])
+    let b.thumbnail_height =
+          \ min([b.height * 4 / 5 / b.num_height, b.height * 3 / 5])
+    let b.thumbnail_width =
+          \ min([b.thumbnail_height * 5, b.width * 4 / 5 / b.num_width])
   endwhile
-  let b.offset_top = (b.height - b.num_height * b.thumbnail_height) / (b.num_height + 1)
-  let b.offset_left = (b.width - b.num_width * b.thumbnail_width) / (b.num_width + 1)
+  let b.offset_top =
+        \ (b.height - b.num_height * b.thumbnail_height) / (b.num_height + 1)
+  let b.offset_left =
+        \ (b.width - b.num_width * b.thumbnail_width) / (b.num_width + 1)
   let b.select_i = 0
   let b.select_j = 0
   for i in b.bufnr
     let s = map(getbufline(i, 1, b.thumbnail_height),
-          \ 's:Prelude.truncate(v:val . "' . repeat(' ', b.thumbnail_width) . '", ' .
-          \ (b.thumbnail_width - 4) . ')')
+          \ 's:Prelude.truncate(v:val . "' . repeat(' ', b.thumbnail_width)
+          \ . '", ' .  (b.thumbnail_width - 4) . ')')
     call add(b.bufprev, s)
     call add(b.buffirstlinelen, len(s[0]))
   endfor
@@ -54,18 +60,23 @@ endfunction
 
 function! s:initmapping()
 
-  nnoremap <buffer><silent> <Plug>(thumbnail_move_left) :<C-u>call <SID>thumbnail_left()<CR>
-  nnoremap <buffer><silent> <Plug>(thumbnail_move_right) :<C-u>call <SID>thumbnail_right()<CR>
-  nnoremap <buffer><silent> <Plug>(thumbnail_move_down) :<C-u>call <SID>thumbnail_down()<CR>
-  nnoremap <buffer><silent> <Plug>(thumbnail_move_up) :<C-u>call <SID>thumbnail_up()<CR>
-  nnoremap <buffer><silent> <Plug>(thumbnail_select) :<C-u>call <SID>thumbnail_select()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_move_left)
+        \ :<C-u>call <SID>thumbnail_left()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_move_right)
+        \ :<C-u>call <SID>thumbnail_right()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_move_down)
+        \ :<C-u>call <SID>thumbnail_down()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_move_up)
+        \ :<C-u>call <SID>thumbnail_up()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_select)
+        \ :<C-u>call <SID>thumbnail_select()<CR>
 
   nmap <buffer> h <Plug>(thumbnail_move_left)
   nmap <buffer> l <Plug>(thumbnail_move_right)
   nmap <buffer> j <Plug>(thumbnail_move_down)
   nmap <buffer> k <Plug>(thumbnail_move_up)
-  nmap <buffer> <Left> <Plug>(thumbnail_move_left)
-  nmap <buffer> <Right> <Plug>(thumbnail_move_right)
+  nmap <buffer> <l> <Plug>(thumbnail_move_left)
+  nmap <buffer> <r> <Plug>(thumbnail_move_right)
   nmap <buffer> <Down> <Plug>(thumbnail_move_down)
   nmap <buffer> <Up> <Plug>(thumbnail_move_up)
 
@@ -104,10 +115,13 @@ function! s:updatethumbnail()
           let contents = repeat(' ', b.thumbnail_width - 4)
         endif
         if b.select_i == i && b.select_j == j
-          let ss .= repeat(' ', b.offset_left) . b.bufleft_select . contents . b.bufright_select
+          let l = b.bufleft_select
+          let r = b.bufright_select
         else
-          let ss .= repeat(' ', b.offset_left) . b.bufleft . contents . b.bufright
+          let l = b.bufleft
+          let r = b.bufright
         endif
+        let ss .= repeat(' ', b.offset_left) . l . contents . r
       endfor
       call add(s, ss)
     endfor
@@ -118,8 +132,8 @@ function! s:updatethumbnail()
     let ind = b.select_i * b.num_width + j
     let offset += b.buffirstlinelen[ind] + b.offset_left + 4
   endfor
-  call cursor(b.select_i * (b.offset_top + b.thumbnail_height) + b.offset_top + 1,
-        \ offset + b.offset_left + 3)
+  call cursor(b.select_i * (b.offset_top + b.thumbnail_height)
+        \ + b.offset_top + 1, offset + b.offset_left + 3)
   setlocal nomodifiable buftype=nofile noswapfile readonly nonumber
         \ bufhidden=hide nobuflisted filetype=thumbnail
 endfunction
