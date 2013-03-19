@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 19-Mar-2013.
+" Last Change: 2013/03/19 22:07:41.
 " =============================================================================
 "
 
@@ -55,7 +55,7 @@ function! s:initbuffer()
     if buf.loaded
       let lines = getbufline(buf.bufnr, 1, b.thumbnail_height)
     elseif buf.bufname != '' && filereadable(buf.bufname)
-      let lines = readfile(buf.bufname)
+      let lines = readfile(buf.bufname, '', b.thumbnail_height)
     else
       continue
     endif
