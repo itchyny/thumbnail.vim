@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 07:19:59.
+" Last Change: 2013/03/20 07:23:14.
 " =============================================================================
 "
 
@@ -153,7 +153,7 @@ function! s:newthumbnail()
   call s:initthumbnail(isnewtab)
   augroup Thumbnail
     autocmd!
-    autocmd BufEnter,WinEnter,BufWinEnter *
+    autocmd BufEnter,WinEnter,BufWinEnter,VimResized *
           \ call s:update_visible_thumbnail(expand('<abuf>'))
   augroup END
   augroup ThumbnailBuffer
