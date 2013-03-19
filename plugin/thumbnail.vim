@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 00:05:06.
+" Last Change: 2013/03/20 00:05:49.
 " =============================================================================
 "
 
@@ -20,10 +20,10 @@ function! s:initbuffer()
       continue
     endif
     call add(b.bufs, {
-    \ 'bufnr': i,
-    \ 'bufname': name,
-    \ 'loaded': bufloaded(i) && bufexists(i) && name != '',
-    \})
+          \ 'bufnr': i,
+          \ 'bufname': name,
+          \ 'loaded': bufloaded(i) && bufexists(i) && name != '',
+          \ })
   endfor
   if len(b.bufs) == 0
     silent bdelete!
