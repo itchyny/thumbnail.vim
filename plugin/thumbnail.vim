@@ -3,13 +3,13 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 00:47:38.
+" Last Change: 2013/03/20 00:51:17.
 " =============================================================================
 "
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
 
-function! s:initbuffer()
+function! s:initbuffer(isnewtab)
   let b = {}
   let b.height = winheight(0)
   let b.width = winwidth(0)
@@ -26,7 +26,9 @@ function! s:initbuffer()
           \ })
   endfor
   if len(b.bufs) == 0
-    silent bdelete!
+    if a:isnewtab
+      silent bdelete!
+    endif
     return b
   endif
   let b.bufleft_select = '[|'
@@ -104,8 +106,8 @@ function! s:initmapping()
 
 endfunction
 
-function! s:initthumbnail()
-  let b = s:initbuffer()
+function! s:initthumbnail(isnewtab)
+  let b = s:initbuffer(a:isnewtab)
   if len(b.bufs) > 0
     let b:thumbnail = b
     silent call s:updatethumbnail()
@@ -113,13 +115,15 @@ function! s:initthumbnail()
 endfunction
 
 function! s:newthumbnail()
+  let isnewtab = 0
   if bufname('%') != '' || &modified
     tabnew
+    let isnewtab = 1
   endif
-  call s:initthumbnail()
+  call s:initthumbnail(isnewtab)
   augroup Thumbnail
     autocmd BufEnter,WinEnter,BufWinEnter <buffer>
-          \ silent call s:initthumbnail()
+          \ silent call s:initthumbnail(1)
   augroup END
 endfunction
 
