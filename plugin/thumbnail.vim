@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/21 01:44:33.
+" Last Change: 2013/03/21 06:19:55.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -154,9 +154,35 @@ function! s:thumbnail_mapping()
 
 endfunction
 
+function! s:thumbnail_unsave_selection(b)
+  let prev_b = b:thumbnail
+  let index = prev_b.select_i * prev_b.num_width + prev_b.select_j
+  let offset = 0
+  while offset < len(prev_b.bufs)
+    let i = index + offset
+    let offset = (offset <= 0 ? 1 : 0) - offset
+    if !(0 <= i && i < len(prev_b.bufs) && has_key(prev_b.bufs[i], 'bufname'))
+      continue
+    endif
+    let name = prev_b.bufs[i].bufname
+    for j in range(len(a:b.bufs))
+      if a:b.bufs[j].bufname == name
+        let a:b.select_i = j / a:b.num_width
+        let a:b.select_j = j % a:b.num_width
+        return a:b
+      endif
+    endfor
+  endwhile
+  return a:b
+endfunction
+
 function! s:thumbnail_init(isnewtab, cursor)
   let b = s:init_buffer(a:isnewtab)
   if len(b.bufs) > 0
+    if exists('b:thumbnail')
+      let b = s:thumbnail_unsave_selection(b)
+      unlet b:thumbnail
+    endif
     let b:thumbnail = b
     silent call s:updatethumbnail()
     if a:cursor
