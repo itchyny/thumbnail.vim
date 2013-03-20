@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 15:51:49.
+" Last Change: 2013/03/20 15:58:18.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -136,7 +136,7 @@ function! s:initmapping()
 
   nmap <buffer> <CR> <Plug>(thumbnail_select)
   nmap <buffer> <SPACE> <CR>
-  nmap <buffer> c <Plug>(thumbnail_close)
+  nmap <buffer> x <Plug>(thumbnail_close)
   nmap <buffer> q <Plug>(thumbnail_exit)
 
 endfunction
