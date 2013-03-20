@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/21 01:07:40.
+" Last Change: 2013/03/21 01:22:49.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -279,6 +279,7 @@ function! s:update_visible_thumbnail(bufnr)
 endfunction
 
 function! s:update_current_thumbnail()
+  silent call cursor(1, 1)
   if !exists('b:thumbnail')
     return
   endif
