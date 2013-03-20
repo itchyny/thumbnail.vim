@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 07:25:23.
+" Last Change: 2013/03/20 12:46:23.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -114,9 +114,13 @@ function! s:initmapping()
   nmap <buffer> w <Plug>(thumbnail_move_next)
   nmap <buffer> W w
   nmap <buffer> <TAB> w
+  nnoremap <buffer><silent> <LeftMouse> <LeftMouse>
+        \ :<C-u>call <SID>thumbnail_mouse_select()<CR>
+  map <buffer> <ScrollWheelUp> w
   nmap <buffer> b <Plug>(thumbnail_move_prev)
   nmap <buffer> B b
   nmap <buffer> <S-Tab> b
+  map <buffer> <ScrollWheelDown> b
   nmap <buffer> 0 <Plug>(thumbnail_move_line_head)
   nmap <buffer> ^ 0
   nmap <buffer> $ <Plug>(thumbnail_move_line_last)
@@ -173,9 +177,13 @@ function! s:updatethumbnail()
   let s = []
   let thumbnail_white = repeat(' ', b.thumbnail_width - 4)
   let offset_white = repeat(' ', b.offset_left)
+  let line_white = repeat(' ', (b.offset_left + b.thumbnail_width)
+        \ * b.num_width)
+  let right_white = repeat(' ', winwidth(0) - len(line_white))
+        \ . b.bufright . b.bufright
   for i in range(b.num_height)
     for j in range(b.offset_top)
-      call add(s, '')
+      call add(s, line_white . right_white)
     endfor
     for k in range(b.thumbnail_height)
       let ss = ''
@@ -195,8 +203,11 @@ function! s:updatethumbnail()
         endif
         let ss .= offset_white . l . contents . r
       endfor
-      call add(s, ss)
+      call add(s, ss . right_white)
     endfor
+  endfor
+  for j in range(b.offset_top + 1)
+    call add(s, line_white . right_white)
   endfor
   call append(0, s)
   silent call s:set_cursor()
@@ -399,6 +410,43 @@ function! s:thumbnail_exists(i, j)
   return 0 <= k && k < len(b.bufs) &&
         \ 0 <= a:i && a:i < b.num_height &&
         \ 0 <= a:j && a:j < b.num_width
+endfunction
+
+function! s:update_select()
+  if !exists('b:thumbnail')
+    return
+  endif
+  let b = b:thumbnail
+  let i = (line('.') - b.offset_top / 2 - 1) / (b.offset_top + b.thumbnail_height)
+  if i < 0 | let i = 0 | endif
+  if b.num_height <= i | let i = b.num_height - 1 | endif
+  let j = (col('.') - b.offset_left / 2 - 3) / (b.offset_left + b.thumbnail_width)
+  if j < 0 | let j = 0 | endif
+  if b.num_width <= j | let j = b.num_width - 1 | endif
+  if s:thumbnail_exists(i, j)
+    let b.select_i = i
+    let b.select_j = j
+  elseif s:thumbnail_exists(i, j - 1)
+    let b.select_i = i
+    let b.select_j = j - 1
+  elseif s:thumbnail_exists(i - 1, j)
+    let b.select_i = i - 1
+    let b.select_j = j
+  elseif s:thumbnail_exists(i - 1, j - 1)
+    let b.select_i = i - 1
+    let b.select_j = j - 1
+  else
+    return -1
+  endif
+  silent call s:updatethumbnail()
+  return 0
+endfunction
+
+function! s:thumbnail_mouse_select()
+  let r = s:update_select()
+  if r == 0
+    silent call s:thumbnail_select()
+  endif
 endfunction
 
 function! s:thumbnail_select()
