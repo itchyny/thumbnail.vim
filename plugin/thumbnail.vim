@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/21 01:43:14.
+" Last Change: 2013/03/21 01:44:33.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -81,11 +81,11 @@ function! s:init_buffer(isnewtab)
           \                                      : b.thumbnail_width - 4
           \ })
   endfor
-  call s:initmapping()
+  call s:thumbnail_mapping()
   return b
 endfunction
 
-function! s:initmapping()
+function! s:thumbnail_mapping()
 
   nnoremap <buffer><silent> <Plug>(thumbnail_move_left)
         \ :<C-u>call <SID>thumbnail_left()<CR>
