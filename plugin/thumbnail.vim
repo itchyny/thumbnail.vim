@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 15:13:41.
+" Last Change: 2013/03/20 15:15:52.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -260,8 +260,6 @@ function! s:update_visible_thumbnail(bufnr)
       execute newbuf 'wincmd w'
     endif
   endif
-  " echoerr winnr
-  " echoerr newbuf
 endfunction
 
 function! s:thumbnail_left()
