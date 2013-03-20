@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 18:22:41.
+" Last Change: 2013/03/20 18:32:38.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -181,8 +181,6 @@ function! s:updatethumbnail()
   setlocal modifiable noreadonly
   silent % delete _
   let b = b:thumbnail
-  let th = b.height * 2 / 5
-  let of = (b.height - th * 2) / 3
   let s = []
   let thumbnail_white = repeat(' ', b.thumbnail_width - 4)
   let offset_white = repeat(' ', b.offset_left)
