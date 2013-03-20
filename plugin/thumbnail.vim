@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 15:34:05.
+" Last Change: 2013/03/20 15:35:36.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -507,7 +507,7 @@ function! s:thumbnail_close()
     let num = bufnr(escape(buf, '*[]?{}, '))
     if num > -1
       silent execute num 'bdelete!'
-      silent call s:initthumbnail(0, 1)
+      silent call s:initthumbnail(1, 1)
     endif
   endif
 endfunction
