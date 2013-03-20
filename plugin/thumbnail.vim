@@ -3,12 +3,12 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 20:10:15.
+" Last Change: 2013/03/20 20:34:26.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
 
-function! s:initbuffer(isnewtab)
+function! s:init_buffer(isnewtab)
   let b = {}
   let b.height = winheight(0)
   let b.width = winwidth(0)
@@ -145,8 +145,8 @@ function! s:initmapping()
 
 endfunction
 
-function! s:initthumbnail(isnewtab, cursor)
-  let b = s:initbuffer(a:isnewtab)
+function! s:thumbnail_init(isnewtab, cursor)
+  let b = s:init_buffer(a:isnewtab)
   if len(b.bufs) > 0
     let b:thumbnail = b
     silent call s:updatethumbnail()
@@ -158,13 +158,13 @@ function! s:initthumbnail(isnewtab, cursor)
   endif
 endfunction
 
-function! s:newthumbnail()
+function! s:thumbnail_new()
   let isnewtab = 0
   if bufname('%') != '' || &modified
     tabnew
     let isnewtab = 1
   endif
-  call s:initthumbnail(isnewtab, 1)
+  call s:thumbnail_init(isnewtab, 1)
   augroup Thumbnail
     autocmd!
     autocmd BufEnter,VimResized *
@@ -172,7 +172,7 @@ function! s:newthumbnail()
   augroup END
   augroup ThumbnailBuffer
     autocmd BufEnter <buffer>
-          \ if exists('b:thumbnail') | call s:initthumbnail(0, 0) | endif
+          \ if exists('b:thumbnail') | call s:thumbnail_init(0, 0) | endif
     autocmd BufLeave,WinLeave <buffer>
           \ silent call cursor(1, 1)
   augroup END
@@ -261,7 +261,7 @@ function! s:update_visible_thumbnail(bufnr)
   if winnr != -1 && newbuf != -1
     execute winnr 'wincmd w'
     if exists('b:thumbnail')
-      call s:initthumbnail(0, 0)
+      call s:thumbnail_init(0, 0)
     endif
     if winnr != newbuf
       silent call cursor(1, 1)
@@ -274,7 +274,7 @@ function! s:update_current_thumbnail()
   if !exists('b:thumbnail')
     return
   endif
-  call s:initthumbnail(1, 1)
+  call s:thumbnail_init(1, 1)
 endfunction
 
 function! s:thumbnail_left()
@@ -521,10 +521,10 @@ function! s:thumbnail_close()
     let num = bufnr(escape(buf, '*[]?{}, '))
     if num > -1
       silent execute num 'bdelete!'
-      silent call s:initthumbnail(1, 1)
+      silent call s:thumbnail_init(1, 1)
     endif
   endif
 endfunction
 
-command! Thumbnail call s:newthumbnail()
+command! Thumbnail call s:thumbnail_new()
 
