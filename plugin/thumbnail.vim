@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 19:00:22.
+" Last Change: 2013/03/20 19:52:03.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -118,8 +118,9 @@ function! s:initmapping()
   nmap <buffer> W w
   nmap <buffer> <TAB> w
   nnoremap <buffer><silent> <LeftMouse> <LeftMouse>
+        \ :<C-u>call <SID>update_select()<CR>
+  nnoremap <buffer><silent> <2-LeftMouse> <LeftMouse>
         \ :<C-u>call <SID>thumbnail_mouse_select()<CR>
-  nmap <buffer><silent> <2-LeftMouse> <LeftMouse>
   map <buffer> <ScrollWheelUp> w
   nmap <buffer> b <Plug>(thumbnail_move_prev)
   nmap <buffer> B b
