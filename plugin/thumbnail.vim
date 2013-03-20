@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 15:15:52.
+" Last Change: 2013/03/20 15:21:27.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -248,10 +248,10 @@ function! s:search_thumbnail()
 endfunction
 
 function! s:update_visible_thumbnail(bufnr)
-  let winnr = s:search_thumbnail()
+  let winnr = bufwinnr(s:search_thumbnail())
   let newbuf = bufwinnr(str2nr(a:bufnr))
   if winnr != -1 && newbuf != -1
-    execute bufwinnr(winnr) 'wincmd w'
+    execute winnr 'wincmd w'
     if exists('b:thumbnail')
       call s:initthumbnail(0, 0)
     endif
