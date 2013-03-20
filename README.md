@@ -9,7 +9,7 @@ that's all!
 ![thumbnail.vim](https://raw.github.com/itchyny/thumbnail.vim/master/image/image.png)
 
 ## Concept
-The basic concept is _vi_sual vim.
+The basic concept is visual vim.
 We should not stay still at old-style stage.
 The user interface is largely influenced by the new tab of Google Chrome.
 
