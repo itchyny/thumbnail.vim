@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 15:47:58.
+" Last Change: 2013/03/20 15:51:49.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -42,7 +42,7 @@ function! s:initbuffer(isnewtab)
         \ min([b.thumbnail_height * 5, b.width * 4 / 5 / b.num_width])
   while b.thumbnail_height * 2 > b.thumbnail_width && b.num_height < 10
     let b.num_height += 1
-    let b.num_width = (len(b.bufs) + 1) / b.num_height
+    let b.num_width = (len(b.bufs) + b.num_height - 1) / b.num_height
     let b.thumbnail_height =
           \ min([b.height * 4 / 5 / b.num_height, b.height * 3 / 5])
     let b.thumbnail_width =
