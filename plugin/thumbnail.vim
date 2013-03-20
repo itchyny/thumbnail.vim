@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/21 08:47:42.
+" Last Change: 2013/03/21 08:59:31.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -629,7 +629,10 @@ function! s:thumbnail_close()
     let buf = b.bufs[i].bufname
     let num = bufnr(escape(buf, '*[]?{}, '))
     if num > -1
-      silent execute num 'bdelete!'
+      try
+        silent execute num 'bdelete!'
+      catch
+      endtry
       silent call s:thumbnail_init(1, 1)
     endif
   endif
