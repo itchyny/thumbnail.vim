@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/21 06:19:55.
+" Last Change: 2013/03/21 08:47:42.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -128,6 +128,10 @@ function! s:thumbnail_mapping()
   nmap <buffer> <TAB> w
   nnoremap <buffer><silent> <LeftMouse> <LeftMouse>
         \ :<C-u>call <SID>update_select(0)<CR>
+  nnoremap <buffer><silent> <LeftDrag> <LeftMouse>
+        \ :<C-u>call <SID>drag_select()<CR>
+  nnoremap <buffer><silent> <LeftRelease> <LeftMouse>
+        \ :<C-u>call <SID>drag_select()<CR>
   nnoremap <buffer><silent> <2-LeftMouse> <LeftMouse>
         \ :<C-u>call <SID>thumbnail_mouse_select()<CR>
   map <buffer> <ScrollWheelUp> w
@@ -154,19 +158,39 @@ function! s:thumbnail_mapping()
 
 endfunction
 
-function! s:thumbnail_unsave_selection(b)
+function! s:thumbnail_unsave(b)
+  if !exists('b:thumbnail')
+    return a:b
+  endif
   let prev_b = b:thumbnail
   let index = prev_b.select_i * prev_b.num_width + prev_b.select_j
   let offset = 0
+  let newbuf = a:b.bufs
+  let newbuf_nrs = map(copy(newbuf), 'v:val["bufnr"]')
+  let prev_b_bufs_nrs = map(copy(prev_b.bufs), 'v:val["bufnr"]')
+  let a:b.bufs = []
+  for i in range(len(prev_b.bufs))
+    let j = index(newbuf_nrs, prev_b.bufs[i].bufnr)
+    if j != -1
+      call add(a:b.bufs, newbuf[j])
+    endif
+  endfor
+  unlet newbuf_nrs
+  for i in range(len(newbuf))
+    if index(prev_b_bufs_nrs, newbuf[i].bufnr) == -1
+      call add(a:b.bufs, newbuf[i])
+    endif
+  endfor
+  unlet prev_b_bufs_nrs
   while offset < len(prev_b.bufs)
     let i = index + offset
     let offset = (offset <= 0 ? 1 : 0) - offset
-    if !(0 <= i && i < len(prev_b.bufs) && has_key(prev_b.bufs[i], 'bufname'))
+    if !(0 <= i && i < len(prev_b.bufs) && has_key(prev_b.bufs[i], 'bufnr'))
       continue
     endif
-    let name = prev_b.bufs[i].bufname
+    let nr = prev_b.bufs[i].bufnr
     for j in range(len(a:b.bufs))
-      if a:b.bufs[j].bufname == name
+      if a:b.bufs[j].bufnr == nr
         let a:b.select_i = j / a:b.num_width
         let a:b.select_j = j % a:b.num_width
         return a:b
@@ -179,11 +203,7 @@ endfunction
 function! s:thumbnail_init(isnewtab, cursor)
   let b = s:init_buffer(a:isnewtab)
   if len(b.bufs) > 0
-    if exists('b:thumbnail')
-      let b = s:thumbnail_unsave_selection(b)
-      unlet b:thumbnail
-    endif
-    let b:thumbnail = b
+    let b:thumbnail = s:thumbnail_unsave(b)
     silent call s:updatethumbnail()
     if a:cursor
       call s:set_cursor()
@@ -475,9 +495,9 @@ function! s:thumbnail_exists(i, j)
         \ 0 <= a:j && a:j < b.num_width
 endfunction
 
-function! s:update_select(savepos)
+function! s:nearest_ij()
   if !exists('b:thumbnail')
-    return
+    return { 'i': -1, 'j': -1 }
   endif
   let b = b:thumbnail
   let i = (line('.') - b.offset_top / 2 - 1)
@@ -489,26 +509,73 @@ function! s:update_select(savepos)
   if j < 0 | let j = 0 | endif
   if b.num_width <= j | let j = b.num_width - 1 | endif
   if s:thumbnail_exists(i, j)
-    let b.select_i = i
-    let b.select_j = j
+    let i = i
+    let j = j
   elseif s:thumbnail_exists(i, j - 1)
-    let b.select_i = i
-    let b.select_j = j - 1
+    let i = i
+    let j = j - 1
   elseif s:thumbnail_exists(i - 1, j)
-    let b.select_i = i - 1
-    let b.select_j = j
+    let i = i - 1
+    let j = j
   elseif s:thumbnail_exists(i - 1, j - 1)
-    let b.select_i = i - 1
-    let b.select_j = j - 1
+    let i = i - 1
+    let j = j - 1
+  else
+    return { 'i': -1, 'j': -1 }
+  endif
+  return { 'i': i, 'j': j }
+endfunction
+
+function! s:update_select(savepos)
+  if !exists('b:thumbnail')
+    return
+  endif
+  let b = b:thumbnail
+  let ij = s:nearest_ij()
+  if ij.i != -1 && ij.j != -1
+    let b.select_i = ij.i
+    let b.select_j = ij.j
+    let pos = getpos('.')
+    silent call s:updatethumbnail()
+    if a:savepos
+      silent call setpos('.', pos)
+    endif
+    return 0
   else
     return -1
   endif
-  let pos = getpos('.')
-  silent call s:updatethumbnail()
-  if a:savepos
-    silent call setpos('.', pos)
+endfunction
+
+function! s:drag_select()
+  if !exists('b:thumbnail')
+    return
   endif
-  return 0
+  let b = b:thumbnail
+  let ij = s:nearest_ij()
+  if ij.i != -1 && ij.j != -1
+    let index = b.select_i * b.num_width + b.select_j
+    let selection = b.bufs[index]
+    let new_index = ij.i * b.num_width + ij.j
+    if index < new_index
+      for i in range(index, new_index - 1)
+        let b.bufs[i] = b.bufs[i + 1]
+      endfor
+      let b.bufs[new_index]  = selection
+    elseif new_index < index
+      for i in range(index, new_index + 1, -1)
+        let b.bufs[i] = b.bufs[i - 1]
+      endfor
+      let b.bufs[new_index] = selection
+    else
+      return -1
+    endif
+    let b.select_i = ij.i
+    let b.select_j = ij.j
+    silent call s:updatethumbnail()
+    return 0
+  else
+    return -1
+  endif
 endfunction
 
 function! s:thumbnail_mouse_select()
