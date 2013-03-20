@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/21 00:50:41.
+" Last Change: 2013/03/21 01:00:36.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -124,7 +124,7 @@ function! s:initmapping()
   nmap <buffer> W w
   nmap <buffer> <TAB> w
   nnoremap <buffer><silent> <LeftMouse> <LeftMouse>
-        \ :<C-u>call <SID>update_select()<CR>
+        \ :<C-u>call <SID>update_select(0)<CR>
   nnoremap <buffer><silent> <2-LeftMouse> <LeftMouse>
         \ :<C-u>call <SID>thumbnail_mouse_select()<CR>
   map <buffer> <ScrollWheelUp> w
@@ -181,6 +181,8 @@ function! s:thumbnail_new()
           \ if exists('b:thumbnail') | call s:thumbnail_init(0, 0) | endif
     autocmd BufLeave,WinLeave <buffer>
           \ silent call cursor(1, 1)
+    autocmd CursorMoved <buffer>
+          \ silent call s:update_select(1)
   augroup END
 endfunction
 
@@ -443,7 +445,7 @@ function! s:thumbnail_exists(i, j)
         \ 0 <= a:j && a:j < b.num_width
 endfunction
 
-function! s:update_select()
+function! s:update_select(savepos)
   if !exists('b:thumbnail')
     return
   endif
@@ -471,12 +473,16 @@ function! s:update_select()
   else
     return -1
   endif
+  let pos = getpos('.')
   silent call s:updatethumbnail()
+  if a:savepos
+    silent call setpos('.', pos)
+  endif
   return 0
 endfunction
 
 function! s:thumbnail_mouse_select()
-  let r = s:update_select()
+  let r = s:update_select(0)
   if r == 0
     silent call s:thumbnail_select()
   endif
