@@ -53,6 +53,9 @@ Normal mode key mappings.
 <Plug>(thumbnail_close)				*<Plug>(thumbnail_close)*
 		Close the selected buffer.
 
+<Plug>(thumbnail_redraw)			*<Plug>(thumbnail_redraw)*
+		Redraw the thumbnail buffer.
+
 <Plug>(thumbnail_exit)				*<Plug>(thumbnail_exit)*
 		Close the thumbnail buffer.
 
@@ -81,6 +84,7 @@ G		|<Plug>(thumbnail_move_last)|
 <CR>		|<Plug>(thumbnail_select)|
 <SPACE>		same as <CR>
 x		|<Plug>(thumbnail_close)|
+<C-l>		|<Plug>(thumbnail_redraw)|
 q		|<Plug>(thumbnail_exit)|
 
 ==============================================================================
