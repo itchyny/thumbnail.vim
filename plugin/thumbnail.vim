@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/21 01:00:36.
+" Last Change: 2013/03/21 01:07:40.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -181,8 +181,8 @@ function! s:thumbnail_new()
           \ if exists('b:thumbnail') | call s:thumbnail_init(0, 0) | endif
     autocmd BufLeave,WinLeave <buffer>
           \ silent call cursor(1, 1)
-    autocmd CursorMoved <buffer>
-          \ silent call s:update_select(1)
+    " autocmd CursorMoved <buffer>
+    "       \ silent call s:update_select(1)
   augroup END
 endfunction
 
