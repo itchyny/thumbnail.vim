@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 15:37:37.
+" Last Change: 2013/03/20 15:47:58.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -474,7 +474,6 @@ function! s:thumbnail_select()
     let num = bufnr(escape(buf, '*[]?{}, '))
     if num > -1
       if bufloaded(num)
-        echo num
         if bufwinnr(num) != -1
           execute bufwinnr(num) 'wincmd w'
           execute bufnr 'bdelete!'
@@ -503,7 +502,6 @@ function! s:thumbnail_close()
   endif
   let b = b:thumbnail
   let i = b.select_i * b.num_width + b.select_j
-  let bufnr = bufnr('%')
   if s:thumbnail_exists(b.select_i, b.select_j)
     let buf = b.bufs[i].bufname
     let num = bufnr(escape(buf, '*[]?{}, '))
