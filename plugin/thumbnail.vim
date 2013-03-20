@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 20:34:26.
+" Last Change: 2013/03/20 20:41:53.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -171,7 +171,7 @@ function! s:thumbnail_new()
           \ call s:update_visible_thumbnail(expand('<abuf>'))
   augroup END
   augroup ThumbnailBuffer
-    autocmd BufEnter <buffer>
+    autocmd BufEnter,VimResized <buffer>
           \ if exists('b:thumbnail') | call s:thumbnail_init(0, 0) | endif
     autocmd BufLeave,WinLeave <buffer>
           \ silent call cursor(1, 1)
