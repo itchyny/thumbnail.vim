@@ -10,6 +10,7 @@ CONTENTS					*thumbnail-contents*
 Introduction				|thumbnail-introduction|
 Commands				|thumbnail-commands|
 Key Mappings				|thumbnail-key-mappings|
+Changelog				|thumbnail-changelog|
 
 ==============================================================================
 INTRODUCTION					*thumbnail-introduction*
@@ -49,8 +50,44 @@ Normal mode key mappings.
 <Plug>(thumbnail_select)			*<Plug>(thumbnail_select)*
 		Open the selected buffer.
 
+<Plug>(thumbnail_close)				*<Plug>(thumbnail_close)*
+		Close the selected buffer.
+
 <Plug>(thumbnail_exit)				*<Plug>(thumbnail_exit)*
 		Close the thumbnail buffer.
+
+Normal mode default mappings.
+{lhs}		{rhs}
+--------	-------------------------
+h		|<Plug>(thumbnail_move_left)|
+l		|<Plug>(thumbnail_move_right)|
+j		|<Plug>(thumbnail_move_down)|
+k		|<Plug>(thumbnail_move_up)|
+w		|<Plug>(thumbnail_move_next)|
+W		same as w
+<TAB>		same as w
+b		|<Plug>(thumbnail_move_prev)|
+B		same as b
+<S-Tab>		same as b
+0		|<Plug>(thumbnail_move_line_head)|
+^		same as 0
+$		|<Plug>(thumbnail_move_line_last)|
+gg		|<Plug>(thumbnail_move_head)|
+G		|<Plug>(thumbnail_move_last)|
+<Left>		|<Plug>(thumbnail_move_left)|
+<Right>		|<Plug>(thumbnail_move_right)|
+<Down>		|<Plug>(thumbnail_move_down)|
+<Up>		|<Plug>(thumbnail_move_up)|
+<CR>		|<Plug>(thumbnail_select)|
+<SPACE>		same as <CR>
+x		|<Plug>(thumbnail_close)|
+q		|<Plug>(thumbnail_exit)|
+
+==============================================================================
+CHANGELOG					*thumbnail-changelog*
+
+2013-03-19, 20
+- Initial commit and implementation.
 
 ==============================================================================
 vim:tw=78:sw=4:ts=8:ft=help:norl:noet:
