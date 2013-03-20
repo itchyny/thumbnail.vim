@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 15:35:36.
+" Last Change: 2013/03/20 15:37:37.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -428,10 +428,12 @@ function! s:update_select()
     return
   endif
   let b = b:thumbnail
-  let i = (line('.') - b.offset_top / 2 - 1) / (b.offset_top + b.thumbnail_height)
+  let i = (line('.') - b.offset_top / 2 - 1)
+        \ / (b.offset_top + b.thumbnail_height)
   if i < 0 | let i = 0 | endif
   if b.num_height <= i | let i = b.num_height - 1 | endif
-  let j = (col('.') - b.offset_left / 2 - 3) / (b.offset_left + b.thumbnail_width)
+  let j = (col('.') - b.offset_left / 2 - 3)
+        \ / (b.offset_left + b.thumbnail_width)
   if j < 0 | let j = 0 | endif
   if b.num_width <= j | let j = b.num_width - 1 | endif
   if s:thumbnail_exists(i, j)
