@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 19:52:03.
+" Last Change: 2013/03/20 20:10:15.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -236,7 +236,11 @@ function! s:set_cursor()
   let offset = 0
   for j in range(b.select_j)
     let index = b.select_i * b.num_width + j
-    let offset += b.bufs[index].firstlinelength + b.offset_left + 4
+    if index < len(b.bufs) && has_key(b.bufs[index], 'firstlinelength')
+      let offset += b.bufs[index].firstlinelength + b.offset_left + 4
+    else
+      let offset += b.offset_left + b.thumbnail_width
+    endif
   endfor
   silent call cursor(b.select_i * (b.offset_top + b.thumbnail_height)
         \ + b.offset_top + 1, offset + b.offset_left + 3)
