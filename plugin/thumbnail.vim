@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 15:25:12.
+" Last Change: 2013/03/20 15:32:29.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -102,6 +102,8 @@ function! s:initmapping()
 
   nnoremap <buffer><silent> <Plug>(thumbnail_select)
         \ :<C-u>call <SID>thumbnail_select()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_close)
+        \ :<C-u>call <SID>thumbnail_close()<CR>
 
   nnoremap <buffer><silent> <Plug>(thumbnail_exit)
         \ :<C-u>bdelete!<CR>
@@ -129,6 +131,7 @@ function! s:initmapping()
   nmap <buffer> G <Plug>(thumbnail_move_last)
 
   nmap <buffer> q <Plug>(thumbnail_exit)
+  nmap <buffer> c <Plug>(thumbnail_close)
 
   nmap <buffer> <Left> <Plug>(thumbnail_move_left)
   nmap <buffer> <Right> <Plug>(thumbnail_move_right)
@@ -490,6 +493,23 @@ function! s:thumbnail_select()
       else
         execute num 'buffer!'
       endif
+    endif
+  endif
+endfunction
+
+function! s:thumbnail_close()
+  if !exists('b:thumbnail')
+    return
+  endif
+  let b = b:thumbnail
+  let i = b.select_i * b.num_width + b.select_j
+  let bufnr = bufnr('%')
+  if s:thumbnail_exists(b.select_i, b.select_j)
+    let buf = b.bufs[i].bufname
+    let num = bufnr(escape(buf, '*[]?{}, '))
+    if num > -1
+      silent execute num 'bdelete!'
+      silent call s:initthumbnail(0, 1)
     endif
   endif
 endfunction
