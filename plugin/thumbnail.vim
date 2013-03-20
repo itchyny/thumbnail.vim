@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 18:34:31.
+" Last Change: 2013/03/20 19:00:22.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -106,6 +106,8 @@ function! s:initmapping()
         \ :<C-u>call <SID>thumbnail_close()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_exit)
         \ :<C-u>bdelete!<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_redraw)
+        \ :<C-u>call <SID>update_current_thumbnail()<CR>
 
   nmap <buffer> h <Plug>(thumbnail_move_left)
   nmap <buffer> l <Plug>(thumbnail_move_right)
@@ -138,6 +140,7 @@ function! s:initmapping()
   nmap <buffer> <SPACE> <CR>
   nmap <buffer> x <Plug>(thumbnail_close)
   nmap <buffer> q <Plug>(thumbnail_exit)
+  nmap <buffer> <C-l> <Plug>(thumbnail_redraw)
 
 endfunction
 
@@ -260,6 +263,13 @@ function! s:update_visible_thumbnail(bufnr)
       execute newbuf 'wincmd w'
     endif
   endif
+endfunction
+
+function! s:update_current_thumbnail()
+  if !exists('b:thumbnail')
+    return
+  endif
+  call s:initthumbnail(1, 1)
 endfunction
 
 function! s:thumbnail_left()
