@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 12:50:09.
+" Last Change: 2013/03/20 15:13:41.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -140,11 +140,16 @@ function! s:initmapping()
 
 endfunction
 
-function! s:initthumbnail(isnewtab)
+function! s:initthumbnail(isnewtab, cursor)
   let b = s:initbuffer(a:isnewtab)
   if len(b.bufs) > 0
     let b:thumbnail = b
     silent call s:updatethumbnail()
+    if a:cursor
+      call s:set_cursor()
+    else
+      call cursor(1, 1)
+    endif
   endif
 endfunction
 
@@ -154,15 +159,17 @@ function! s:newthumbnail()
     tabnew
     let isnewtab = 1
   endif
-  call s:initthumbnail(isnewtab)
+  call s:initthumbnail(isnewtab, 1)
   augroup Thumbnail
     autocmd!
-    autocmd BufEnter,WinEnter,BufWinEnter,VimResized *
+    autocmd BufEnter,VimResized *
           \ call s:update_visible_thumbnail(expand('<abuf>'))
   augroup END
   augroup ThumbnailBuffer
-    autocmd BufEnter,BufLeave,WinEnter,WinLeave,VimResized <buffer>
-          \ call s:set_cursor()
+    autocmd BufEnter <buffer>
+          \ if exists('b:thumbnail') | call s:initthumbnail(0, 0) | endif
+    autocmd BufLeave,WinLeave <buffer>
+          \ silent call cursor(1, 1)
   augroup END
 endfunction
 
@@ -233,7 +240,7 @@ endfunction
 
 function! s:search_thumbnail()
   for buf in tabpagebuflist()
-    if type(getbufvar(buf, 'thumbnail')) == type({})
+    if type(getbufvar(buf, 'thumbnail')) == type({}) && buf != bufnr('%')
       return buf
     endif
   endfor
@@ -244,13 +251,17 @@ function! s:update_visible_thumbnail(bufnr)
   let winnr = s:search_thumbnail()
   let newbuf = bufwinnr(str2nr(a:bufnr))
   if winnr != -1 && newbuf != -1
-    execute winnr 'wincmd w'
-    call s:initthumbnail(0)
+    execute bufwinnr(winnr) 'wincmd w'
+    if exists('b:thumbnail')
+      call s:initthumbnail(0, 0)
+    endif
     if winnr != newbuf
       silent call cursor(1, 1)
       execute newbuf 'wincmd w'
     endif
   endif
+  " echoerr winnr
+  " echoerr newbuf
 endfunction
 
 function! s:thumbnail_left()
@@ -452,7 +463,7 @@ endfunction
 
 function! s:thumbnail_select()
   if !exists('b:thumbnail')
-    return
+    return -1
   endif
   let b = b:thumbnail
   let i = b.select_i * b.num_width + b.select_j
