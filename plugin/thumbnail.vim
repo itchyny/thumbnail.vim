@@ -3,8 +3,11 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/21 01:22:49.
+" Last Change: 2013/03/21 01:43:14.
 " =============================================================================
+
+let s:save_cpo = &cpo
+set cpo&vim
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
 
@@ -540,4 +543,6 @@ function! s:thumbnail_close()
 endfunction
 
 command! Thumbnail call s:thumbnail_new()
+
+let &cpo = s:save_cpo
 
