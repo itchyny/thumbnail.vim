@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 18:32:38.
+" Last Change: 2013/03/20 18:34:31.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -195,10 +195,10 @@ function! s:updatethumbnail()
     for k in range(b.thumbnail_height)
       let ss = ''
       for j in range(b.num_width)
-        let l = i * b.num_width + j
-        if l < len(b.bufs) && has_key(b.bufs[l], 'contents')
-              \ && k < len(b.bufs[l].contents)
-          let contents = b.bufs[l].contents[k]
+        let m = i * b.num_width + j
+        if m < len(b.bufs) && has_key(b.bufs[m], 'contents')
+              \ && k < len(b.bufs[m].contents)
+          let contents = b.bufs[m].contents[k]
         else
           let contents = thumbnail_white
         endif
