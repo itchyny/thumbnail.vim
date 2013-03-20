@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/20 15:21:27.
+" Last Change: 2013/03/20 15:25:12.
 " =============================================================================
 
 let s:Prelude = vital#of('thumbnail.vim').import('Prelude')
@@ -103,7 +103,7 @@ function! s:initmapping()
   nnoremap <buffer><silent> <Plug>(thumbnail_select)
         \ :<C-u>call <SID>thumbnail_select()<CR>
 
-  nnoremap <buffer><silent> <Plug>(thumbnail_close)
+  nnoremap <buffer><silent> <Plug>(thumbnail_exit)
         \ :<C-u>bdelete!<CR>
 
   nmap <buffer> h <Plug>(thumbnail_move_left)
@@ -128,7 +128,7 @@ function! s:initmapping()
   nmap <buffer> gg <Plug>(thumbnail_move_head)
   nmap <buffer> G <Plug>(thumbnail_move_last)
 
-  nmap <buffer> q <Plug>(thumbnail_close)
+  nmap <buffer> q <Plug>(thumbnail_exit)
 
   nmap <buffer> <Left> <Plug>(thumbnail_move_left)
   nmap <buffer> <Right> <Plug>(thumbnail_move_right)

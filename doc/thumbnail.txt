@@ -49,7 +49,7 @@ Normal mode key mappings.
 <Plug>(thumbnail_select)			*<Plug>(thumbnail_select)*
 		Open the selected buffer.
 
-<Plug>(thumbnail_close)				*<Plug>(thumbnail_close)*
+<Plug>(thumbnail_exit)				*<Plug>(thumbnail_exit)*
 		Close the thumbnail buffer.
 
 ==============================================================================
