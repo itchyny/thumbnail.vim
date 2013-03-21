@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/21 10:01:12.
+" Last Change: 2013/03/21 10:30:56.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -512,8 +512,15 @@ function! s:nearest_ij()
     let i = i
     let j = j
   elseif s:thumbnail_exists(i, j - 1)
-    let i = i
-    let j = j - 1
+    if s:thumbnail_exists(i - 1, j) && 
+          \ 2 * (line('.') - i * (b.offset_top + b.thumbnail_height))
+          \ < col('.') - j * (b.offset_left + b.thumbnail_width)
+      let i = i - 1
+      let j = j
+    else
+      let i = i
+      let j = j - 1
+    endif
   elseif s:thumbnail_exists(i - 1, j)
     let i = i - 1
     let j = j
