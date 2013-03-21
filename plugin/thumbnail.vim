@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/21 18:03:56.
+" Last Change: 2013/03/21 20:52:49.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -249,7 +249,12 @@ function! s:updatethumbnail()
         \ * b.num_width)
   let right_white = repeat(' ', winwidth(0) - len(line_white))
         \ . b.bufright . b.bufright
-  silent call setline(1, line_white . right_white)
+  let white_line_top_bottom = winheight(0)
+        \ - (b.offset_top + b.thumbnail_height) * b.num_height
+  let b.margin_top = max([(white_line_top_bottom - b.offset_top) / 2, 0])
+  for j in range(b.margin_top)
+    call add(s, line_white . right_white)
+  endfor
   for i in range(b.num_height)
     for j in range(b.offset_top)
       call add(s, line_white . right_white)
@@ -276,10 +281,10 @@ function! s:updatethumbnail()
       call add(s, ss . right_white)
     endfor
   endfor
-  for j in range(winheight(0)
-        \ - (b.offset_top + b.thumbnail_height) * b.num_height)
+  for j in range(max([white_line_top_bottom - b.margin_top, 0]))
     call add(s, line_white . right_white)
   endfor
+  silent call setline(1, s[0])
   silent call append('.', s[1:])
   unlet s
   silent call s:set_cursor()
@@ -302,7 +307,8 @@ function! s:set_cursor()
       let offset += b.offset_left + b.thumbnail_width
     endif
   endfor
-  silent call cursor(b.select_i * (b.offset_top + b.thumbnail_height)
+  silent call cursor(b.margin_top
+        \ + b.select_i * (b.offset_top + b.thumbnail_height)
         \ + b.offset_top + 1, offset + b.offset_left + 3)
 endfunction
 
