@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/21 10:30:56.
+" Last Change: 2013/03/21 18:03:56.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -249,6 +249,7 @@ function! s:updatethumbnail()
         \ * b.num_width)
   let right_white = repeat(' ', winwidth(0) - len(line_white))
         \ . b.bufright . b.bufright
+  silent call setline(1, line_white . right_white)
   for i in range(b.num_height)
     for j in range(b.offset_top)
       call add(s, line_white . right_white)
@@ -275,10 +276,12 @@ function! s:updatethumbnail()
       call add(s, ss . right_white)
     endfor
   endfor
-  for j in range(b.offset_top + 1)
+  for j in range(winheight(0)
+        \ - (b.offset_top + b.thumbnail_height) * b.num_height)
     call add(s, line_white . right_white)
   endfor
-  call append(0, s)
+  silent call append('.', s[1:])
+  unlet s
   silent call s:set_cursor()
   setlocal nomodifiable buftype=nofile noswapfile readonly nonumber
         \ bufhidden=hide nobuflisted filetype=thumbnail
