@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/21 08:59:31.
+" Last Change: 2013/03/21 10:01:12.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -45,14 +45,14 @@ function! s:init_buffer(isnewtab)
   let b.thumbnail_width =
         \ min([b.thumbnail_height * 5, b.width * 4 / 5 / b.num_width])
   while (l != 3 && b.thumbnail_height * 2 > b.thumbnail_width)
-        \ || (l == 3 && (b.thumbnail_height * 9 / 5
+        \ || (l == 3 && (b.thumbnail_height * 3 / 2
         \                     > b.thumbnail_width || b.num_height == 2))
     let b.num_height += 1
     let b.num_width = (l + b.num_height - 1) / b.num_height
     let b.thumbnail_height =
           \ min([b.height * 4 / 5 / b.num_height, b.height * 3 / 5])
     let b.thumbnail_width =
-          \ min([b.thumbnail_height * 5, b.width * 4 / 5 / b.num_width])
+          \ min([b.thumbnail_height * 6, b.width * 4 / 5 / b.num_width])
   endwhile
   while l <= b.num_width * (b.num_height - 1)
     let b.num_height -= 1
