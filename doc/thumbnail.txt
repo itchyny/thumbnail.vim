@@ -77,10 +77,10 @@ B		same as b
 $		|<Plug>(thumbnail_move_line_last)|
 gg		|<Plug>(thumbnail_move_head)|
 G		|<Plug>(thumbnail_move_last)|
-<Left>		|<Plug>(thumbnail_move_left)|
-<Right>		|<Plug>(thumbnail_move_right)|
-<Down>		|<Plug>(thumbnail_move_down)|
-<Up>		|<Plug>(thumbnail_move_up)|
+<Left>		same as h
+<Right>		same as l
+<Down>		same as j
+<Up>		same as k
 <CR>		|<Plug>(thumbnail_select)|
 <SPACE>		same as <CR>
 x		|<Plug>(thumbnail_close)|
