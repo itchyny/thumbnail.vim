@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/23 01:59:39.
+" Last Change: 2013/03/23 02:00:33.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -309,7 +309,7 @@ function! s:updatethumbnail()
   silent call s:set_cursor()
   setlocal nomodifiable buftype=nofile noswapfile readonly nonumber
         \ bufhidden=hide nobuflisted filetype=thumbnail
-        \ nofoldenable foldcolumn=0 nolist nowrap
+        \ nofoldenable foldcolumn=0 nolist nowrap concealcursor=nvic
 endfunction
 
 function! s:set_cursor()
