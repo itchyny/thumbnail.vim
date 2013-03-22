@@ -28,14 +28,14 @@ MIT License
 ### Vundle (https://github.com/gmarik/vundle)
 1. Add the following configuration to your .vimrc.
 
-    Bundle 'itchyny/thumbnail.vim'
+        Bundle 'itchyny/thumbnail.vim'
 
 2. Install with `:BundleInstall`
 
 ### NeoBundle (https://github.com/Shougo/neobundle.vim)
 1. Add the following configuration to your .vimrc.
 
-    NeoBundle 'itchyny/thumbnail.vim'
+        NeoBundle 'itchyny/thumbnail.vim'
 
 2. Install with `:NeoBundleInstall`
 
