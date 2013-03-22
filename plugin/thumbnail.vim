@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/23 01:09:32.
+" Last Change: 2013/03/23 01:25:18.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -55,6 +55,9 @@ function! s:init_buffer(isnewtab)
         \ (b.height - b.num_height * b.thumbnail_height) / (b.num_height + 1)
   let b.offset_left =
         \ (b.width - b.num_width * b.thumbnail_width) / (b.num_width + 1)
+  let white_line_top_bottom = winheight(0)
+        \ - (b.offset_top + b.thumbnail_height) * b.num_height
+  let b.margin_top = max([(white_line_top_bottom - b.offset_top) / 2, 0])
   let b.select_i = 0
   let b.select_j = 0
   for buf in b.bufs
@@ -622,7 +625,12 @@ endfunction
 
 function! s:thumbnail_select()
   if !exists('b:thumbnail')
-    return -1
+    let pos = getpos('.')
+    call s:revive_thumbnail()
+    call s:updatethumbnail()
+    if getline(pos[1])[pos[2] - 2] != '|'
+      return -1
+    endif
   endif
   let b = b:thumbnail
   let i = b.select_i * b.num_width + b.select_j
