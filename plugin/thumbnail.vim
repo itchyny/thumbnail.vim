@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/23 02:26:22.
+" Last Change: 2013/03/23 08:24:55.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -78,22 +78,23 @@ function! s:init_buffer(isnewtab)
           \                                      : b.thumbnail_width - 4
           \ })
   endfor
-  if 0 && has('conceal')
+  if has('conceal')
       \ && winwidth(0) > (b.num_width - 1)
-      \ * (b.offset_left + b.thumbnail_width + 4) + b.offset_left + 3
+      \ * (b.offset_left + b.thumbnail_width + 4) + b.offset_left + 5
     let b.marker_left_select = '  [|'
     let b.marker_right_select = '|]  '
     let b.marker_left = '  [\'
     let b.marker_right = '\]  '
+    let b.marker_last = '[\\]    '
     let b.conceal = 1
   else
     let b.marker_left_select = '[|'
     let b.marker_right_select = '|]'
     let b.marker_left = '  '
     let b.marker_right = '  '
+    let b.marker_last = '[\\]'
     let b.conceal = 0
   endif
-  let b.marker_last = '[\\]'
   call s:thumbnail_mapping()
   return b
 endfunction
@@ -237,7 +238,7 @@ function! s:thumbnail_new()
   call s:thumbnail_init(isnewtab)
   augroup Thumbnail
     autocmd!
-    autocmd BufEnter,VimResized *
+    autocmd BufDelete,BufEnter,VimResized *
           \ call s:update_visible_thumbnail(expand('<abuf>'))
   augroup END
   augroup ThumbnailBuffer
@@ -273,7 +274,7 @@ function! s:updatethumbnail()
   let offset_white = repeat(' ', b.offset_left)
   let line_white = repeat(' ', (b.offset_left + b.thumbnail_width)
         \ * b.num_width)
-  let right_white = repeat(' ', winwidth(0) - len(line_white))
+  let right_white = repeat(' ', winwidth(0) - len(line_white) - 4)
         \ . b.marker_last
   let white_line_top_bottom = winheight(0)
         \ - (b.offset_top + b.thumbnail_height) * b.num_height
@@ -338,12 +339,12 @@ function! s:set_cursor()
   endfor
   silent call cursor(b.margin_top
         \ + b.select_i * (b.offset_top + b.thumbnail_height)
-        \ + b.offset_top + 1, offset + b.offset_left + 3)
+        \ + b.offset_top + 1, offset + b.offset_left + 3 + b.conceal * 2) 
 endfunction
 
 function! s:search_thumbnail()
   for buf in tabpagebuflist()
-    if type(getbufvar(buf, 'thumbnail')) == type({}) && buf != bufnr('%')
+    if type(getbufvar(buf, 'thumbnail')) == type({})
       return buf
     endif
   endfor
@@ -353,17 +354,24 @@ endfunction
 function! s:update_visible_thumbnail(bufnr)
   let winnr = bufwinnr(s:search_thumbnail())
   let newbuf = bufwinnr(str2nr(a:bufnr))
-  if winnr != -1 && newbuf != -1
+  let currentbuf = bufwinnr(bufnr('%'))
+  if winnr != -1
     execute winnr 'wincmd w'
     if exists('b:thumbnail')
       call s:thumbnail_init(0)
     endif
-    if winnr != newbuf
+    if winnr != newbuf && newbuf != -1
       if col('.') != 1 || line('.') != 1
         silent call cursor(1, 1)
         redraw
       endif
       execute newbuf 'wincmd w'
+    elseif winnr != currentbuf && currentbuf != -1
+      if col('.') != 1 || line('.') != 1
+        silent call cursor(1, 1)
+        redraw
+      endif
+      execute currentbuf 'wincmd w'
     endif
   endif
 endfunction
@@ -633,11 +641,17 @@ endfunction
 
 function! s:thumbnail_select()
   if !exists('b:thumbnail')
-    let pos = getpos('.')
+    let prev_first_line = substitute(getline(line('.'))[col('.') - 1:],
+          \ '|\].*', '', '')
     call s:revive_thumbnail()
-    call s:updatethumbnail()
-    if getline(pos[1])[pos[2] - 2] != '|'
-      return -1
+    if exists('b:thumbnail')
+      call s:updatethumbnail()
+      let new_first_line = substitute(getline(line('.'))[col('.') - 1:],
+            \ '|\].*', '', '')
+      let l = min([len(prev_first_line), len(new_first_line)])
+      if prev_first_line[:l - 1] != new_first_line[:l - 1]
+        return -1
+      endif
     endif
   endif
   let b = b:thumbnail
@@ -663,8 +677,10 @@ function! s:thumbnail_select()
           endfor
           execute num 'buffer!'
         endif
-      else
+      elseif buflisted(num)
         execute num 'buffer!'
+      else
+        call s:thumbnail_init(1)
       endif
     endif
   endif
