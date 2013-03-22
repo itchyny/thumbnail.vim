@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/22 14:42:30.
+" Last Change: 2013/03/22 14:47:38.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -221,9 +221,11 @@ function! s:thumbnail_new()
           \ call s:update_visible_thumbnail(expand('<abuf>'))
   augroup END
   augroup ThumbnailBuffer
-    autocmd BufEnter <buffer>
+    autocmd BufLeave,WinLeave <buffer>
           \ if exists('b:thumbnail') | call s:set_cursor() | endif
-    autocmd BufLeave,WinLeave,WinEnter,VimResized <buffer>
+    autocmd BufEnter <buffer>
+          \ if exists('b:thumbnail') | call s:thumbnail_init(0) | endif
+    autocmd WinEnter,WinLeave,VimResized <buffer>
           \ if exists('b:thumbnail') | call s:updatethumbnail() | endif
     " autocmd CursorMoved <buffer>
     "       \ silent call s:update_select(1)
