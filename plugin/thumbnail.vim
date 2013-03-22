@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/22 14:47:38.
+" Last Change: 2013/03/22 17:12:57.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -252,7 +252,7 @@ function! s:updatethumbnail()
   let offset_white = repeat(' ', b.offset_left)
   let line_white = repeat(' ', (b.offset_left + b.thumbnail_width)
         \ * b.num_width)
-  let right_white = repeat(' ', winwidth(0) - len(line_white))
+  let right_white = repeat(' ', winwidth(0) - len(line_white) - 4)
         \ . b.bufright . b.bufright
   let white_line_top_bottom = winheight(0)
         \ - (b.offset_top + b.thumbnail_height) * b.num_height
@@ -518,28 +518,31 @@ function! s:nearest_ij()
   let b = b:thumbnail
   let i = (line('.') - b.offset_top / 2 - 1)
         \ / (b.offset_top + b.thumbnail_height)
-  if i < 0 | let i = 0 | endif
-  if b.num_height <= i | let i = b.num_height - 1 | endif
+  if i < 0
+    let i = 0
+  endif
+  if b.num_height <= i
+    let i = b.num_height - 1
+  endif
   let j = (col('.') - b.offset_left / 2 - 3)
         \ / (b.offset_left + b.thumbnail_width)
-  if j < 0 | let j = 0 | endif
-  if b.num_width <= j | let j = b.num_width - 1 | endif
+  if j < 0
+    let j = 0
+  endif
+  if b.num_width <= j
+    let j = b.num_width - 1
+  endif
   if s:thumbnail_exists(i, j)
-    let i = i
-    let j = j
   elseif s:thumbnail_exists(i, j - 1)
-    if s:thumbnail_exists(i - 1, j) && 
+    if s:thumbnail_exists(i - 1, j) &&
           \ 2 * (line('.') - i * (b.offset_top + b.thumbnail_height))
           \ < col('.') - j * (b.offset_left + b.thumbnail_width)
       let i = i - 1
-      let j = j
     else
-      let i = i
       let j = j - 1
     endif
   elseif s:thumbnail_exists(i - 1, j)
     let i = i - 1
-    let j = j
   elseif s:thumbnail_exists(i - 1, j - 1)
     let i = i - 1
     let j = j - 1
