@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/22 20:27:51.
+" Last Change: 2013/03/22 21:02:19.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -77,7 +77,7 @@ function! s:init_buffer(isnewtab)
           \                                      : b.thumbnail_width - 4
           \ })
   endfor
-  if has('conceal')
+  if 0 && has('conceal')
       \ && winwidth(0) > (b.num_width - 1)
       \ * (b.offset_left + b.thumbnail_width + 4) + b.offset_left + 3
     let b.bufleft_select = '  [|'
