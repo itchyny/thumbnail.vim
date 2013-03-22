@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/21 20:52:49.
+" Last Change: 2013/03/22 13:21:04.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -226,10 +226,10 @@ function! s:thumbnail_new()
           \ call s:update_visible_thumbnail(expand('<abuf>'))
   augroup END
   augroup ThumbnailBuffer
-    autocmd BufEnter,VimResized <buffer>
-          \ if exists('b:thumbnail') | call s:thumbnail_init(0, 0) | endif
-    autocmd BufLeave,WinLeave <buffer>
-          \ silent call cursor(1, 1)
+    autocmd BufLeave,WinLeave,VimResized <buffer>
+          \ if exists('b:thumbnail') | call s:thumbnail_init(0, 1) | endif
+    autocmd WinEnter <buffer>
+          \ if exists('b:thumbnail') | call s:updatethumbnail() | endif
     " autocmd CursorMoved <buffer>
     "       \ silent call s:update_select(1)
   augroup END
@@ -242,6 +242,14 @@ function! s:updatethumbnail()
   setlocal modifiable noreadonly
   silent % delete _
   let b = b:thumbnail
+  if b.height != winheight(0) || b.width != winwidth(0)
+    let b = s:init_buffer(1)
+    if len(b.bufs) == 0
+      return
+    endif
+    let b:thumbnail = s:thumbnail_unsave(b)
+    let b = b:thumbnail
+  endif
   let s = []
   let thumbnail_white = repeat(' ', b.thumbnail_width - 4)
   let offset_white = repeat(' ', b.offset_left)
@@ -331,6 +339,7 @@ function! s:update_visible_thumbnail(bufnr)
     endif
     if winnr != newbuf
       silent call cursor(1, 1)
+      redraw
       execute newbuf 'wincmd w'
     endif
   endif
