@@ -20,11 +20,22 @@ itchyny (https://github.com/itchyny)
 MIT License
 
 ## Installation
-If you are using neobundle, add
+### Manually
+1. Put plugin/thumbnail.vim to $VIM/plugin/
+2. Put syntax/thumbnail.vim to $VIM/syntax/
+3. Put doc/thumbnail.vim to $VIM/doc/
+
+### Vundle (https://github.com/gmarik/vundle)
+1. Add the following configuration to your .vimrc.
+
+    Bundle 'itchyny/thumbnail.vim'
+
+2. Install with `:BundleInstall`
+
+### NeoBundle (https://github.com/Shougo/neobundle.vim)
+1. Add the following configuration to your .vimrc.
 
     NeoBundle 'itchyny/thumbnail.vim'
 
-to your .vimrc.
-
-Otherwise, download scripts to corresponding directory under $VIM.
+2. Install with `:NeoBundleInstall`
 
