@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/22 22:46:12.
+" Last Change: 2013/03/23 00:29:11.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -235,6 +235,7 @@ function! s:thumbnail_new()
     autocmd BufLeave,WinLeave <buffer>
           \ if exists('b:thumbnail') | call s:set_cursor() | endif
     autocmd BufEnter <buffer>
+          \ call s:revive_thumbnail() |
           \ if exists('b:thumbnail') | call s:thumbnail_init(0) | endif
     autocmd WinEnter,WinLeave,VimResized <buffer>
           \ if exists('b:thumbnail') | call s:updatethumbnail() | endif
@@ -366,6 +367,7 @@ function! s:update_current_thumbnail()
 endfunction
 
 function! s:thumbnail_left()
+  call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
   endif
@@ -377,6 +379,7 @@ function! s:thumbnail_left()
 endfunction
 
 function! s:thumbnail_right()
+  call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
   endif
@@ -390,6 +393,7 @@ function! s:thumbnail_right()
 endfunction
 
 function! s:thumbnail_up()
+  call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
   endif
@@ -401,6 +405,7 @@ function! s:thumbnail_up()
 endfunction
 
 function! s:thumbnail_down()
+  call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
   endif
@@ -414,6 +419,7 @@ function! s:thumbnail_down()
 endfunction
 
 function! s:thumbnail_next()
+  call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
   endif
@@ -440,6 +446,7 @@ function! s:thumbnail_next()
 endfunction
 
 function! s:thumbnail_prev()
+  call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
   endif
@@ -460,6 +467,7 @@ function! s:thumbnail_prev()
 endfunction
 
 function! s:thumbnail_line_head()
+  call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
   endif
@@ -473,6 +481,7 @@ function! s:thumbnail_line_head()
 endfunction
 
 function! s:thumbnail_line_last()
+  call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
   endif
@@ -489,6 +498,7 @@ function! s:thumbnail_line_last()
 endfunction
 
 function! s:thumbnail_head()
+  call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
   endif
@@ -503,6 +513,7 @@ function! s:thumbnail_head()
 endfunction
 
 function! s:thumbnail_last()
+  call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
   endif
@@ -674,6 +685,20 @@ function! s:thumbnail_close()
       catch
       endtry
       silent call s:thumbnail_init(1)
+    endif
+  endif
+endfunction
+
+function! s:revive_thumbnail()
+  if !exists('b:thumbnail')
+    let b = s:init_buffer(1)
+    if len(b.bufs) > 0
+      let b:thumbnail = b
+      let ij = s:nearest_ij()
+      if ij.i != -1 && ij.j != -1
+        let b:thumbnail.select_i = ij.i
+        let b:thumbnail.select_j = ij.j
+      endif
     endif
   endif
 endfunction
