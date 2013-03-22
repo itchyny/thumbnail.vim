@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/23 00:44:15.
+" Last Change: 2013/03/23 01:09:32.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -372,8 +372,8 @@ function! s:thumbnail_left()
   let b = b:thumbnail
   if b.select_j > 0
     let b.select_j -= 1
-    call s:updatethumbnail()
   endif
+  call s:updatethumbnail()
 endfunction
 
 function! s:thumbnail_right()
@@ -385,9 +385,9 @@ function! s:thumbnail_right()
   if b.select_j + 1 < b.num_width
     if s:thumbnail_exists(b.select_i, b.select_j + 1)
       let b.select_j += 1
-      call s:updatethumbnail()
     endif
   endif
+  call s:updatethumbnail()
 endfunction
 
 function! s:thumbnail_up()
@@ -398,8 +398,8 @@ function! s:thumbnail_up()
   let b = b:thumbnail
   if b.select_i > 0
     let b.select_i -= 1
-    call s:updatethumbnail()
   endif
+  call s:updatethumbnail()
 endfunction
 
 function! s:thumbnail_down()
@@ -411,9 +411,9 @@ function! s:thumbnail_down()
   if b.select_i + 1 < b.num_height
     if s:thumbnail_exists(b.select_i + 1, b.select_j)
       let b.select_i += 1
-      call s:updatethumbnail()
     endif
   endif
+  call s:updatethumbnail()
 endfunction
 
 function! s:thumbnail_next()
@@ -428,8 +428,6 @@ function! s:thumbnail_next()
     elseif s:thumbnail_exists(0, 0)
       let b.select_i = 0
       let b.select_j = 0
-    else
-      return
     endif
   elseif s:thumbnail_exists(b.select_i + 1, 0)
     let b.select_i += 1
@@ -437,8 +435,6 @@ function! s:thumbnail_next()
   elseif s:thumbnail_exists(0, 0)
     let b.select_i = 0
     let b.select_j = 0
-  else
-    return
   endif
   call s:updatethumbnail()
 endfunction
@@ -458,8 +454,6 @@ function! s:thumbnail_prev()
         \ len(b.bufs) - (b.num_height - 1) * b.num_width - 1)
     let b.select_i = b.num_height - 1
     let b.select_j = len(b.bufs) - (b.num_height - 1) * b.num_width - 1
-  else
-    return
   endif
   call s:updatethumbnail()
 endfunction
@@ -472,8 +466,6 @@ function! s:thumbnail_line_head()
   let b = b:thumbnail
   if s:thumbnail_exists(b.select_i, 0)
     let b.select_j = 0
-  else
-    return
   endif
   call s:updatethumbnail()
 endfunction
@@ -489,8 +481,6 @@ function! s:thumbnail_line_last()
   elseif s:thumbnail_exists(b.select_i,
         \ len(b.bufs) - b.select_i * b.num_width - 1)
     let b.select_j = len(b.bufs) - b.select_i * b.num_width - 1
-  else
-    return
   endif
   call s:updatethumbnail()
 endfunction
@@ -504,8 +494,6 @@ function! s:thumbnail_head()
   if s:thumbnail_exists(0, 0)
     let b.select_i = 0
     let b.select_j = 0
-  else
-    return
   endif
   call s:updatethumbnail()
 endfunction
@@ -520,8 +508,6 @@ function! s:thumbnail_last()
         \ len(b.bufs) - (b.num_height - 1) * b.num_width - 1)
     let b.select_i = b.num_height - 1
     let b.select_j = len(b.bufs) - (b.num_height - 1) * b.num_width - 1
-  else
-    return
   endif
   call s:updatethumbnail()
 endfunction
@@ -669,6 +655,7 @@ function! s:thumbnail_select()
 endfunction
 
 function! s:thumbnail_close()
+  call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
   endif
