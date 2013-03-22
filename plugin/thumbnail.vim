@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/23 02:00:33.
+" Last Change: 2013/03/23 02:26:22.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -195,6 +195,13 @@ function! s:thumbnail_unsave(b)
     endif
   endfor
   unlet prev_b_bufs_nrs
+  if index < len(prev_b.bufs) && has_key(prev_b.bufs[index], 'bufnr')
+        \ && index < len(a:b.bufs) && has_key(a:b.bufs[index], 'bufnr')
+        \ && a:b.bufs[index].bufnr == prev_b.bufs[index].bufnr
+    let a:b.select_i = index / a:b.num_width
+    let a:b.select_j = index % a:b.num_width
+    return a:b
+  endif
   while offset < len(prev_b.bufs)
     let i = index + offset
     let offset = (offset <= 0 ? 1 : 0) - offset
