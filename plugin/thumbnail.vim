@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/22 21:02:19.
+" Last Change: 2013/03/22 22:46:12.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -681,4 +681,5 @@ endfunction
 command! Thumbnail call s:thumbnail_new()
 
 let &cpo = s:save_cpo
+unlet s:save_cpo
 
