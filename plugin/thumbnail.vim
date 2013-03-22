@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/22 17:12:57.
+" Last Change: 2013/03/22 20:27:51.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -34,10 +34,6 @@ function! s:init_buffer(isnewtab)
     endif
     return b
   endif
-  let b.bufleft_select = '[|'
-  let b.bufright_select = '|]'
-  let b.bufleft = '[\'
-  let b.bufright = '\]'
   let b.num_height = 1
   let b.num_width = l
   let b.thumbnail_height =
@@ -81,6 +77,21 @@ function! s:init_buffer(isnewtab)
           \                                      : b.thumbnail_width - 4
           \ })
   endfor
+  if has('conceal')
+      \ && winwidth(0) > (b.num_width - 1)
+      \ * (b.offset_left + b.thumbnail_width + 4) + b.offset_left + 3
+    let b.bufleft_select = '  [|'
+    let b.bufright_select = '|]  '
+    let b.bufleft = '  [\'
+    let b.bufright = '\]  '
+    let b.conceal = 1
+  else
+    let b.bufleft_select = '[|'
+    let b.bufright_select = '|]'
+    let b.bufleft = '[\'
+    let b.bufright = '\]'
+    let b.conceal = 0
+  endif
   call s:thumbnail_mapping()
   return b
 endfunction
@@ -310,6 +321,9 @@ function! s:set_cursor()
       let offset += b.bufs[index].firstlinelength + b.offset_left + 4
     else
       let offset += b.offset_left + b.thumbnail_width
+    endif
+    if b.conceal
+      let offset += 4
     endif
   endfor
   silent call cursor(b.margin_top
