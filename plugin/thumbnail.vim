@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/23 01:25:18.
+" Last Change: 2013/03/23 01:59:39.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -81,18 +81,19 @@ function! s:init_buffer(isnewtab)
   if 0 && has('conceal')
       \ && winwidth(0) > (b.num_width - 1)
       \ * (b.offset_left + b.thumbnail_width + 4) + b.offset_left + 3
-    let b.bufleft_select = '  [|'
-    let b.bufright_select = '|]  '
-    let b.bufleft = '  [\'
-    let b.bufright = '\]  '
+    let b.marker_left_select = '  [|'
+    let b.marker_right_select = '|]  '
+    let b.marker_left = '  [\'
+    let b.marker_right = '\]  '
     let b.conceal = 1
   else
-    let b.bufleft_select = '[|'
-    let b.bufright_select = '|]'
-    let b.bufleft = '[\'
-    let b.bufright = '\]'
+    let b.marker_left_select = '[|'
+    let b.marker_right_select = '|]'
+    let b.marker_left = '  '
+    let b.marker_right = '  '
     let b.conceal = 0
   endif
+  let b.marker_last = '[\\]'
   call s:thumbnail_mapping()
   return b
 endfunction
@@ -265,8 +266,8 @@ function! s:updatethumbnail()
   let offset_white = repeat(' ', b.offset_left)
   let line_white = repeat(' ', (b.offset_left + b.thumbnail_width)
         \ * b.num_width)
-  let right_white = repeat(' ', winwidth(0) - len(line_white) - 4)
-        \ . b.bufright . b.bufright
+  let right_white = repeat(' ', winwidth(0) - len(line_white))
+        \ . b.marker_last
   let white_line_top_bottom = winheight(0)
         \ - (b.offset_top + b.thumbnail_height) * b.num_height
   let b.margin_top = max([(white_line_top_bottom - b.offset_top) / 2, 0])
@@ -288,11 +289,11 @@ function! s:updatethumbnail()
           let contents = thumbnail_white
         endif
         if b.select_i == i && b.select_j == j
-          let l = b.bufleft_select
-          let r = b.bufright_select
+          let l = b.marker_left_select
+          let r = b.marker_right_select
         else
-          let l = b.bufleft
-          let r = b.bufright
+          let l = b.marker_left
+          let r = b.marker_right
         endif
         let ss .= offset_white . l . contents . r
       endfor
