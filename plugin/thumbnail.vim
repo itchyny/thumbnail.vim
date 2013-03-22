@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/22 13:59:24.
+" Last Change: 2013/03/22 14:42:30.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -200,16 +200,11 @@ function! s:thumbnail_unsave(b)
   return a:b
 endfunction
 
-function! s:thumbnail_init(isnewtab, cursor)
+function! s:thumbnail_init(isnewtab)
   let b = s:init_buffer(a:isnewtab)
   if len(b.bufs) > 0
     let b:thumbnail = s:thumbnail_unsave(b)
     silent call s:updatethumbnail()
-    if a:cursor
-      call s:set_cursor()
-    else
-      call cursor(1, 1)
-    endif
   endif
 endfunction
 
@@ -219,13 +214,15 @@ function! s:thumbnail_new()
     tabnew
     let isnewtab = 1
   endif
-  call s:thumbnail_init(isnewtab, 1)
+  call s:thumbnail_init(isnewtab)
   augroup Thumbnail
     autocmd!
     autocmd BufEnter,VimResized *
           \ call s:update_visible_thumbnail(expand('<abuf>'))
   augroup END
   augroup ThumbnailBuffer
+    autocmd BufEnter <buffer>
+          \ if exists('b:thumbnail') | call s:set_cursor() | endif
     autocmd BufLeave,WinLeave,WinEnter,VimResized <buffer>
           \ if exists('b:thumbnail') | call s:updatethumbnail() | endif
     " autocmd CursorMoved <buffer>
@@ -333,7 +330,7 @@ function! s:update_visible_thumbnail(bufnr)
   if winnr != -1 && newbuf != -1
     execute winnr 'wincmd w'
     if exists('b:thumbnail')
-      call s:thumbnail_init(0, 0)
+      call s:thumbnail_init(0)
     endif
     if winnr != newbuf
       if col('.') != 1 || line('.') != 1
@@ -349,7 +346,7 @@ function! s:update_current_thumbnail()
   if !exists('b:thumbnail')
     return
   endif
-  call s:thumbnail_init(1, 1)
+  call s:thumbnail_init(1)
 endfunction
 
 function! s:thumbnail_left()
@@ -657,7 +654,7 @@ function! s:thumbnail_close()
         silent execute num 'bdelete!'
       catch
       endtry
-      silent call s:thumbnail_init(1, 1)
+      silent call s:thumbnail_init(1)
     endif
   endif
 endfunction
