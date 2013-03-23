@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/23 08:24:55.
+" Last Change: 2013/03/23 09:09:00.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -652,6 +652,8 @@ function! s:thumbnail_select()
       if prev_first_line[:l - 1] != new_first_line[:l - 1]
         return -1
       endif
+    else
+      return -1
     endif
   endif
   let b = b:thumbnail
