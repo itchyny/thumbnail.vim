@@ -51,6 +51,7 @@ Normal mode key mappings.
 		Open the selected buffer.
 
 <Plug>(thumbnail_close)				*<Plug>(thumbnail_close)*
+<Plug>(thumbnail_close_backspace)	*<Plug>(thumbnail_close_backspace)*
 		Close the selected buffer.
 
 <Plug>(thumbnail_redraw)			*<Plug>(thumbnail_redraw)*
@@ -84,6 +85,7 @@ G		|<Plug>(thumbnail_move_last)|
 <CR>		|<Plug>(thumbnail_select)|
 <SPACE>		same as <CR>
 x		|<Plug>(thumbnail_close)|
+X		|<Plug>(thumbnail_close_backspace)|
 <C-l>		|<Plug>(thumbnail_redraw)|
 q		|<Plug>(thumbnail_exit)|
 

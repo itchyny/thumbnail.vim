@@ -1,15 +1,12 @@
-# A thumbnail buffer selector for Vim
+# A thumbnail-style buffer selector for Vim
 ## Usage
 
     :Thumbnail
 
-that's all!
-
-
 ![thumbnail.vim](https://raw.github.com/itchyny/thumbnail.vim/master/image/image.png)
 
 ## Concept
-The basic concept is visual vim.
+The basic concept is graphical vim.
 We should not stay still at old-style stage.
 The user interface is largely influenced by the new tab of Google Chrome.
 
