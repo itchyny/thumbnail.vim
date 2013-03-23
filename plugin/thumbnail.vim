@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/23 13:43:53.
+" Last Change: 2013/03/24 01:27:27.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -149,6 +149,8 @@ function! s:thumbnail_mapping()
         \ :<C-u>call <SID>thumbnail_head()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_last)
         \ :<C-u>call <SID>thumbnail_last()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_move_last_line)
+        \ :<C-u>call <SID>thumbnail_last_line()<CR>
 
   nnoremap <buffer><silent> <Plug>(thumbnail_select)
         \ :<C-u>call <SID>thumbnail_select()<CR>
@@ -184,18 +186,30 @@ function! s:thumbnail_mapping()
   map <buffer> <ScrollWheelDown> b
   nmap <buffer> 0 <Plug>(thumbnail_move_line_head)
   nmap <buffer> ^ 0
+  nmap <buffer> g0 0
+  nmap <buffer> g<Home> 0
+  nmap <buffer> g^ ^
+  nnoremap <buffer><silent> gm gm
+        \ :<C-u>call <SID>update_select(0)<CR>
   nmap <buffer> $ <Plug>(thumbnail_move_line_last)
+  nmap <buffer> g$ $
+  nmap <buffer> g<End> $
+  nnoremap <buffer><silent> <Bar> <Bar>
+        \ :<C-u>call <SID>update_select(0)<CR>
   nmap <buffer> gg <Plug>(thumbnail_move_head)
-  nmap <buffer> G <Plug>(thumbnail_move_last)
+  nmap <buffer> <C-Home> gg
+  nmap <buffer> G <Plug>(thumbnail_move_last_line)
+  nmap <buffer> <C-End> <Plug>(thumbnail_move_last)
 
-  nmap <buffer> <Left> <Plug>(thumbnail_move_left)
-  nmap <buffer> <Right> <Plug>(thumbnail_move_right)
-  nmap <buffer> <Down> <Plug>(thumbnail_move_down)
-  nmap <buffer> <Up> <Plug>(thumbnail_move_up)
+  nmap <buffer> <Left> h
+  nmap <buffer> <Right> l
+  nmap <buffer> <Down> j
+  nmap <buffer> <Up> k
 
   nmap <buffer> <CR> <Plug>(thumbnail_select)
   nmap <buffer> <SPACE> <CR>
   nmap <buffer> x <Plug>(thumbnail_close)
+  nmap <buffer> <BS> x
   nmap <buffer> X <Plug>(thumbnail_close_backspace)
   nmap <buffer> q <Plug>(thumbnail_exit)
   nmap <buffer> <C-l> <Plug>(thumbnail_redraw)
@@ -563,6 +577,19 @@ function! s:thumbnail_last()
         \ len(b.bufs) - (b.num_height - 1) * b.num_width - 1)
     let b.select_i = b.num_height - 1
     let b.select_j = len(b.bufs) - (b.num_height - 1) * b.num_width - 1
+  endif
+  call s:updatethumbnail()
+endfunction
+
+function! s:thumbnail_last_line()
+  call s:revive_thumbnail()
+  if !exists('b:thumbnail')
+    return
+  endif
+  let b = b:thumbnail
+  if s:thumbnail_exists(b.num_height - 1, 0)
+    let b.select_i = b.num_height - 1
+    let b.select_j = 0
   endif
   call s:updatethumbnail()
 endfunction
