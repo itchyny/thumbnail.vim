@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/23 10:12:16.
+" Last Change: 2013/03/23 13:43:53.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -11,27 +11,69 @@ set cpo&vim
 
 function! s:init_buffer(isnewtab)
   let b = {}
-  let b.height = winheight(0)
-  let b.width = winwidth(0)
   let b.bufs = []
   for i in range(1, bufnr('$'))
-    let name = bufname(i)
-    if len(name) == 0 || !buflisted(i)
+    if (len(bufname(i)) == 0 && (!bufexists(i) || !bufloaded(i)
+          \ || !getbufvar(i, '&modified'))) || !buflisted(i)
       continue
     endif
-    call add(b.bufs, {
-          \ 'bufnr': i,
-          \ 'bufname': name,
-          \ 'loaded': bufloaded(i) && bufexists(i) && name != '',
-          \ })
+    call add(b.bufs, { 'bufnr': i })
   endfor
-  let l = len(b.bufs)
-  if l == 0
+  if len(b.bufs) == 0
     if a:isnewtab
       silent bdelete!
     endif
     return b
   endif
+  call s:thumbnail_arrangement(b)
+  let b.select_i = 0
+  let b.select_j = 0
+  for buf in b.bufs
+    let c = s:get_contents(buf.bufnr, b.thumbnail_width, b.thumbnail_height)
+    call extend(buf, {
+          \ 'contents': c,
+          \ 'firstlinelength': len(c) > 0 ? len(c[0]) : b.thumbnail_width - 4
+          \ })
+  endfor
+  call s:thumbnail_marker(b)
+  call s:thumbnail_mapping()
+  return b
+endfunction
+
+function! s:get_contents(nr, width, height)
+  let bufname = bufname(a:nr)
+  if bufloaded(a:nr) && bufexists(a:nr)
+    let lines = getbufline(a:nr, 1, a:height)
+  elseif bufname != '' && filereadable(bufname)
+    let lines = readfile(bufname, '', a:height)
+  else
+    let lines = []
+  endif
+  if len(lines) == 0 || lines == ['']
+    let l = len(bufname)
+    if l == 0
+      let contents = [s:truncate_smart('[No Name]', a:width - 4,
+            \ (a:width - 4) / 2, '..')]
+    elseif l < a:width - 4
+      let contents = [bufname . repeat(' ', (a:width - 4 - l))]
+    else
+      let contents = [s:truncate_smart(bufname, a:width - 4,
+            \ (a:width - 4) / 2, '..')]
+    endif
+  else
+    let contents = map(lines,
+          \ 's:truncate(substitute(v:val, "\t",' .
+          \ string(repeat(' ', getbufvar(a:nr, '&tabstop'))) .
+          \ ', "g") . "' . '", ' .  (a:width - 4) . ')')
+  endif
+  return contents
+endfunction
+
+function! s:thumbnail_arrangement(b)
+  let b = a:b
+  let l = len(b.bufs)
+  let b.height = winheight(0)
+  let b.width = winwidth(0)
   let b.num_height = 1
   let b.num_width = l
   let b.thumbnail_height =
@@ -55,29 +97,15 @@ function! s:init_buffer(isnewtab)
         \ (b.height - b.num_height * b.thumbnail_height) / (b.num_height + 1)
   let b.offset_left =
         \ (b.width - b.num_width * b.thumbnail_width) / (b.num_width + 1)
-  let white_line_top_bottom = winheight(0)
+  let top_bottom = b.height
         \ - (b.offset_top + b.thumbnail_height) * b.num_height
-  let b.margin_top = max([(white_line_top_bottom - b.offset_top) / 2, 0])
-  let b.select_i = 0
-  let b.select_j = 0
-  for buf in b.bufs
-    if buf.loaded
-      let lines = getbufline(buf.bufnr, 1, b.thumbnail_height)
-    elseif buf.bufname != '' && filereadable(buf.bufname)
-      let lines = readfile(buf.bufname, '', b.thumbnail_height)
-    else
-      continue
-    endif
-    let contents = map(lines,
-          \ 's:truncate(substitute(v:val, "\t",' .
-          \ string(repeat(' ', getbufvar(buf.bufnr, '&tabstop'))) .
-          \ ', "g") . "' . '", ' .  (b.thumbnail_width - 4) . ')')
-    call extend(buf, {
-          \ 'contents': contents,
-          \ 'firstlinelength': len(contents) > 0 ? len(contents[0])
-          \                                      : b.thumbnail_width - 4
-          \ })
-  endfor
+  let b.margin_top = max([(top_bottom - b.offset_top) / 2, 0])
+  let b.margin_bottom = max([top_bottom - b.margin_top, 0])
+  return b
+endfunction
+
+function! s:thumbnail_marker(b)
+  let b = a:b
   if has('conceal')
       \ && winwidth(0) > (b.num_width - 1)
       \ * (b.offset_left + b.thumbnail_width + 4) + b.offset_left + 5
@@ -95,7 +123,6 @@ function! s:init_buffer(isnewtab)
     let b.marker_last = '[\\]'
     let b.conceal = 0
   endif
-  call s:thumbnail_mapping()
   return b
 endfunction
 
@@ -181,8 +208,21 @@ function! s:thumbnail_unsave(b)
   endif
   let prev_b = b:thumbnail
   let index = prev_b.select_i * prev_b.num_width + prev_b.select_j
-  let offset = 0
   let newbuf = a:b.bufs
+  if len(prev_b.bufs) == len(newbuf) && index < len(newbuf)
+    let flg = 1
+    for i in range(len(prev_b.bufs))
+      if prev_b.bufs[i].bufnr != newbuf[i].bufnr
+        let flg = 0
+        break
+      endif
+    endfor
+    if flg
+      let a:b.select_i = index / a:b.num_width
+      let a:b.select_j = index % a:b.num_width
+      return a:b
+    endif
+  endif
   let newbuf_nrs = map(copy(newbuf), 'v:val["bufnr"]')
   let prev_b_bufs_nrs = map(copy(prev_b.bufs), 'v:val["bufnr"]')
   let a:b.bufs = []
@@ -207,6 +247,7 @@ function! s:thumbnail_unsave(b)
     return a:b
   endif
   let direction = has_key(b:thumbnail, 'direction') ? b:thumbnail.direction : 1
+  let offset = 0
   while offset < len(prev_b.bufs)
     let i = index + offset * direction
     let offset = (offset <= 0 ? 1 : 0) - offset
@@ -242,7 +283,7 @@ function! s:thumbnail_new()
   call s:thumbnail_init(isnewtab)
   augroup Thumbnail
     autocmd!
-    autocmd BufDelete,BufEnter,VimResized *
+    autocmd BufEnter,VimResized *
           \ call s:update_visible_thumbnail(expand('<abuf>'))
   augroup END
   augroup ThumbnailBuffer
@@ -280,9 +321,6 @@ function! s:updatethumbnail()
         \ * b.num_width)
   let right_white = repeat(' ', winwidth(0) - len(line_white) - 4)
         \ . b.marker_last
-  let white_line_top_bottom = winheight(0)
-        \ - (b.offset_top + b.thumbnail_height) * b.num_height
-  let b.margin_top = max([(white_line_top_bottom - b.offset_top) / 2, 0])
   for j in range(b.margin_top)
     call add(s, line_white . right_white)
   endfor
@@ -312,7 +350,7 @@ function! s:updatethumbnail()
       call add(s, ss . right_white)
     endfor
   endfor
-  for j in range(max([white_line_top_bottom - b.margin_top, 0]))
+  for j in range(b.margin_bottom)
     call add(s, line_white . right_white)
   endfor
   silent call setline(1, s[0])
@@ -365,16 +403,10 @@ function! s:update_visible_thumbnail(bufnr)
       call s:thumbnail_init(0)
     endif
     if winnr != newbuf && newbuf != -1
-      if col('.') != 1 || line('.') != 1
-        silent call cursor(1, 1)
-        redraw
-      endif
+      call cursor(1, 1)
       execute newbuf 'wincmd w'
     elseif winnr != currentbuf && currentbuf != -1
-      if col('.') != 1 || line('.') != 1
-        silent call cursor(1, 1)
-        redraw
-      endif
+      call cursor(1, 1)
       execute currentbuf 'wincmd w'
     endif
   endif
@@ -664,30 +696,27 @@ function! s:thumbnail_select()
   let i = b.select_i * b.num_width + b.select_j
   let bufnr = bufnr('%')
   if s:thumbnail_exists(b.select_i, b.select_j)
-    let buf = b.bufs[i].bufname
-    let num = bufnr(escape(buf, '*[]?{}, '))
-    if num > -1
-      if bufloaded(num)
-        if bufwinnr(num) != -1
-          execute bufwinnr(num) 'wincmd w'
-          execute bufnr 'bdelete!'
-          return
-        else
-          for i in range(tabpagenr('$'))
-            if index(tabpagebuflist(i + 1), num) != -1
-              execute 'tabnext' . (i + 1)
-              execute bufwinnr(bufnr(escape(buf, '*[]?{}, '))) 'wincmd w'
-              execute bufnr 'bdelete!'
-              return
-            endif
-          endfor
-          execute num 'buffer!'
-        endif
-      elseif buflisted(num)
-        execute num 'buffer!'
+    let nr = b.bufs[i].bufnr
+    if bufloaded(nr)
+      if bufwinnr(nr) != -1
+        execute bufwinnr(nr) 'wincmd w'
+        execute bufnr 'bdelete!'
+        return
       else
-        call s:thumbnail_init(1)
+        for i in range(tabpagenr('$'))
+          if index(tabpagebuflist(i + 1), nr) != -1
+            execute 'tabnext' . (i + 1)
+            execute bufwinnr(nr) 'wincmd w'
+            execute bufnr 'bdelete!'
+            return
+          endif
+        endfor
+        execute nr 'buffer!'
       endif
+    elseif buflisted(nr)
+      execute nr 'buffer!'
+    else
+      call s:thumbnail_init(1)
     endif
   endif
 endfunction
@@ -700,14 +729,32 @@ function! s:thumbnail_close(direction)
   let b = b:thumbnail
   let i = b.select_i * b.num_width + b.select_j
   if s:thumbnail_exists(b.select_i, b.select_j)
-    let buf = b.bufs[i].bufname
-    let num = bufnr(escape(buf, '*[]?{}, '))
-    if num > -1
-      try
-        silent execute num 'bdelete!'
-      catch
-      endtry
-      let b:thumbnail.direction = 1 - a:direction * 2
+    let nr = b.bufs[i].bufnr
+    if getbufvar(nr, '&modified')
+      let name = bufname(nr)
+      let message = 'The buffer ' . (name == '' ? '[No Name]' : name)
+            \ . ' is modified. Force to delete the buffer? [yes/no/edit] '
+      let yesno = input(message)
+      while yesno !~? '^\%(y\%[es]\|n\%[o]\|e\%[dit]\)$'
+        redraw
+        if yesno == ''
+          echo 'Canceled.'
+          return
+          break
+        endif
+        echohl WarningMsg | echomsg 'Invalid input.' | echohl None
+        let yesno = input(message)
+      endwhile
+      if yesno =~? 'n\%[o]'
+        return
+      elseif yesno =~? 'e\%[dit]'
+        call s:thumbnail_select()
+        return
+      endif
+    endif
+    execute nr 'bdelete!'
+    if exists('b:thumbnail')
+      let b:thumbnail.direction = a:direction ? -1 : 1
       silent call s:thumbnail_init(1)
     endif
   endif
@@ -752,6 +799,19 @@ function! s:truncate(str, width)
   return ret
 endfunction
 
+function! s:truncate_smart(str, max, footer_width, separator)
+  let width = s:wcswidth(a:str)
+  if width <= a:max
+    let ret = a:str
+  else
+    let header_width = a:max - s:wcswidth(a:separator) - a:footer_width
+    let ret = s:strwidthpart(a:str, header_width) . a:separator
+          \ . s:strwidthpart_reverse(a:str, a:footer_width)
+  endif
+
+  return s:truncate(ret, a:max)
+endfunction
+
 function! s:strwidthpart(str, width)
   if a:width <= 0
     return ''
@@ -761,6 +821,21 @@ function! s:strwidthpart(str, width)
   while width > a:width
     let char = matchstr(ret, '.$')
     let ret = ret[: -1 - len(char)]
+    let width -= s:wcswidth(char)
+  endwhile
+
+  return ret
+endfunction
+
+function! s:strwidthpart_reverse(str, width)
+  if a:width <= 0
+    return ''
+  endif
+  let ret = a:str
+  let width = s:wcswidth(a:str)
+  while width > a:width
+    let char = matchstr(ret, '^.')
+    let ret = ret[len(char) :]
     let width -= s:wcswidth(char)
   endwhile
 
