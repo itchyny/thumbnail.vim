@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/24 02:16:43.
+" Last Change: 2013/03/24 02:31:40.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -41,31 +41,20 @@ function! s:init_buffer(isnewtab)
 endfunction
 
 function! s:get_contents(nr, width, height)
-  let bufname = bufname(a:nr)
+  let bufname =  bufname(a:nr)
   if bufloaded(a:nr) && bufexists(a:nr)
-    let lines = getbufline(a:nr, 1, a:height)
+    let lines = getbufline(a:nr, 1, a:height - 1)
   elseif bufname != '' && filereadable(bufname)
-    let lines = readfile(bufname, '', a:height)
+    let lines = readfile(bufname, '', a:height - 1)
   else
     let lines = []
   endif
-  if len(lines) == 0 || lines == ['']
-    let l = len(bufname)
-    if l == 0
-      let contents = [s:truncate_smart('[No Name]', a:width - 4,
-            \ (a:width - 4) / 2, '..')]
-    elseif l < a:width - 4
-      let contents = [bufname . repeat(' ', (a:width - 4 - l))]
-    else
-      let contents = [s:truncate_smart(bufname, a:width - 4,
-            \ (a:width - 4) / 2, '..')]
-    endif
-  else
-    let contents = map(lines,
-          \ 's:truncate(substitute(v:val, "\t",' .
-          \ string(repeat(' ', getbufvar(a:nr, '&tabstop'))) .
-          \ ', "g") . "' . '", ' .  (a:width - 4) . ')')
-  endif
+  call insert(lines, s:truncate_smart(bufname == '' ? '[No Name]' : bufname,
+        \ a:width - 4, (a:width - 4) / 2, '..'))
+  let contents = map(lines,
+        \ 's:truncate(substitute(v:val, "\t",' .
+        \ string(repeat(' ', getbufvar(a:nr, '&tabstop'))) .
+        \ ', "g") . "' . '", ' .  (a:width - 4) . ')')
   return contents
 endfunction
 
