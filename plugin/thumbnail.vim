@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/23 09:36:31.
+" Last Change: 2013/03/23 10:12:16.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -126,7 +126,9 @@ function! s:thumbnail_mapping()
   nnoremap <buffer><silent> <Plug>(thumbnail_select)
         \ :<C-u>call <SID>thumbnail_select()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_close)
-        \ :<C-u>call <SID>thumbnail_close()<CR>
+        \ :<C-u>call <SID>thumbnail_close(0)<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_close_backspace)
+        \ :<C-u>call <SID>thumbnail_close(1)<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_exit)
         \ :<C-u>bdelete!<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_redraw)
@@ -167,6 +169,7 @@ function! s:thumbnail_mapping()
   nmap <buffer> <CR> <Plug>(thumbnail_select)
   nmap <buffer> <SPACE> <CR>
   nmap <buffer> x <Plug>(thumbnail_close)
+  nmap <buffer> X <Plug>(thumbnail_close_backspace)
   nmap <buffer> q <Plug>(thumbnail_exit)
   nmap <buffer> <C-l> <Plug>(thumbnail_redraw)
 
@@ -203,8 +206,9 @@ function! s:thumbnail_unsave(b)
     let a:b.select_j = index % a:b.num_width
     return a:b
   endif
+  let direction = has_key(b:thumbnail, 'direction') ? b:thumbnail.direction : 1
   while offset < len(prev_b.bufs)
-    let i = index + offset
+    let i = index + offset * direction
     let offset = (offset <= 0 ? 1 : 0) - offset
     if !(0 <= i && i < len(prev_b.bufs) && has_key(prev_b.bufs[i], 'bufnr'))
       continue
@@ -688,7 +692,7 @@ function! s:thumbnail_select()
   endif
 endfunction
 
-function! s:thumbnail_close()
+function! s:thumbnail_close(direction)
   call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
@@ -703,6 +707,7 @@ function! s:thumbnail_close()
         silent execute num 'bdelete!'
       catch
       endtry
+      let b:thumbnail.direction = 1 - a:direction * 2
       silent call s:thumbnail_init(1)
     endif
   endif
