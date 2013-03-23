@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/24 01:32:46.
+" Last Change: 2013/03/24 02:16:43.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -167,23 +167,20 @@ function! s:thumbnail_mapping()
   nmap <buffer> l <Plug>(thumbnail_move_right)
   nmap <buffer> j <Plug>(thumbnail_move_down)
   nmap <buffer> k <Plug>(thumbnail_move_up)
+  nmap <buffer> <Left> h
+  nmap <buffer> <BS> h
+  nmap <buffer> <Right> l
+  nmap <buffer> <Down> j
+  nmap <buffer> <Up> k
 
   nmap <buffer> w <Plug>(thumbnail_move_next)
   nmap <buffer> W w
   nmap <buffer> <TAB> w
-  nnoremap <buffer><silent> <LeftMouse> <LeftMouse>
-        \ :<C-u>call <SID>update_select(0)<CR>
-  nnoremap <buffer><silent> <LeftDrag> <LeftMouse>
-        \ :<C-u>call <SID>drag_select()<CR>
-  nnoremap <buffer><silent> <LeftRelease> <LeftMouse>
-        \ :<C-u>call <SID>drag_select()<CR>
-  nnoremap <buffer><silent> <2-LeftMouse> <LeftMouse>
-        \ :<C-u>call <SID>thumbnail_mouse_select()<CR>
-  map <buffer> <ScrollWheelUp> w
+  nmap <buffer> <S-Left> w
   nmap <buffer> b <Plug>(thumbnail_move_prev)
   nmap <buffer> B b
   nmap <buffer> <S-Tab> b
-  map <buffer> <ScrollWheelDown> b
+  nmap <buffer> <S-Right> b
   nmap <buffer> 0 <Plug>(thumbnail_move_line_head)
   nmap <buffer> ^ 0
   nmap <buffer> g0 0
@@ -201,11 +198,16 @@ function! s:thumbnail_mapping()
   nmap <buffer> G <Plug>(thumbnail_move_last_line)
   nmap <buffer> <C-End> <Plug>(thumbnail_move_last)
 
-  nmap <buffer> <Left> h
-  nmap <buffer> <BS> h
-  nmap <buffer> <Right> l
-  nmap <buffer> <Down> j
-  nmap <buffer> <Up> k
+  nnoremap <buffer><silent> <LeftMouse> <LeftMouse>
+        \ :<C-u>call <SID>update_select(0)<CR>
+  nnoremap <buffer><silent> <LeftDrag> <LeftMouse>
+        \ :<C-u>call <SID>drag_select()<CR>
+  nnoremap <buffer><silent> <LeftRelease> <LeftMouse>
+        \ :<C-u>call <SID>drag_select()<CR>
+  nnoremap <buffer><silent> <2-LeftMouse> <LeftMouse>
+        \ :<C-u>call <SID>thumbnail_mouse_select()<CR>
+  map <buffer> <ScrollWheelUp> w
+  map <buffer> <ScrollWheelDown> b
 
   nmap <buffer> <CR> <Plug>(thumbnail_select)
   nmap <buffer> <SPACE> <CR>
