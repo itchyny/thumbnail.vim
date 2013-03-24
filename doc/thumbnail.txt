@@ -86,10 +86,15 @@ k		|<Plug>(thumbnail_move_up)|
 <Right>		same as l
 <Down>		same as j
 <Up>		same as k
+<BS>		same as h
 gh		same as h
 gl		same as l
 gj		same as j
 gk		same as k
+g<Left>		same as h
+g<Right>	same as l
+g<Down>		same as j
+g<Up>		same as k
 +		same as j
 -		same as k
 w		|<Plug>(thumbnail_move_next)|
