@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/25 00:06:15.
+" Last Change: 2013/03/25 00:41:07.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -516,6 +516,42 @@ function! s:thumbnail_down()
   endif
   call s:updatethumbnail()
 endfunction
+
+" function! s:new_move(name, new_i, new_j)
+"   execute printf(join([
+"         \ "function! s:%s()",
+"         \ "  call s:revive_thumbnail()",
+"         \ "  if !exists('b:thumbnail')",
+"         \ "    return",
+"         \ "  endif",
+"         \ "  let b = b:thumbnail",
+"         \ "  let new_i = %s",
+"         \ "  let new_j = %s",
+"         \ "  if s:thumbnail_exists(new_i, new_j)",
+"         \ "    let b.select_i = new_i",
+"         \ "    let b.select_j = new_j",
+"         \ "  endif",
+"         \ "  call s:updatethumbnail()",
+"         \ "endfunction"], "\n"),
+"         \ a:name, a:new_i, a:new_j)
+" endfunction
+" 
+" call s:new_move('thumbnail_left',
+"       \ 'b.select_i',
+"       \ 'max([b.select_j - max([v:count, 1]),' .
+"       \   '0])')
+" 
+" call s:new_move('thumbnail_right',
+"       \ 'b.select_i',
+"       \ 'min([b.select_j + max([v:count, 1]), b.num_width - 1,' .
+"       \   'len(b.bufs) - b.select_i * b.num_width - 1])')
+" 
+" call s:new_move('thumbnail_up',
+"       \ 'max([b.select_i - max([v:count, 1]), 0])',
+"       \ 'b.select_j')
+" call s:new_move('thumbnail_down',
+"       \ 'min([b.select_i + max([v:count, 1]), b.num_height - 1, (len(b.bufs) - b.select_j) / b.num_width])',
+"       \ 'b.select_j')
 
 function! s:thumbnail_next()
   call s:revive_thumbnail()
