@@ -104,10 +104,12 @@ B		same as b
 ^		same as 0
 g0		same as 0
 g-		same as 0
+<Home>		same as 0
 g<Home>		same as 0
 gm		|<Plug>(thumbnail_move_line_middle)|
 $		|<Plug>(thumbnail_move_line_last)|
 g$		same as $
+<End>		same as $
 g<End>		same as $
 gg		|<Plug>(thumbnail_move_count_line_first)|
 <C-Home>	same as gg
