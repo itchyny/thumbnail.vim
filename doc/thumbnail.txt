@@ -33,29 +33,40 @@ Normal mode key mappings.
 <Plug>(thumbnail_move_right)			*<Plug>(thumbnail_move_right)*
 <Plug>(thumbnail_move_down)			*<Plug>(thumbnail_move_down)*
 <Plug>(thumbnail_move_up)			*<Plug>(thumbnail_move_up)*
-		Move the cursor. These mappings stop the selection each ends.
+		Move the cursor by [count] thumbnails. These mappings stop
+		the selection each ends.
 
 <Plug>(thumbnail_move_next)			*<Plug>(thumbnail_move_next)*
 <Plug>(thumbnail_move_prev)			*<Plug>(thumbnail_move_prev)*
-		Move the cursor. These mappings rotate the selection.
+		Move the cursor by [count] thumbnails. These mappings rotate
+		the selection.
 
 <Plug>(thumbnail_move_line_head)		*<Plug>(thumbnail_move_line_head)*
+<Plug>(thumbnail_move_line_middle)		*<Plug>(thumbnail_move_line_middle)*
 <Plug>(thumbnail_move_line_last)		*<Plug>(thumbnail_move_line_last)*
-		Move the cursor to the head/last of the current line.
+		Go to the head/middle/last of the current line.
 
 <Plug>(thumbnail_move_head)			*<Plug>(thumbnail_move_head)*
 <Plug>(thumbnail_move_last)			*<Plug>(thumbnail_move_last)*
-		Move the cursor to the head/last of all the thumbnails.
+		Go to the head/last of all the thumbnails.
 
-<Plug>(thumbnail_move_last_line)	*<Plug>(thumbnail_move_last_line)*
-		Move the cursor to the first of the last line of the
-		thumbnails.
+<Plug>(thumbnail_move_last_line_head)		*<Plug>(thumbnail_move_last_line_head)*
+		Go to the head of the last line.
+
+<Plug>(thumbnail_move_count_line_first)		*<Plug>(thumbnail_move_count_line_first)*
+		Go to the line [count], the first line in default.
+
+<Plug>(thumbnail_move_count_line_last)		 *<Plug>(thumbnail_move_count_line_last)*
+		Go to the line [count], the last line in default.
+
+<Plug>(thumbnail_move_column)			*<Plug>(thumbnail_move_column)*
+		Go to the column [count], in the current line.
 
 <Plug>(thumbnail_select)			*<Plug>(thumbnail_select)*
 		Open the selected buffer.
 
 <Plug>(thumbnail_close)				*<Plug>(thumbnail_close)*
-<Plug>(thumbnail_close_backspace)	*<Plug>(thumbnail_close_backspace)*
+<Plug>(thumbnail_close_backspace)		*<Plug>(thumbnail_close_backspace)*
 		Close the selected buffer.
 
 <Plug>(thumbnail_redraw)			*<Plug>(thumbnail_redraw)*
@@ -71,21 +82,37 @@ h		|<Plug>(thumbnail_move_left)|
 l		|<Plug>(thumbnail_move_right)|
 j		|<Plug>(thumbnail_move_down)|
 k		|<Plug>(thumbnail_move_up)|
-w		|<Plug>(thumbnail_move_next)|
-W		same as w
-<TAB>		same as w
-b		|<Plug>(thumbnail_move_prev)|
-B		same as b
-<S-Tab>		same as b
-0		|<Plug>(thumbnail_move_line_head)|
-^		same as 0
-$		|<Plug>(thumbnail_move_line_last)|
-gg		|<Plug>(thumbnail_move_head)|
-G		|<Plug>(thumbnail_move_last_line)|
 <Left>		same as h
 <Right>		same as l
 <Down>		same as j
 <Up>		same as k
+gh		same as h
+gl		same as l
+gj		same as j
+gk		same as k
++		same as j
+-		same as k
+w		|<Plug>(thumbnail_move_next)|
+W		same as w
+<TAB>		same as w
+<S-Left>	same as w
+b		|<Plug>(thumbnail_move_prev)|
+B		same as b
+<S-Tab>		same as b
+<S-Right>	same as b
+0		|<Plug>(thumbnail_move_line_head)|
+^		same as 0
+g0		same as 0
+g-		same as 0
+g<Home>		same as 0
+gm		|<Plug>(thumbnail_move_line_middle)|
+$		|<Plug>(thumbnail_move_line_last)|
+g$		same as $
+g<End>		same as $
+gg		|<Plug>(thumbnail_move_count_line_first)|
+<C-Home>	same as gg
+G		|<Plug>(thumbnail_move_count_line_last)|
+|		|<Plug>(thumbnail_move_column)|
 <CR>		|<Plug>(thumbnail_select)|
 <SPACE>		same as <CR>
 x		|<Plug>(thumbnail_close)|
@@ -96,7 +123,7 @@ q		|<Plug>(thumbnail_exit)|
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
 
-2013-03-19, 03-20, 03-21, 03-22
+2013-03-19, ... , 03-24
 - Initial commit and implementation.
 
 ==============================================================================
