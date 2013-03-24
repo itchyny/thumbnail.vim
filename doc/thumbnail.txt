@@ -100,11 +100,11 @@ g<Up>		same as k
 w		|<Plug>(thumbnail_move_next)|
 W		same as w
 <TAB>		same as w
-<S-Left>	same as w
+<S-Right>	same as w
 b		|<Plug>(thumbnail_move_prev)|
 B		same as b
 <S-Tab>		same as b
-<S-Right>	same as b
+<S-Left>	same as b
 0		|<Plug>(thumbnail_move_line_head)|
 ^		same as 0
 g0		same as 0

@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/24 15:26:58.
+" Last Change: 2013/03/24 16:56:41.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -185,11 +185,11 @@ function! s:thumbnail_mapping()
   nmap <buffer> w <Plug>(thumbnail_move_next)
   nmap <buffer> W w
   nmap <buffer> <TAB> w
-  nmap <buffer> <S-Left> w
+  nmap <buffer> <S-Right> w
   nmap <buffer> b <Plug>(thumbnail_move_prev)
   nmap <buffer> B b
   nmap <buffer> <S-Tab> b
-  nmap <buffer> <S-Right> b
+  nmap <buffer> <S-Left> b
   nmap <buffer> 0 <Plug>(thumbnail_move_line_head)
   nmap <buffer> ^ 0
   nmap <buffer> g0 0
