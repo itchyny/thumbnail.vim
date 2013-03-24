@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/24 18:40:05.
+" Last Change: 2013/03/25 00:06:15.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -40,6 +40,10 @@ function! s:init_buffer(isnewtab)
   return b
 endfunction
 
+function! s:escape(dir)
+  return escape(a:dir, '.$*')
+endfunction
+
 function! s:get_contents(nr, width, height)
   let bufname =  bufname(a:nr)
   if bufloaded(a:nr) && bufexists(a:nr)
@@ -49,8 +53,18 @@ function! s:get_contents(nr, width, height)
   else
     let lines = []
   endif
-  call insert(lines, s:truncate_smart(bufname == '' ? '[No Name]' : bufname,
-        \ a:width - 4, (a:width - 4) / 2, '..'))
+  let name = bufname
+  let abbrnames = []
+  call add(abbrnames, substitute(bufname, expand('~'), '~', ''))
+  let updir = substitute(expand('%:p:h'), '[^/]*$', '', '')
+  call add(abbrnames, substitute(bufname, s:escape(updir), '../', ''))
+  let upupdir = substitute(updir, '[^/]*/$', '', '')
+  call add(abbrnames, substitute(bufname, s:escape(upupdir), '../../', ''))
+  for abbrname in abbrnames
+    let name = len(name) > len(abbrname) ? abbrname : name
+  endfor
+  call insert(lines, s:truncate_smart(name == '' ? '[No Name]' : name,
+        \ a:width - 4, (a:width - 4) * 3 / 5, '..'))
   let contents = map(lines,
         \ 's:truncate(substitute(v:val, "\t",' .
         \ string(repeat(' ', getbufvar(a:nr, '&tabstop'))) .
