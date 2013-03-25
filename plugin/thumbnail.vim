@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/25 18:06:52.
+" Last Change: 2013/03/25 18:40:43.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -62,7 +62,7 @@ function! s:get_contents(nr, width, height)
     let name = len(name) > len(abbrname) ? abbrname : name
   endfor
   call insert(lines, s:truncate_smart(name == '' ? '[No Name]' : name,
-        \ a:width - 4, (a:width - 4) * 3 / 5, '..'))
+        \ a:width - 4, (a:width - 4) * 3 / 5, ' .. '))
   let contents = map(lines,
         \ 's:truncate(substitute(v:val, "\t",' .
         \ string(repeat(' ', getbufvar(a:nr, '&tabstop'))) .
@@ -159,7 +159,7 @@ function! s:thumbnail_mapping()
         \ :<C-u>call <SID>thumbnail_head()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_last)
         \ :<C-u>call <SID>thumbnail_last()<CR>
-  nnoremap <buffer><silent> <Plug>(thumbnail_move_G_last)
+  nnoremap <buffer><silent> <Plug>(thumbnail_move_count_line_last_last)
         \ :<C-u>call <SID>thumbnail_line_G_last()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_last_line_head)
         \ :<C-u>call <SID>thumbnail_last_line()<CR>
@@ -233,7 +233,7 @@ function! s:thumbnail_mapping()
   nmap <buffer> gg <Plug>(thumbnail_move_count_line_first)
   nmap <buffer> <C-Home> gg
   nmap <buffer> G <Plug>(thumbnail_move_count_line_last)
-  nmap <buffer> <C-End> <Plug>(thumbnail_move_G_last)
+  nmap <buffer> <C-End> <Plug>(thumbnail_move_count_line_last_last)
   nmap <buffer> <Bar> <Plug>(thumbnail_move_column)
 
   nnoremap <buffer><silent> <LeftMouse> <LeftMouse>
