@@ -62,8 +62,17 @@ Normal mode key mappings.
 <Plug>(thumbnail_move_column)			*<Plug>(thumbnail_move_column)*
 		Go to the column [count], in the current line.
 
+<Plug>(thumbnail_start_visual)			 *<Plug>(thumbnail_start_visual)*
+<Plug>(thumbnail_start_line_visual)		 *<Plug>(thumbnail_start_line_visual)*
+<Plug>(thumbnail_start_block_visual)		 *<Plug>(thumbnail_start_block_visual)*
+<Plug>(thumbnail_exit_visual)			 *<Plug>(thumbnail_exit_visual)*
+		Start/Exit the visual mode.
+
 <Plug>(thumbnail_select)			*<Plug>(thumbnail_select)*
 		Open the selected buffer.
+
+<Plug>(thumbnail_start_delete)		 	*<Plug>(thumbnail_start_delete)*
+		Deletion thumbnails with {motion}.
 
 <Plug>(thumbnail_close)				*<Plug>(thumbnail_close)*
 <Plug>(thumbnail_close_backspace)		*<Plug>(thumbnail_close_backspace)*
@@ -120,6 +129,11 @@ gg		|<Plug>(thumbnail_move_count_line_first)|
 <C-Home>	same as gg
 G		|<Plug>(thumbnail_move_count_line_last)|
 |		|<Plug>(thumbnail_move_column)|
+v		|<Plug>(thumbnail_start_visual)|
+V		|<Plug>(thumbnail_start_line_visual)|
+<C-v>		|<Plug>(thumbnail_start_block_visual)|
+d		|<Plug>(thumbnail_start_delete)|
+<ESC>		|<Plug>(thumbnail_exit_visual)|
 <CR>		|<Plug>(thumbnail_select)|
 <SPACE>		same as <CR>
 x		|<Plug>(thumbnail_close)|
