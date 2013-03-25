@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/25 13:20:06.
+" Last Change: 2013/03/25 13:43:14.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -605,7 +605,7 @@ function! s:thumbnail_line_head()
   if s:thumbnail_exists(b.select_i, 0)
     let b.prev_j = b.select_j
     let b.select_j = 0
-    let b.line_move = 1
+    let b.line_move = 0
   endif
   call s:updatethumbnail()
 endfunction
