@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/25 14:09:08.
+" Last Change: 2013/03/25 18:06:52.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -108,6 +108,7 @@ function! s:thumbnail_arrangement(b)
   let b.visual_selects = []
   let b.line_move = 0
   let b.v_count = 0
+  let b.to_end = 0
   return b
 endfunction
 
@@ -250,6 +251,7 @@ function! s:thumbnail_mapping()
   nmap <buffer> V <Plug>(thumbnail_start_line_visual)
   nmap <buffer> <C-v> <Plug>(thumbnail_start_block_visual)
   nmap <buffer> d <Plug>(thumbnail_start_delete)
+  nmap <buffer> D d$
   nmap <buffer> <ESC> <Plug>(thumbnail_exit_visual)
   nmap <buffer> <CR> <Plug>(thumbnail_select)
   nmap <buffer> <SPACE> <CR>
@@ -386,6 +388,7 @@ function! s:updatethumbnail()
   endif
   let b.v_count = 0
   let b.selection = 0
+  let b.to_end = 0
   let s = []
   let thumbnail_white = repeat(' ', b.thumbnail_width - 4)
   let offset_white = repeat(' ', b.offset_left)
@@ -619,11 +622,13 @@ function! s:thumbnail_line_last()
   if s:thumbnail_exists(b.select_i, b.num_width - 1)
     let b.prev_j = b.select_j
     let b.select_j = b.num_width - 1
+    let b.to_end = 1
   elseif s:thumbnail_exists(b.select_i,
         \ len(b.bufs) - b.select_i * b.num_width - 1)
     let b.prev_j = b.select_j
     let b.select_j = len(b.bufs) - b.select_i * b.num_width - 1
     let b.line_move = 0
+    let b.to_end = 1
   endif
   call s:updatethumbnail()
 endfunction
@@ -990,6 +995,15 @@ function! s:thumbnail_close(direction)
   let b = b:thumbnail
   if b.visual_mode
     let r = 0
+    if len(b.visual_selects) > 1
+      if b.line_move == 0
+        if b.visual_selects[0] > b.visual_selects[-1]
+          call remove(b.visual_selects, 0)
+        elseif b.to_end == 0
+          call remove(b.visual_selects, -1)
+        endif
+      endif
+    endif
     for i in b.visual_selects
       if s:thumbnail_exists(i / b.num_width, i % b.num_width)
         let r = s:close_buffer(b.bufs[i].bufnr, 1, r)
