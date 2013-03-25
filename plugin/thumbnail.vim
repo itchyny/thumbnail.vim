@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/25 18:40:43.
+" Last Change: 2013/03/25 22:07:15.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -344,7 +344,7 @@ function! s:thumbnail_new()
   call s:thumbnail_init(isnewtab)
   augroup Thumbnail
     autocmd!
-    autocmd BufEnter,VimResized *
+    autocmd BufEnter,CursorHoldI,CursorHold,BufWritePost,VimResized *
           \ call s:update_visible_thumbnail(expand('<abuf>'))
   augroup END
   augroup ThumbnailBuffer
@@ -359,8 +359,8 @@ function! s:thumbnail_new()
           \   if exists('b:thumbnail') && !b:thumbnail.selection
           \ |   call s:updatethumbnail()
           \ | endif
-    autocmd CursorMoved <buffer>
-          \ silent call s:update_select(1)
+    " autocmd CursorMoved <buffer>
+    "       \ silent call s:update_select(1)
   augroup END
 endfunction
 
@@ -462,31 +462,28 @@ function! s:set_cursor()
         \ + b.offset_top + 1, offset + b.offset_left + 3 + b.conceal * 2) 
 endfunction
 
-function! s:search_thumbnail()
+function! s:update_visible_thumbnail(bufnr)
+  let nr = -1
   for buf in tabpagebuflist()
     if type(getbufvar(buf, 'thumbnail')) == type({})
-      return buf
+      let nr = buf
+      break
     endif
   endfor
-  return -1
-endfunction
-
-function! s:update_visible_thumbnail(bufnr)
-  let winnr = bufwinnr(s:search_thumbnail())
+  if nr == -1 | return | endif
+  let winnr = bufwinnr(nr)
   let newbuf = bufwinnr(str2nr(a:bufnr))
   let currentbuf = bufwinnr(bufnr('%'))
-  if winnr != -1
-    execute winnr 'wincmd w'
-    if exists('b:thumbnail')
-      call s:thumbnail_init(0)
-    endif
-    if winnr != newbuf && newbuf != -1
-      call cursor(1, 1)
-      execute newbuf 'wincmd w'
-    elseif winnr != currentbuf && currentbuf != -1
-      call cursor(1, 1)
-      execute currentbuf 'wincmd w'
-    endif
+  execute winnr 'wincmd w'
+  if exists('b:thumbnail')
+    call s:thumbnail_init(0)
+  endif
+  if winnr != newbuf && newbuf != -1
+    call cursor(1, 1)
+    execute newbuf 'wincmd w'
+  elseif winnr != currentbuf && currentbuf != -1
+    call cursor(1, 1)
+    execute currentbuf 'wincmd w'
   endif
 endfunction
 
