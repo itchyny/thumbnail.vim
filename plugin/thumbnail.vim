@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/25 13:43:14.
+" Last Change: 2013/03/25 14:09:08.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -701,8 +701,9 @@ function! s:thumbnail_line_gg()
     return
   endif
   let b = b:thumbnail
-  let new_i = v:count || b.v_count ? min([max([v:count, b.v_count, 1]) - 1, b.num_height - 1])
-        \                  : 0
+  let new_i = v:count || b.v_count
+        \   ? min([max([v:count, b.v_count, 1]) - 1, b.num_height - 1])
+        \   : 0
   if s:thumbnail_exists(new_i, 0)
     let b.select_i = new_i
     let b.select_j = 0
@@ -717,8 +718,9 @@ function! s:thumbnail_line_G()
     return
   endif
   let b = b:thumbnail
-  let new_i = v:count || b.v_count ? min([max([v:count, b.v_count, 1]) - 1, b.num_height - 1])
-        \                  : b.num_height - 1
+  let new_i = v:count || b.v_count
+        \   ? min([max([v:count, b.v_count, 1]) - 1, b.num_height - 1])
+        \   : b.num_height - 1
   if s:thumbnail_exists(new_i, 0)
     let b.select_i = new_i
     let b.select_j = 0

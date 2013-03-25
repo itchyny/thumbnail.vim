@@ -72,7 +72,7 @@ Normal mode key mappings.
 		Open the selected buffer.
 
 <Plug>(thumbnail_start_delete)		 	*<Plug>(thumbnail_start_delete)*
-		Deletion thumbnails with {motion}.
+		Delete thumbnails with {motion}.
 
 <Plug>(thumbnail_close)				*<Plug>(thumbnail_close)*
 <Plug>(thumbnail_close_backspace)		*<Plug>(thumbnail_close_backspace)*
