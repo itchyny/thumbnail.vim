@@ -133,6 +133,7 @@ v		|<Plug>(thumbnail_start_visual)|
 V		|<Plug>(thumbnail_start_line_visual)|
 <C-v>		|<Plug>(thumbnail_start_block_visual)|
 d		|<Plug>(thumbnail_start_delete)|
+D		same as d$
 <ESC>		|<Plug>(thumbnail_exit_visual)|
 <CR>		|<Plug>(thumbnail_select)|
 <SPACE>		same as <CR>
