@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/22 20:59:08.
+" Last Change: 2013/03/25 13:52:06.
 " =============================================================================
 
 if version < 700
@@ -12,7 +12,7 @@ elseif exists('b:current_syntax')
   finish
 endif
 
-syntax match ThumbnailSelect '\[|.*|\]' contains=ThumbnailSMarker
+syntax match ThumbnailSelect '\[|.\{-}|\]' contains=ThumbnailSMarker
 
 if has('conceal') && (!exists('b:thumbnail') || b:thumbnail.conceal)
   syntax match ThumbnailSMarker '\[|\||\]' contained conceal
