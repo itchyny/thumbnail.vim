@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/25 22:07:15.
+" Last Change: 2013/03/26 07:18:55.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -350,7 +350,7 @@ function! s:thumbnail_new()
   augroup ThumbnailBuffer
     autocmd BufLeave,WinLeave <buffer>
           \ if exists('b:thumbnail') | call s:set_cursor() | endif
-    autocmd BufEnter,CursorHold <buffer>
+    autocmd BufEnter <buffer>
           \   call s:revive_thumbnail()
           \ | if exists('b:thumbnail') && !b:thumbnail.visual_mode
           \ |   call s:thumbnail_init(0)
@@ -475,9 +475,7 @@ function! s:update_visible_thumbnail(bufnr)
   let newbuf = bufwinnr(str2nr(a:bufnr))
   let currentbuf = bufwinnr(bufnr('%'))
   execute winnr 'wincmd w'
-  if exists('b:thumbnail')
-    call s:thumbnail_init(0)
-  endif
+  call s:thumbnail_init(0)
   if winnr != newbuf && newbuf != -1
     call cursor(1, 1)
     execute newbuf 'wincmd w'
