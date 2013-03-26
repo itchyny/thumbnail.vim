@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/26 07:18:55.
+" Last Change: 2013/03/26 20:42:51.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -228,6 +228,7 @@ function! s:thumbnail_mapping()
   nmap <buffer> gm <Plug>(thumbnail_move_line_middle)
   nmap <buffer> $ <Plug>(thumbnail_move_line_last)
   nmap <buffer> g$ $
+  nmap <buffer> g_ $
   nmap <buffer> <End> $
   nmap <buffer> g<End> $
   nmap <buffer> gg <Plug>(thumbnail_move_count_line_first)
