@@ -74,6 +74,9 @@ Normal mode key mappings.
 <Plug>(thumbnail_start_delete)		 	*<Plug>(thumbnail_start_delete)*
 		Delete thumbnails with {motion}.
 
+<Plug>(thumbnail_delete_to_end)		 	*<Plug>(thumbnail_delete_to_end)*
+		Delete thumbnails till the end of the current line.
+
 <Plug>(thumbnail_close)				*<Plug>(thumbnail_close)*
 <Plug>(thumbnail_close_backspace)		*<Plug>(thumbnail_close_backspace)*
 		Close the selected buffer.
@@ -133,7 +136,7 @@ v		|<Plug>(thumbnail_start_visual)|
 V		|<Plug>(thumbnail_start_line_visual)|
 <C-v>		|<Plug>(thumbnail_start_block_visual)|
 d		|<Plug>(thumbnail_start_delete)|
-D		same as d$
+D		|<Plug>(thumbnail_delete_to_end)|
 <ESC>		|<Plug>(thumbnail_exit_visual)|
 <CR>		|<Plug>(thumbnail_select)|
 <SPACE>		same as <CR>

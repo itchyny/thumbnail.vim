@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/26 21:26:17.
+" Last Change: 2013/03/27 08:49:23.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -188,6 +188,8 @@ function! s:thumbnail_mapping()
         \ :<C-u>call <SID>thumbnail_start_visual(3)<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_start_delete)
         \ :<C-u>call <SID>thumbnail_start_visual(4)<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_delete_to_end)
+        \ :<C-u>call <SID>thumbnail_delete_to_end()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_exit_visual)
         \ :<C-u>call <SID>thumbnail_exit_visual()<CR>
 
@@ -252,7 +254,7 @@ function! s:thumbnail_mapping()
   nmap <buffer> V <Plug>(thumbnail_start_line_visual)
   nmap <buffer> <C-v> <Plug>(thumbnail_start_block_visual)
   nmap <buffer> d <Plug>(thumbnail_start_delete)
-  nmap <buffer> D d$
+  nmap <buffer> D <Plug>(thumbnail_delete_to_end)
   nmap <buffer> <ESC> <Plug>(thumbnail_exit_visual)
   nmap <buffer> <CR> <Plug>(thumbnail_select)
   nmap <buffer> <SPACE> <CR>
@@ -620,12 +622,13 @@ function! s:thumbnail_line_last()
     let b.prev_j = b.select_j
     let b.select_j = b.num_width - 1
     let b.to_end = 1
+    let b.line_move = 0
   elseif s:thumbnail_exists(b.select_i,
         \ len(b.bufs) - b.select_i * b.num_width - 1)
     let b.prev_j = b.select_j
     let b.select_j = len(b.bufs) - b.select_i * b.num_width - 1
-    let b.line_move = 0
     let b.to_end = 1
+    let b.line_move = 0
   endif
   call s:updatethumbnail()
 endfunction
@@ -992,7 +995,7 @@ function! s:thumbnail_close(direction)
   let b = b:thumbnail
   if b.visual_mode
     let r = 0
-    if len(b.visual_selects) > 1
+    if len(b.visual_selects) > 1 && b.visual_mode == 4
       if b.line_move == 0
         if b.visual_selects[0] > b.visual_selects[-1]
           " Case: dh, db, d^
@@ -1004,17 +1007,26 @@ function! s:thumbnail_close(direction)
       endif
     endif
     for i in b.visual_selects
-      if s:thumbnail_exists(i / b.num_width, i % b.num_width)
-        let r = s:close_buffer(b.bufs[i].bufnr, 1, r)
-        if r == 2
-          let b.visual_mode = 0
-          call s:thumbnail_select(i)
-          return 1
-        endif
+      let r = s:close_buffer(b.bufs[i].bufnr, 1, r)
+      if r == 2
+        let b.visual_mode = 0
+        call s:thumbnail_select(i)
+        return 1
       endif
     endfor
     redraw | echo ''
   else
+    if v:count > 1
+      call s:thumbnail_start_visual(4)
+      if a:direction
+        call s:thumbnail_left()
+      elseif b.select_j + v:count > b.num_width
+        call s:thumbnail_line_last()
+      else
+        call s:thumbnail_right()
+      endif
+      return
+    endif
     let i = b.select_i * b.num_width + b.select_j
     if s:thumbnail_exists(b.select_i, b.select_j)
       let r = s:close_buffer(b.bufs[i].bufnr, 0, 0)
@@ -1063,6 +1075,41 @@ function! s:thumbnail_start_visual(mode)
   else
     call s:updatethumbnail()
   endif
+endfunction
+
+function! s:thumbnail_delete_to_end()
+  if !exists('b:thumbnail')
+    return
+  endif
+  let b = b:thumbnail
+  if b.visual_mode && b.visual_mode != 4
+    for i in range(b.num_height)
+      let f = 0
+      for j in range(min([b.num_width, len(b.bufs) - i * b.num_width]))
+        let idx = i * b.num_width + j
+        let c = index(b.visual_selects, idx)
+        if f == 0 && c != -1
+          let f = 1
+        endif
+        if f == 1 && c == -1
+          call extend(b.visual_selects, [ idx ])
+        endif
+      endfor
+    endfor
+    let b.line_move = 1
+    call s:thumbnail_close(0)
+  else
+    " Case: D
+    call s:thumbnail_start_visual(4)
+    if v:count > 1
+      " Case: [count]D
+      let b.select_i = min([b.select_i + v:count - 1, b.num_height - 1])
+      let b.select_j = 0
+    endif
+    call s:thumbnail_line_last()
+  endif
+  call s:thumbnail_exit_visual()
+  call s:updatethumbnail()
 endfunction
 
 function! s:thumbnail_exit_visual()
