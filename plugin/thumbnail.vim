@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/26 20:42:51.
+" Last Change: 2013/03/26 20:47:06.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -345,7 +345,7 @@ function! s:thumbnail_new()
   call s:thumbnail_init(isnewtab)
   augroup Thumbnail
     autocmd!
-    autocmd BufEnter,CursorHoldI,CursorHold,BufWritePost,VimResized *
+    autocmd BufEnter,CursorHoldI,BufWritePost,VimResized *
           \ call s:update_visible_thumbnail(expand('<abuf>'))
   augroup END
   augroup ThumbnailBuffer
