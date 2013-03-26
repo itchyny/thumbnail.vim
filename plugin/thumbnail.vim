@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/26 20:47:06.
+" Last Change: 2013/03/26 21:26:17.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -373,6 +373,7 @@ function! s:updatethumbnail()
   let b = b:thumbnail
   let after_visual_mode = b.visual_mode == 4
   if b.visual_mode == 4
+    " Case: d{motion}, [count]d{motion}, {Visual}d, dd, [count]dd
     let r = s:thumbnail_close(0)
     call s:thumbnail_exit_visual()
     if r | return | endif
@@ -994,8 +995,10 @@ function! s:thumbnail_close(direction)
     if len(b.visual_selects) > 1
       if b.line_move == 0
         if b.visual_selects[0] > b.visual_selects[-1]
+          " Case: dh, db, d^
           call remove(b.visual_selects, 0)
         elseif b.to_end == 0
+          " Case: dl, dw (but not d$)
           call remove(b.visual_selects, -1)
         endif
       endif
@@ -1037,9 +1040,12 @@ function! s:thumbnail_start_visual(mode)
   endif
   let b = b:thumbnail
   if b.visual_mode && a:mode == 4
+    " Case: {Visual}d
     if b.visual_mode == 4
+      " Case: dd
       call s:thumbnail_start_visual(2)
       if b.v_count
+        " Case: [count]dd
         call s:thumbnail_down(b.v_count - 1)
       endif
       call s:update_visual_selects()
