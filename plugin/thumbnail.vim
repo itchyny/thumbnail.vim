@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/27 22:58:26.
+" Last Change: 2013/03/27 23:20:13.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -365,7 +365,7 @@ function! s:thumbnail_init(isnewtab)
   endif
 endfunction
 
-function! s:thumbnail_new()
+function! s:new()
   let isnewtab = 0
   if bufname('%') != '' || &modified
     tabnew
@@ -410,7 +410,6 @@ function! s:update()
   if len(b.bufs) == 0
     return
   endif
-  setlocal modifiable noreadonly
   if b.height != winheight(0) || b.width != winwidth(0) || after_visual_mode
     let b = s:init_buffer(1)
     if len(b.bufs) == 0
@@ -419,6 +418,7 @@ function! s:update()
     let b:thumbnail = s:thumbnail_unsave(b)
     let b = b:thumbnail
   endif
+  setlocal modifiable noreadonly
   let b.v_count = 0
   let b.selection = 0
   let b.to_end = 0
@@ -429,13 +429,10 @@ function! s:update()
         \ * b.num_width)
   let right_white = repeat(' ', winwidth(0) - len(line_white) - 4)
         \ . b.marker_last
-  for j in range(b.margin_top)
-    call add(s, line_white . right_white)
-  endfor
+  let line_white .= right_white
+  call extend(s, repeat([line_white], b.margin_top))
   for i in range(b.num_height)
-    for j in range(b.offset_top)
-      call add(s, line_white . right_white)
-    endfor
+    call extend(s, repeat([line_white], b.offset_top))
     for k in range(b.thumbnail_height)
       let ss = ''
       for j in range(b.num_width)
@@ -447,9 +444,7 @@ function! s:update()
           let contents = thumbnail_white
         endif
         if b.visual_mode && index(b.visual_selects, m) != -1
-          let l = b.marker_left_select
-          let r = b.marker_right_select
-        elseif b.select_i == i && b.select_j == j
+              \ || b.select_i == i && b.select_j == j
           let l = b.marker_left_select
           let r = b.marker_right_select
         else
@@ -461,11 +456,8 @@ function! s:update()
       call add(s, ss . right_white)
     endfor
   endfor
-  for j in range(b.margin_bottom)
-    call add(s, line_white . right_white)
-  endfor
+  call extend(s, repeat([line_white], b.margin_bottom))
   call s:redraw_buffer_with(s)
-  unlet s
   call setline(1, b.input)
   call s:set_cursor()
   setlocal nomodifiable buftype=nofile noswapfile readonly nonumber
@@ -1410,7 +1402,7 @@ endfunction
 
 " }}}
 
-command! Thumbnail call s:thumbnail_new()
+command! Thumbnail call s:new()
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
