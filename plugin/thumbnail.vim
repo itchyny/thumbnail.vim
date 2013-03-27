@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/27 20:52:32.
+" Last Change: 2013/03/27 21:05:12.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -399,6 +399,9 @@ function! s:updatethumbnail()
     let r = s:thumbnail_close(0)
     call s:thumbnail_exit_visual()
     if r | return | endif
+  endif
+  if len(b.bufs) == 0
+    return
   endif
   setlocal modifiable noreadonly
   silent % delete _
@@ -1242,8 +1245,15 @@ function! s:update_filter()
   else
     " No match
     silent % delete _
-    call setline(1, input)
-    call setline(3, 'no buffer')
+    let s = []
+    call add(s, input)
+    for i in range(max([(winheight(0) - 3) / 2, 0]))
+      call add(s, '')
+    endfor
+    let mes = 'No buffer'
+    call add(s, repeat(' ', (winwidth(0) - len(mes)) / 2) . mes)
+    silent call setline(1, s[0])
+    silent call append('.', s[1:])
     call s:start_insert()
   endif
 endfunction
