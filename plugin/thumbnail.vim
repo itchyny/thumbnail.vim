@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/27 22:20:03.
+" Last Change: 2013/03/27 22:58:26.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -35,11 +35,10 @@ function! s:redraw_buffer_with(s)
   endif
 endfunction
 
-function! s:init_buffer(isnewtab, words, ...)
+function! s:init_buffer(isnewtab, ...)
   let b = {}
   let b.bufs = []
   let b.input = ''
-  let b.words = a:words
   let b.bufs = get(a:000, 0, s:gather_buffers())
   if len(b.bufs) == 0
     if a:isnewtab
@@ -280,7 +279,6 @@ function! s:thumbnail_mapping()
   nmap <buffer> d <Plug>(thumbnail_start_delete)
   nmap <buffer> D <Plug>(thumbnail_delete_to_end)
   nmap <buffer> <ESC> <Plug>(thumbnail_exit_visual)
-  " nmap <buffer> i <Plug>(thumbnail_start_insert)
   nmap <buffer> <CR> <Plug>(thumbnail_select)
   nmap <buffer> <SPACE> <CR>
   nmap <buffer> x <Plug>(thumbnail_close)
@@ -289,8 +287,9 @@ function! s:thumbnail_mapping()
   nmap <buffer> <C-l> <Plug>(thumbnail_redraw)
   nmap <buffer> q <Plug>(thumbnail_exit)
 
-  " imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
-  " imap <buffer> <CR> <Plug>(thumbnail_select_insert)
+  nmap <buffer> i <Plug>(thumbnail_start_insert)
+  imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
+  imap <buffer> <CR> <Plug>(thumbnail_select_insert)
 
 endfunction
 
@@ -359,7 +358,7 @@ function! s:thumbnail_unsave(b)
 endfunction
 
 function! s:thumbnail_init(isnewtab)
-  let b = s:init_buffer(a:isnewtab, [])
+  let b = s:init_buffer(a:isnewtab)
   if len(b.bufs) > 0
     let b:thumbnail = s:thumbnail_unsave(b)
     silent call s:update()
@@ -413,7 +412,7 @@ function! s:update()
   endif
   setlocal modifiable noreadonly
   if b.height != winheight(0) || b.width != winwidth(0) || after_visual_mode
-    let b = s:init_buffer(1, b.words)
+    let b = s:init_buffer(1)
     if len(b.bufs) == 0
       return
     endif
@@ -1239,7 +1238,10 @@ function! s:update_filter()
       call add(white, bufs[i])
     endif
   endfor
-  let b = s:init_buffer(0, words, white)
+  let b = s:init_buffer(0, white)
+  let input = substitute(input, '^ *', '', '')
+  let input = repeat(' ',
+        \ (winwidth(0) - max([s:wcswidth(input), winwidth(0) / 8])) / 2) . input
   let b.input = input
   let b.prev_bufs = bufs
   let b:thumbnail = b
