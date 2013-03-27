@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/27 23:20:13.
+" Last Change: 2013/03/27 23:28:42.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -379,7 +379,9 @@ function! s:new()
   augroup END
   augroup ThumbnailBuffer
     autocmd BufLeave,WinLeave <buffer>
-          \ if exists('b:thumbnail') | call s:set_cursor() | endif
+          \   if exists('b:thumbnail')
+          \ |   call s:set_cursor()
+          \ | endif
     autocmd BufEnter <buffer>
           \   call s:revive_thumbnail()
           \ | if exists('b:thumbnail') && !b:thumbnail.visual_mode
