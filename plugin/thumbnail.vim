@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/27 21:13:18.
+" Last Change: 2013/03/27 22:06:36.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -155,67 +155,67 @@ endfunction
 function! s:thumbnail_mapping()
 
   nnoremap <buffer><silent> <Plug>(thumbnail_move_left)
-        \ :<C-u>call <SID>thumbnail_left()<CR>
+        \ :<C-u>call <SID>move_left()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_right)
-        \ :<C-u>call <SID>thumbnail_right()<CR>
+        \ :<C-u>call <SID>move_right()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_down)
-        \ :<C-u>call <SID>thumbnail_down()<CR>
+        \ :<C-u>call <SID>move_down()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_up)
-        \ :<C-u>call <SID>thumbnail_up()<CR>
+        \ :<C-u>call <SID>move_up()<CR>
 
   nnoremap <buffer><silent> <Plug>(thumbnail_move_next)
-        \ :<C-u>call <SID>thumbnail_next()<CR>
+        \ :<C-u>call <SID>move_next()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_prev)
-        \ :<C-u>call <SID>thumbnail_prev()<CR>
+        \ :<C-u>call <SID>move_prev()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_line_head)
-        \ :<C-u>call <SID>thumbnail_line_head()<CR>
+        \ :<C-u>call <SID>move_line_head()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_line_middle)
-        \ :<C-u>call <SID>thumbnail_line_middle()<CR>
+        \ :<C-u>call <SID>move_line_middle()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_line_last)
-        \ :<C-u>call <SID>thumbnail_line_last()<CR>
+        \ :<C-u>call <SID>move_line_last()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_head)
-        \ :<C-u>call <SID>thumbnail_head()<CR>
+        \ :<C-u>call <SID>move_head()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_last)
-        \ :<C-u>call <SID>thumbnail_last()<CR>
+        \ :<C-u>call <SID>move_last()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_count_line_last_last)
-        \ :<C-u>call <SID>thumbnail_line_G_last()<CR>
+        \ :<C-u>call <SID>move_line_G_last()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_last_line_head)
-        \ :<C-u>call <SID>thumbnail_last_line()<CR>
+        \ :<C-u>call <SID>move_last_line()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_count_line_first)
-        \ :<C-u>call <SID>thumbnail_line_gg()<CR>
+        \ :<C-u>call <SID>move_line_gg()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_count_line_last)
-        \ :<C-u>call <SID>thumbnail_line_G()<CR>
+        \ :<C-u>call <SID>move_line_G()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_column)
-        \ :<C-u>call <SID>thumbnail_column()<CR>
+        \ :<C-u>call <SID>move_column()<CR>
 
   nnoremap <buffer><silent> <Plug>(thumbnail_select)
-        \ :<C-u>call <SID>thumbnail_select()<CR>
+        \ :<C-u>call <SID>select()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_close)
-        \ :<C-u>call <SID>thumbnail_close(0)<CR>
+        \ :<C-u>call <SID>close(0)<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_close_backspace)
-        \ :<C-u>call <SID>thumbnail_close(1)<CR>
+        \ :<C-u>call <SID>close(1)<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_exit)
         \ :<C-u>bdelete!<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_redraw)
         \ :<C-u>call <SID>update_current_thumbnail()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_start_visual)
-        \ :<C-u>call <SID>thumbnail_start_visual(1)<CR>
+        \ :<C-u>call <SID>start_visual(1)<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_start_line_visual)
-        \ :<C-u>call <SID>thumbnail_start_visual(2)<CR>
+        \ :<C-u>call <SID>start_visual(2)<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_start_block_visual)
-        \ :<C-u>call <SID>thumbnail_start_visual(3)<CR>
+        \ :<C-u>call <SID>start_visual(3)<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_start_delete)
-        \ :<C-u>call <SID>thumbnail_start_visual(4)<CR>
+        \ :<C-u>call <SID>start_visual(4)<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_delete_to_end)
-        \ :<C-u>call <SID>thumbnail_delete_to_end()<CR>
+        \ :<C-u>call <SID>delete_to_end()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_start_insert)
         \ :<C-u>call <SID>start_insert()<CR>
   inoremap <buffer><silent> <Plug>(thumbnail_exit_insert)
         \ <ESC>:<C-u>call <SID>exit_insert()<CR>
   inoremap <buffer><silent> <Plug>(thumbnail_select_insert)
-        \ <ESC>:<C-u>call <SID>thumbnail_select()<CR>
+        \ <ESC>:<C-u>call <SID>select()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_exit_visual)
-        \ :<C-u>call <SID>thumbnail_exit_visual()<CR>
+        \ :<C-u>call <SID>exit_visual()<CR>
 
   nmap <buffer> h <Plug>(thumbnail_move_left)
   nmap <buffer> l <Plug>(thumbnail_move_right)
@@ -270,7 +270,7 @@ function! s:thumbnail_mapping()
   nnoremap <buffer><silent> <LeftRelease> <LeftMouse>
         \ :<C-u>call <SID>drag_select()<CR>
   nnoremap <buffer><silent> <2-LeftMouse> <LeftMouse>
-        \ :<C-u>call <SID>thumbnail_mouse_select()<CR>
+        \ :<C-u>call <SID>mouse_select()<CR>
   map <buffer> <ScrollWheelUp> w
   map <buffer> <ScrollWheelDown> b
 
@@ -362,7 +362,7 @@ function! s:thumbnail_init(isnewtab)
   let b = s:init_buffer(a:isnewtab, [])
   if len(b.bufs) > 0
     let b:thumbnail = s:thumbnail_unsave(b)
-    silent call s:updatethumbnail()
+    silent call s:update()
   endif
 endfunction
 
@@ -388,14 +388,14 @@ function! s:thumbnail_new()
           \ | endif
     autocmd WinEnter,WinLeave,VimResized <buffer>
           \   if exists('b:thumbnail') && !b:thumbnail.selection
-          \ |   call s:updatethumbnail()
+          \ |   call s:update()
           \ | endif
     autocmd CursorMovedI <buffer>
           \ call s:update_filter()
   augroup END
 endfunction
 
-function! s:updatethumbnail()
+function! s:update()
   if !exists('b:thumbnail') " must not be revived
     return
   endif
@@ -404,8 +404,8 @@ function! s:updatethumbnail()
   let after_visual_mode = b.visual_mode == 4
   if b.visual_mode == 4
     " Case: d{motion}, [count]d{motion}, {Visual}d, dd, [count]dd
-    let r = s:thumbnail_close(0)
-    call s:thumbnail_exit_visual()
+    let r = s:close(0)
+    call s:exit_visual()
     if r | return | endif
   endif
   if len(b.bufs) == 0
@@ -528,7 +528,7 @@ function! s:update_current_thumbnail()
   call s:thumbnail_init(1)
 endfunction
 
-function! s:thumbnail_left()
+function! s:move_left()
   call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
@@ -540,10 +540,10 @@ function! s:thumbnail_left()
     let b.select_j = new_j
     let b.line_move = 0
   endif
-  call s:updatethumbnail()
+  call s:update()
 endfunction
 
-function! s:thumbnail_right()
+function! s:move_right()
   call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
@@ -557,10 +557,10 @@ function! s:thumbnail_right()
     let b.select_j = new_j
     let b.line_move = 0
   endif
-  call s:updatethumbnail()
+  call s:update()
 endfunction
 
-function! s:thumbnail_up()
+function! s:move_up()
   call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
@@ -571,10 +571,10 @@ function! s:thumbnail_up()
     let b.select_i = new_i
     let b.line_move = 1
   endif
-  call s:updatethumbnail()
+  call s:update()
 endfunction
 
-function! s:thumbnail_down(...)
+function! s:move_down(...)
   call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
@@ -590,10 +590,10 @@ function! s:thumbnail_down(...)
     let b.select_i = new_i - 1
     let b.line_move = 1
   endif
-  call s:updatethumbnail()
+  call s:update()
 endfunction
 
-function! s:thumbnail_next()
+function! s:move_next()
   call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
@@ -608,10 +608,10 @@ function! s:thumbnail_next()
     let b.select_j = new_j
     let b.line_move = 0
   endif
-  call s:updatethumbnail()
+  call s:update()
 endfunction
 
-function! s:thumbnail_prev()
+function! s:move_prev()
   call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
@@ -626,10 +626,10 @@ function! s:thumbnail_prev()
     let b.select_j = new_j
     let b.line_move = 0
   endif
-  call s:updatethumbnail()
+  call s:update()
 endfunction
 
-function! s:thumbnail_line_head()
+function! s:move_line_head()
   call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
@@ -640,10 +640,10 @@ function! s:thumbnail_line_head()
     let b.select_j = 0
     let b.line_move = 0
   endif
-  call s:updatethumbnail()
+  call s:update()
 endfunction
 
-function! s:thumbnail_line_last()
+function! s:move_line_last()
   call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
@@ -661,10 +661,10 @@ function! s:thumbnail_line_last()
     let b.to_end = 1
     let b.line_move = 0
   endif
-  call s:updatethumbnail()
+  call s:update()
 endfunction
 
-function! s:thumbnail_line_middle()
+function! s:move_line_middle()
   call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
@@ -680,10 +680,10 @@ function! s:thumbnail_line_middle()
     let b.select_j = len(b.bufs) - b.select_i * b.num_width - 1
     let b.line_move = 0
   endif
-  call s:updatethumbnail()
+  call s:update()
 endfunction
 
-function! s:thumbnail_head()
+function! s:move_head()
   call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
@@ -694,10 +694,10 @@ function! s:thumbnail_head()
     let b.select_j = 0
     let b.line_move = 1
   endif
-  call s:updatethumbnail()
+  call s:update()
 endfunction
 
-function! s:thumbnail_last()
+function! s:move_last()
   call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
@@ -709,15 +709,15 @@ function! s:thumbnail_last()
     let b.select_j = len(b.bufs) - (b.num_height - 1) * b.num_width - 1
     let b.line_move = 0
   endif
-  call s:updatethumbnail()
+  call s:update()
 endfunction
 
-function! s:thumbnail_line_G_last()
-  silent call s:thumbnail_line_G()
-  silent call s:thumbnail_line_last()
+function! s:move_line_G_last()
+  silent call s:move_line_G()
+  silent call s:move_line_last()
 endfunction
 
-function! s:thumbnail_last_line()
+function! s:move_last_line()
   call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
@@ -728,10 +728,10 @@ function! s:thumbnail_last_line()
     let b.select_j = 0
     let b.line_move = 1
   endif
-  call s:updatethumbnail()
+  call s:update()
 endfunction
 
-function! s:thumbnail_line_gg()
+function! s:move_line_gg()
   call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
@@ -745,10 +745,10 @@ function! s:thumbnail_line_gg()
     let b.select_j = 0
     let b.line_move = 1
   endif
-  call s:updatethumbnail()
+  call s:update()
 endfunction
 
-function! s:thumbnail_line_G()
+function! s:move_line_G()
   call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
@@ -762,10 +762,10 @@ function! s:thumbnail_line_G()
     let b.select_j = 0
     let b.line_move = 1
   endif
-  call s:updatethumbnail()
+  call s:update()
 endfunction
 
-function! s:thumbnail_column()
+function! s:move_column()
   call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
@@ -779,7 +779,7 @@ function! s:thumbnail_column()
     let b.select_j = new_j
     let b.line_move = 0
   endif
-  call s:updatethumbnail()
+  call s:update()
 endfunction
 
 function! s:thumbnail_exists(i, j)
@@ -844,7 +844,7 @@ function! s:update_select(savepos)
     let b.select_i = ij.i
     let b.select_j = ij.j
     let pos = getpos('.')
-    silent call s:updatethumbnail()
+    silent call s:update()
     if a:savepos
       silent call setpos('.', pos)
     endif
@@ -879,17 +879,17 @@ function! s:drag_select()
     endif
     let b.select_i = ij.i
     let b.select_j = ij.j
-    silent call s:updatethumbnail()
+    silent call s:update()
     return 0
   else
     return -1
   endif
 endfunction
 
-function! s:thumbnail_mouse_select()
+function! s:mouse_select()
   let r = s:update_select(0)
   if r == 0
-    silent call s:thumbnail_select()
+    silent call s:select()
   endif
 endfunction
 
@@ -940,13 +940,13 @@ function! s:open_buffer_tabs(nrs)
   endif
 endfunction
 
-function! s:thumbnail_select(...)
+function! s:select(...)
   if !exists('b:thumbnail')
     let prev_first_line = substitute(getline(line('.'))[col('.') - 1:],
           \ '|\].*', '', '')
     call s:revive_thumbnail()
     if exists('b:thumbnail')
-      call s:updatethumbnail()
+      call s:update()
       let new_first_line = substitute(getline(line('.'))[col('.') - 1:],
             \ '|\].*', '', '')
       let l = min([len(prev_first_line), len(new_first_line)])
@@ -1018,7 +1018,7 @@ function! s:close_buffer(nr, multiple, type)
   endif
 endfunction
 
-function! s:thumbnail_close(direction)
+function! s:close(direction)
   if !exists('b:thumbnail')
     return 0
   endif
@@ -1041,20 +1041,20 @@ function! s:thumbnail_close(direction)
       let r = s:close_buffer(b.bufs[i].bufnr, 1, r)
       if r == 2
         let b.visual_mode = 0
-        call s:thumbnail_select(i)
+        call s:select(i)
         return 1
       endif
     endfor
     redraw | echo ''
   else
     if v:count > 1
-      call s:thumbnail_start_visual(4)
+      call s:start_visual(4)
       if a:direction
-        call s:thumbnail_left()
+        call s:move_left()
       elseif b.select_j + v:count > b.num_width
-        call s:thumbnail_line_last()
+        call s:move_line_last()
       else
-        call s:thumbnail_right()
+        call s:move_right()
       endif
       return
     endif
@@ -1062,7 +1062,7 @@ function! s:thumbnail_close(direction)
     if s:thumbnail_exists(b.select_i, b.select_j)
       let r = s:close_buffer(b.bufs[i].bufnr, 0, 0)
       if r == 2
-        call s:thumbnail_select(i)
+        call s:select(i)
         return 1
       endif
     endif
@@ -1076,7 +1076,7 @@ function! s:thumbnail_close(direction)
   endif
 endfunction
 
-function! s:thumbnail_start_visual(mode)
+function! s:start_visual(mode)
   call s:revive_thumbnail()
   if !exists('b:thumbnail')
     return
@@ -1086,16 +1086,16 @@ function! s:thumbnail_start_visual(mode)
     " Case: {Visual}d
     if b.visual_mode == 4
       " Case: dd
-      call s:thumbnail_start_visual(2)
+      call s:start_visual(2)
       if b.v_count
         " Case: [count]dd
-        call s:thumbnail_down(b.v_count - 1)
+        call s:move_down(b.v_count - 1)
       endif
       call s:update_visual_selects()
     endif
     let b.visual_mode = a:mode
     let b.line_move = 3 " not update visual selection
-    call s:updatethumbnail()
+    call s:update()
     return
   endif
   let b.visual_mode = a:mode
@@ -1104,11 +1104,11 @@ function! s:thumbnail_start_visual(mode)
   if a:mode == 4
     let b.v_count = v:count
   else
-    call s:updatethumbnail()
+    call s:update()
   endif
 endfunction
 
-function! s:thumbnail_delete_to_end()
+function! s:delete_to_end()
   if !exists('b:thumbnail')
     return
   endif
@@ -1128,29 +1128,29 @@ function! s:thumbnail_delete_to_end()
       endfor
     endfor
     let b.line_move = 1
-    call s:thumbnail_close(0)
+    call s:close(0)
   else
     " Case: D
-    call s:thumbnail_start_visual(4)
+    call s:start_visual(4)
     if v:count > 1
       " Case: [count]D
       let b.select_i = min([b.select_i + v:count - 1, b.num_height - 1])
       let b.select_j = 0
     endif
-    call s:thumbnail_line_last()
+    call s:move_line_last()
   endif
-  call s:thumbnail_exit_visual()
-  call s:updatethumbnail()
+  call s:exit_visual()
+  call s:update()
 endfunction
 
-function! s:thumbnail_exit_visual()
+function! s:exit_visual()
   if !exists('b:thumbnail')
     return
   endif
   let b = b:thumbnail
   let b.visual_mode = 0
   let b.visual_selects = []
-  call s:updatethumbnail()
+  call s:update()
 endfunction
 
 function! s:add_visual_ij(i, j)
@@ -1246,7 +1246,7 @@ function! s:update_filter()
   " let b:thumbnail = s:thumbnail_unsave(b)
   if len(white) > 0
     " let b:thumbnail = s:thumbnail_unsave(b)
-    call s:updatethumbnail()
+    call s:update()
     call s:start_insert()
   else
     " No match
@@ -1268,7 +1268,7 @@ function! s:exit_insert()
   endif
   let b = b:thumbnail
   let b.insert_mode = 0
-  call s:updatethumbnail()
+  call s:update()
 endfunction
 
 function! s:revive_thumbnail()
