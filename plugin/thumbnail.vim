@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/27 22:06:36.
+" Last Change: 2013/03/27 22:20:03.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -280,7 +280,7 @@ function! s:thumbnail_mapping()
   nmap <buffer> d <Plug>(thumbnail_start_delete)
   nmap <buffer> D <Plug>(thumbnail_delete_to_end)
   nmap <buffer> <ESC> <Plug>(thumbnail_exit_visual)
-  nmap <buffer> i <Plug>(thumbnail_start_insert)
+  " nmap <buffer> i <Plug>(thumbnail_start_insert)
   nmap <buffer> <CR> <Plug>(thumbnail_select)
   nmap <buffer> <SPACE> <CR>
   nmap <buffer> x <Plug>(thumbnail_close)
@@ -289,8 +289,8 @@ function! s:thumbnail_mapping()
   nmap <buffer> <C-l> <Plug>(thumbnail_redraw)
   nmap <buffer> q <Plug>(thumbnail_exit)
 
-  imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
-  imap <buffer> <CR> <Plug>(thumbnail_select_insert)
+  " imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
+  " imap <buffer> <CR> <Plug>(thumbnail_select_insert)
 
 endfunction
 
