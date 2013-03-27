@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/27 21:05:12.
+" Last Change: 2013/03/27 21:13:18.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -23,6 +23,16 @@ endfunction
 
 function! s:escape(dir)
   return escape(a:dir, '.$*')
+endfunction
+
+function! s:redraw_buffer_with(s)
+  silent % delete _
+  if len(a:s)
+    call setline(1, a:s[0])
+    if len(a:s) > 1
+      call append('.', a:s[1:])
+    endif
+  endif
 endfunction
 
 function! s:init_buffer(isnewtab, words, ...)
@@ -382,8 +392,6 @@ function! s:thumbnail_new()
           \ | endif
     autocmd CursorMovedI <buffer>
           \ call s:update_filter()
-    " autocmd CursorMoved <buffer>
-    "       \ silent call s:update_select(1)
   augroup END
 endfunction
 
@@ -404,7 +412,6 @@ function! s:updatethumbnail()
     return
   endif
   setlocal modifiable noreadonly
-  silent % delete _
   if b.height != winheight(0) || b.width != winwidth(0) || after_visual_mode
     let b = s:init_buffer(1, b.words)
     if len(b.bufs) == 0
@@ -458,11 +465,10 @@ function! s:updatethumbnail()
   for j in range(b.margin_bottom)
     call add(s, line_white . right_white)
   endfor
-  silent call setline(1, s[0])
-  silent call append('.', s[1:])
+  call s:redraw_buffer_with(s)
   unlet s
-  silent call setline(1, b.input)
-  silent call s:set_cursor()
+  call setline(1, b.input)
+  call s:set_cursor()
   setlocal nomodifiable buftype=nofile noswapfile readonly nonumber
         \ bufhidden=hide nobuflisted filetype=thumbnail
         \ nofoldenable foldcolumn=0 nolist nowrap concealcursor=nvic
@@ -485,7 +491,7 @@ function! s:set_cursor()
       let offset += 4
     endif
   endfor
-  silent call cursor(b.margin_top
+  call cursor(b.margin_top
         \ + b.select_i * (b.offset_top + b.thumbnail_height)
         \ + b.offset_top + 1, offset + b.offset_left + 3 + b.conceal * 2) 
 endfunction
@@ -1244,7 +1250,6 @@ function! s:update_filter()
     call s:start_insert()
   else
     " No match
-    silent % delete _
     let s = []
     call add(s, input)
     for i in range(max([(winheight(0) - 3) / 2, 0]))
@@ -1252,8 +1257,7 @@ function! s:update_filter()
     endfor
     let mes = 'No buffer'
     call add(s, repeat(' ', (winwidth(0) - len(mes)) / 2) . mes)
-    silent call setline(1, s[0])
-    silent call append('.', s[1:])
+    call s:redraw_buffer_with(s)
     call s:start_insert()
   endif
 endfunction
