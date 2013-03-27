@@ -3,22 +3,34 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/27 08:49:23.
+" Last Change: 2013/03/27 20:52:32.
 " =============================================================================
 
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! s:init_buffer(isnewtab)
-  let b = {}
-  let b.bufs = []
+function! s:gather_buffers()
+  let bufs = []
   for i in range(1, bufnr('$'))
     if (len(bufname(i)) == 0 && (!bufexists(i) || !bufloaded(i)
           \ || !getbufvar(i, '&modified'))) || !buflisted(i)
       continue
     endif
-    call add(b.bufs, { 'bufnr': i })
+    call add(bufs, { 'bufnr': i })
   endfor
+  return bufs
+endfunction
+
+function! s:escape(dir)
+  return escape(a:dir, '.$*')
+endfunction
+
+function! s:init_buffer(isnewtab, words, ...)
+  let b = {}
+  let b.bufs = []
+  let b.input = ''
+  let b.words = a:words
+  let b.bufs = get(a:000, 0, s:gather_buffers())
   if len(b.bufs) == 0
     if a:isnewtab
       silent bdelete!
@@ -36,10 +48,6 @@ function! s:init_buffer(isnewtab)
   call s:thumbnail_marker(b)
   call s:thumbnail_mapping()
   return b
-endfunction
-
-function! s:escape(dir)
-  return escape(a:dir, '.$*')
 endfunction
 
 function! s:get_contents(nr, width, height)
@@ -190,6 +198,12 @@ function! s:thumbnail_mapping()
         \ :<C-u>call <SID>thumbnail_start_visual(4)<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_delete_to_end)
         \ :<C-u>call <SID>thumbnail_delete_to_end()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_start_insert)
+        \ :<C-u>call <SID>start_insert()<CR>
+  inoremap <buffer><silent> <Plug>(thumbnail_exit_insert)
+        \ <ESC>:<C-u>call <SID>exit_insert()<CR>
+  inoremap <buffer><silent> <Plug>(thumbnail_select_insert)
+        \ <ESC>:<C-u>call <SID>thumbnail_select()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_exit_visual)
         \ :<C-u>call <SID>thumbnail_exit_visual()<CR>
 
@@ -256,6 +270,7 @@ function! s:thumbnail_mapping()
   nmap <buffer> d <Plug>(thumbnail_start_delete)
   nmap <buffer> D <Plug>(thumbnail_delete_to_end)
   nmap <buffer> <ESC> <Plug>(thumbnail_exit_visual)
+  nmap <buffer> i <Plug>(thumbnail_start_insert)
   nmap <buffer> <CR> <Plug>(thumbnail_select)
   nmap <buffer> <SPACE> <CR>
   nmap <buffer> x <Plug>(thumbnail_close)
@@ -263,6 +278,9 @@ function! s:thumbnail_mapping()
   nmap <buffer> X <Plug>(thumbnail_close_backspace)
   nmap <buffer> <C-l> <Plug>(thumbnail_redraw)
   nmap <buffer> q <Plug>(thumbnail_exit)
+
+  imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
+  imap <buffer> <CR> <Plug>(thumbnail_select_insert)
 
 endfunction
 
@@ -331,7 +349,7 @@ function! s:thumbnail_unsave(b)
 endfunction
 
 function! s:thumbnail_init(isnewtab)
-  let b = s:init_buffer(a:isnewtab)
+  let b = s:init_buffer(a:isnewtab, [])
   if len(b.bufs) > 0
     let b:thumbnail = s:thumbnail_unsave(b)
     silent call s:updatethumbnail()
@@ -347,7 +365,7 @@ function! s:thumbnail_new()
   call s:thumbnail_init(isnewtab)
   augroup Thumbnail
     autocmd!
-    autocmd BufEnter,CursorHoldI,BufWritePost,VimResized *
+    autocmd BufEnter,CursorHold,CursorHoldI,BufWritePost,VimResized *
           \ call s:update_visible_thumbnail(expand('<abuf>'))
   augroup END
   augroup ThumbnailBuffer
@@ -362,6 +380,8 @@ function! s:thumbnail_new()
           \   if exists('b:thumbnail') && !b:thumbnail.selection
           \ |   call s:updatethumbnail()
           \ | endif
+    autocmd CursorMovedI <buffer>
+          \ call s:update_filter()
     " autocmd CursorMoved <buffer>
     "       \ silent call s:update_select(1)
   augroup END
@@ -383,7 +403,7 @@ function! s:updatethumbnail()
   setlocal modifiable noreadonly
   silent % delete _
   if b.height != winheight(0) || b.width != winwidth(0) || after_visual_mode
-    let b = s:init_buffer(1)
+    let b = s:init_buffer(1, b.words)
     if len(b.bufs) == 0
       return
     endif
@@ -438,6 +458,7 @@ function! s:updatethumbnail()
   silent call setline(1, s[0])
   silent call append('.', s[1:])
   unlet s
+  silent call setline(1, b.input)
   silent call s:set_cursor()
   setlocal nomodifiable buftype=nofile noswapfile readonly nonumber
         \ bufhidden=hide nobuflisted filetype=thumbnail
@@ -468,8 +489,9 @@ endfunction
 
 function! s:update_visible_thumbnail(bufnr)
   let nr = -1
+  let newnr = str2nr(a:bufnr)
   for buf in tabpagebuflist()
-    if type(getbufvar(buf, 'thumbnail')) == type({})
+    if type(getbufvar(buf, 'thumbnail')) == type({}) && buf != newnr
       let nr = buf
       break
     endif
@@ -1174,9 +1196,70 @@ function! s:update_visual_selects()
   endif
 endfunction
 
+function! s:start_insert()
+  if !exists('b:thumbnail')
+    return
+  endif
+  let b = b:thumbnail
+  let b.insert_mode = 1
+  setlocal modifiable noreadonly
+  call cursor(1, 1)
+  startinsert!
+  if exists('*neocomplcache#skip_next_complete')
+    call neocomplcache#skip_next_complete()
+  endif
+endfunction
+
+function! s:update_filter()
+  if !exists('b:thumbnail')
+    return
+  endif
+  let input = getline(1)
+  let words = split(input, ' ')
+  let b = b:thumbnail
+  let white = []
+  let bufs = exists('b.prev_bufs') ? b.prev_bufs : b.bufs
+  for i in range(len(bufs))
+    let f = 0
+    for w in words
+      if bufname(bufs[i].bufnr) !~? w
+        let f = 1
+      endif
+    endfor
+    if f == 0
+      call add(white, bufs[i])
+    endif
+  endfor
+  let b = s:init_buffer(0, words, white)
+  let b.input = input
+  let b.prev_bufs = bufs
+  let b:thumbnail = b
+  " let b:thumbnail = s:thumbnail_unsave(b)
+  if len(white) > 0
+    " let b:thumbnail = s:thumbnail_unsave(b)
+    call s:updatethumbnail()
+    call s:start_insert()
+  else
+    " No match
+    silent % delete _
+    call setline(1, input)
+    call setline(3, 'no buffer')
+    call s:start_insert()
+  endif
+endfunction
+
+function! s:exit_insert()
+  if !exists('b:thumbnail')
+    return
+  endif
+  let b = b:thumbnail
+  let b.insert_mode = 0
+  call s:updatethumbnail()
+endfunction
+
 function! s:revive_thumbnail()
   if !exists('b:thumbnail')
-    let b = s:init_buffer(1)
+    let b = s:init_buffer(1, [])
     if len(b.bufs) > 0
       let b:thumbnail = b
       let ij = s:nearest_ij()
