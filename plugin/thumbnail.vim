@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/27 23:28:42.
+" Last Change: 2013/03/28 10:35:14.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -46,7 +46,7 @@ function! s:init_buffer(isnewtab, ...)
     endif
     return b
   endif
-  call s:thumbnail_arrangement(b)
+  call s:arrangement(b)
   for buf in b.bufs
     let c = s:get_contents(buf.bufnr, b.thumbnail_width, b.thumbnail_height)
     call extend(buf, {
@@ -54,8 +54,8 @@ function! s:init_buffer(isnewtab, ...)
           \ 'firstlinelength': len(c) > 0 ? len(c[0]) : b.thumbnail_width - 4
           \ })
   endfor
-  call s:thumbnail_marker(b)
-  call s:thumbnail_mapping()
+  call s:marker(b)
+  call s:mapping()
   return b
 endfunction
 
@@ -87,7 +87,7 @@ function! s:get_contents(nr, width, height)
   return contents
 endfunction
 
-function! s:thumbnail_arrangement(b)
+function! s:arrangement(b)
   let b = a:b
   let l = len(b.bufs)
   let b.height = winheight(0)
@@ -129,7 +129,7 @@ function! s:thumbnail_arrangement(b)
   return b
 endfunction
 
-function! s:thumbnail_marker(b)
+function! s:marker(b)
   let b = a:b
   if has('conceal')
       \ && winwidth(0) > (b.num_width - 1)
@@ -151,7 +151,7 @@ function! s:thumbnail_marker(b)
   return b
 endfunction
 
-function! s:thumbnail_mapping()
+function! s:mapping()
 
   nnoremap <buffer><silent> <Plug>(thumbnail_move_left)
         \ :<C-u>call <SID>move_left()<CR>
@@ -293,7 +293,7 @@ function! s:thumbnail_mapping()
 
 endfunction
 
-function! s:thumbnail_unsave(b)
+function! s:unsave(b)
   if !exists('b:thumbnail')
     return a:b
   endif
@@ -360,7 +360,7 @@ endfunction
 function! s:thumbnail_init(isnewtab)
   let b = s:init_buffer(a:isnewtab)
   if len(b.bufs) > 0
-    let b:thumbnail = s:thumbnail_unsave(b)
+    let b:thumbnail = s:unsave(b)
     silent call s:update()
   endif
 endfunction
@@ -417,7 +417,7 @@ function! s:update()
     if len(b.bufs) == 0
       return
     endif
-    let b:thumbnail = s:thumbnail_unsave(b)
+    let b:thumbnail = s:unsave(b)
     let b = b:thumbnail
   endif
   setlocal modifiable noreadonly
@@ -1239,9 +1239,9 @@ function! s:update_filter()
   let b.input = input
   let b.prev_bufs = bufs
   let b:thumbnail = b
-  " let b:thumbnail = s:thumbnail_unsave(b)
+  " let b:thumbnail = s:unsave(b)
   if len(white) > 0
-    " let b:thumbnail = s:thumbnail_unsave(b)
+    " let b:thumbnail = s:unsave(b)
     call s:update()
     call s:start_insert()
   else
@@ -1269,7 +1269,7 @@ endfunction
 
 function! s:revive_thumbnail()
   if !exists('b:thumbnail')
-    let b = s:init_buffer(1, [])
+    let b = s:init_buffer(1)
     if len(b.bufs) > 0
       let b:thumbnail = b
       let ij = s:nearest_ij()
