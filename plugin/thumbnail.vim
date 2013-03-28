@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/28 15:40:46.
+" Last Change: 2013/03/28 20:49:26.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -111,10 +111,12 @@ function! s:arrangement(b)
   while l <= b.num_width * (b.num_height - 1)
     let b.num_height -= 1
   endwhile
-  let b.offset_top =
+  let b.offset_top = max([
         \ (b.height - b.num_height * b.thumbnail_height) / (b.num_height + 1)
-  let b.offset_left =
+        \ , 0])
+  let b.offset_left = max([
         \ (b.width - b.num_width * b.thumbnail_width) / (b.num_width + 1)
+        \ , 0])
   let top_bottom = b.height
         \ - (b.offset_top + b.thumbnail_height) * b.num_height
   let b.margin_top = max([(top_bottom - b.offset_top) / 2, 0])
@@ -126,6 +128,12 @@ function! s:arrangement(b)
   let b.line_move = 0
   let b.v_count = 0
   let b.to_end = 0
+  if b.offset_top > 0
+    let b.insert_pos = (b.offset_top + 1) / 2
+  else
+    let b.insert_pos = 1
+    let b.offset_top += 1
+  endif
   return b
 endfunction
 
@@ -287,9 +295,9 @@ function! s:mapping()
   nmap <buffer> <C-l> <Plug>(thumbnail_redraw)
   nmap <buffer> q <Plug>(thumbnail_exit)
 
-  nmap <buffer> i <Plug>(thumbnail_start_insert)
-  imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
-  imap <buffer> <CR> <Plug>(thumbnail_select_insert)
+  " nmap <buffer> i <Plug>(thumbnail_start_insert)
+  " imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
+  " imap <buffer> <CR> <Plug>(thumbnail_select_insert)
 
 endfunction
 
@@ -462,7 +470,7 @@ function! s:update()
   endfor
   call extend(s, repeat([line_white], b.margin_bottom))
   call s:redraw_buffer_with(s)
-  call setline(1, b.input)
+  call setline(b.insert_pos, b.input)
   call s:set_cursor()
   setlocal nomodifiable buftype=nofile noswapfile readonly nonumber
         \ bufhidden=hide nobuflisted filetype=thumbnail
@@ -1230,7 +1238,7 @@ function! s:start_insert()
   let b = b:thumbnail
   let b.insert_mode = 1
   setlocal modifiable noreadonly
-  call cursor(1, 1)
+  call cursor(b.insert_pos, 1)
   startinsert!
   if exists('*neocomplcache#skip_next_complete')
     call neocomplcache#skip_next_complete()
@@ -1241,9 +1249,10 @@ function! s:update_filter()
   if !exists('b:thumbnail')
     return
   endif
-  let input = getline(1)
-  let words = split(input, ' ')
   let b = b:thumbnail
+  let pos = b.insert_pos
+  let input = getline(pos)
+  let words = split(input, ' ')
   let white = []
   let bufs = exists('b.prev_bufs') ? b.prev_bufs : b.bufs
   for i in range(len(bufs))
@@ -1272,13 +1281,14 @@ function! s:update_filter()
   else
     " No match
     let s = []
-    call add(s, input)
-    for i in range(max([(winheight(0) - 3) / 2, 0]))
+    for i in range(max([(winheight(0) - 2) / 2, 0]))
       call add(s, '')
     endfor
     let mes = 'No buffer'
     call add(s, repeat(' ', (winwidth(0) - len(mes)) / 2) . mes)
     call s:redraw_buffer_with(s)
+    call setline(pos, input)
+    let b.insert_pos = pos
     call s:start_insert()
   endif
 endfunction
