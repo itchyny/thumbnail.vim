@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/28 10:35:14.
+" Last Change: 2013/03/28 15:40:46.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -138,7 +138,7 @@ function! s:marker(b)
     let b.marker_right_select = '|]  '
     let b.marker_left = '  [\'
     let b.marker_right = '\]  '
-    let b.marker_last = '[\\]    '
+    let b.marker_last = '    [\\]'
     let b.conceal = 1
   else
     let b.marker_left_select = '[|'
@@ -393,6 +393,8 @@ function! s:new()
           \ | endif
     autocmd CursorMovedI <buffer>
           \ call s:update_filter()
+    autocmd CursorMoved <buffer>
+          \ call s:cursor_moved()
   augroup END
 endfunction
 
@@ -883,6 +885,29 @@ function! s:mouse_select()
   let r = s:update_select(0)
   if r == 0
     silent call s:select()
+  endif
+endfunction
+
+function! s:cursor_moved()
+  if !exists('b:thumbnail')
+    return
+  endif
+  let b = b:thumbnail
+  let [n, l, c, o] = getpos('.')
+  if c > len(getline(l)) - 4 || c == b.offset_left + 3
+    " Case: :[range], d:[range]
+    let new_i = min([l - 1, b.num_height - 1])
+    let new_j = 0
+    if s:thumbnail_exists(new_i, new_j)
+      let b.select_i = new_i
+      let b.select_j = new_j
+      let b.line_move = 0
+    endif
+    if b.visual_mode < 4
+      let b.visual_mode = 0
+      let b.visual_selects = []
+    endif
+    call s:update()
   endif
 endfunction
 
