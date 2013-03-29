@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/29 10:53:46.
+" Last Change: 2013/03/29 10:55:49.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -181,14 +181,14 @@ function! s:marker(b)
     let b.marker_right_select = '|]  '
     let b.marker_left = '  [\'
     let b.marker_right = '\]  '
-    let b.marker_last = '    [\\]'
+    let b.marker_last = '    \]\]'
     let b.conceal = 1
   else
     let b.marker_left_select = '[|'
     let b.marker_right_select = '|]'
     let b.marker_left = '  '
     let b.marker_right = '  '
-    let b.marker_last = '[\\]'
+    let b.marker_last = '\]\]'
     let b.conceal = 0
   endif
   return b
