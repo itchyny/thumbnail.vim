@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/29 10:55:49.
+" Last Change: 2013/03/29 17:18:46.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -76,10 +76,10 @@ function! s:autocmds()
           \   if exists('b:thumbnail') && !b:thumbnail.selection
           \ |   call s:update()
           \ | endif
-    autocmd CursorMovedI <buffer>
-          \ call s:update_filter()
     autocmd CursorMoved <buffer>
           \ call s:cursor_moved()
+    autocmd CursorMovedI <buffer>
+          \ call s:update_filter()
   augroup END
 endfunction
 
@@ -1204,15 +1204,6 @@ function! s:exit_visual()
   let b.visual_mode = 0
   let b.visual_selects = []
   call s:update()
-endfunction
-
-function! s:add_visual_ij(i, j)
-  call s:revive_thumbnail()
-  if !exists('b:thumbnail')
-    return
-  endif
-  let b = b:thumbnail
-  call extend(b.visual_selects, [ a:i * b.num_width + a:j ])
 endfunction
 
 function! s:update_visual_selects()
