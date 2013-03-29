@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/29 10:37:12.
+" Last Change: 2013/03/29 10:53:46.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -928,7 +928,8 @@ function! s:cursor_moved()
   if has_key(b, 'cursor_x') && b.cursor_x == l && b.cursor_y == c
     return
   endif
-  if c > len(getline(l)) - 4 || c == b.offset_left + 3
+  " if c > len(getline(l)) - 4 || c == b.offset_left + 3
+  if getline('.')[:c - 2] =~? '^ *$'
     " Case: :[range], d:[range]
     let new_i = min([l - 1, b.num_height - 1])
     let new_j = 0
