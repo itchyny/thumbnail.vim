@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/29 17:18:46.
+" Last Change: 2013/03/30 01:06:34.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -49,7 +49,7 @@ function! s:new()
   endif
   call s:arrangement(b)
   call s:setcontents(b)
-  call s:marker(b)
+  let b.marker = s:marker(b)
   call s:mapping()
   let b:thumbnail = s:unsave(b)
   call s:update()
@@ -173,22 +173,22 @@ function! s:arrangement(b)
 endfunction
 
 function! s:marker(b)
-  let b = a:b
+  let b = {}
   if has('conceal')
-      \ && winwidth(0) > (b.num_width - 1)
-      \ * (b.offset_left + b.thumbnail_width + 4) + b.offset_left + 5
-    let b.marker_left_select = '  [|'
-    let b.marker_right_select = '|]  '
-    let b.marker_left = '  [\'
-    let b.marker_right = '\]  '
-    let b.marker_last = '    \]\]'
+      \ && winwidth(0) > (a:b.num_width - 1)
+      \ * (a:b.offset_left + a:b.thumbnail_width + 4) + a:b.offset_left + 5
+    let b.left_select = '  [|'
+    let b.right_select = '|]  '
+    let b.left = '  [\'
+    let b.right = '\]  '
+    let b.last = '    \]\]'
     let b.conceal = 1
   else
-    let b.marker_left_select = '[|'
-    let b.marker_right_select = '|]'
-    let b.marker_left = '  '
-    let b.marker_right = '  '
-    let b.marker_last = '\]\]'
+    let b.left_select = '[|'
+    let b.right_select = '|]'
+    let b.left = '  '
+    let b.right = '  '
+    let b.last = '\]\]'
     let b.conceal = 0
   endif
   return b
@@ -414,7 +414,7 @@ function! s:thumbnail_init(isnewtab)
   endif
   call s:arrangement(b)
   call s:setcontents(b)
-  call s:marker(b)
+  let b.marker = s:marker(b)
   call s:mapping()
   if len(b.bufs) > 0
     let b:thumbnail = s:unsave(b)
@@ -448,7 +448,7 @@ function! s:update()
     endif
     call s:arrangement(b)
     call s:setcontents(b)
-    call s:marker(b)
+    let b.marker = s:marker(b)
     call s:mapping()
     let b:thumbnail = s:unsave(b)
   endif
@@ -462,7 +462,7 @@ function! s:update()
   let line_white = repeat(' ', (b.offset_left + b.thumbnail_width)
         \ * b.num_width)
   let right_white = repeat(' ', winwidth(0) - len(line_white) - 4)
-        \ . b.marker_last
+        \ . b.marker.last
   let line_white .= right_white
   call extend(s, repeat([line_white], b.margin_top))
   for i in range(b.num_height)
@@ -479,11 +479,11 @@ function! s:update()
         endif
         if b.visual_mode && index(b.visual_selects, m) != -1
               \ || b.select_i == i && b.select_j == j
-          let l = b.marker_left_select
-          let r = b.marker_right_select
+          let l = b.marker.left_select
+          let r = b.marker.right_select
         else
-          let l = b.marker_left
-          let r = b.marker_right
+          let l = b.marker.left
+          let r = b.marker.right
         endif
         let ss .= offset_white . l . contents . r
       endfor
@@ -512,13 +512,13 @@ function! s:set_cursor()
     else
       let offset += b.offset_left + b.thumbnail_width
     endif
-    if b.conceal
+    if b.marker.conceal
       let offset += 4
     endif
   endfor
   let b.cursor_x = b.margin_top + b.select_i * (b.offset_top + b.thumbnail_height)
         \ + b.offset_top + 1
-  let b.cursor_y = offset + b.offset_left + 3 + b.conceal * 2
+  let b.cursor_y = offset + b.offset_left + 3 + b.marker.conceal * 2
   call cursor(b.cursor_x, b.cursor_y)
 endfunction
 
@@ -1299,7 +1299,7 @@ function! s:update_filter()
     " let b:thumbnail = s:unsave(b)
     call s:arrangement(b)
     call s:setcontents(b)
-    call s:marker(b)
+    let b.marker = s:marker(b)
     call s:update()
     call s:start_insert()
   else
@@ -1337,7 +1337,7 @@ function! s:revive_thumbnail()
     endif
     call s:arrangement(b)
     call s:setcontents(b)
-    call s:marker(b)
+    let b.marker = s:marker(b)
     call s:mapping()
     if len(b.bufs) > 0
       let b:thumbnail = b
