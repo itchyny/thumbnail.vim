@@ -3,12 +3,13 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/28 20:49:26.
+" Last Change: 2013/03/29 10:37:12.
 " =============================================================================
 
 let s:save_cpo = &cpo
 set cpo&vim
 
+" Utility functions {{{
 function! s:gather_buffers()
   let bufs = []
   for i in range(1, bufnr('$'))
@@ -34,29 +35,62 @@ function! s:redraw_buffer_with(s)
     endif
   endif
 endfunction
+" }}}
 
-function! s:init_buffer(isnewtab, ...)
+function! s:new()
+  let isnewtab = bufname('%') != '' || &modified
+  if isnewtab | tabnew | endif
   let b = {}
-  let b.bufs = []
   let b.input = ''
-  let b.bufs = get(a:000, 0, s:gather_buffers())
+  let b.bufs = s:gather_buffers()
   if len(b.bufs) == 0
-    if a:isnewtab
-      silent bdelete!
-    endif
-    return b
+    if isnewtab | silent bdelete! | endif
+    return
   endif
   call s:arrangement(b)
-  for buf in b.bufs
-    let c = s:get_contents(buf.bufnr, b.thumbnail_width, b.thumbnail_height)
-    call extend(buf, {
-          \ 'contents': c,
-          \ 'firstlinelength': len(c) > 0 ? len(c[0]) : b.thumbnail_width - 4
-          \ })
-  endfor
+  call s:setcontents(b)
   call s:marker(b)
   call s:mapping()
-  return b
+  let b:thumbnail = s:unsave(b)
+  call s:update()
+  call s:autocmds()
+endfunction
+
+function! s:autocmds()
+  augroup Thumbnail
+    autocmd!
+    autocmd BufEnter,CursorHold,CursorHoldI,BufWritePost,VimResized *
+          \ call s:update_visible_thumbnail(expand('<abuf>'))
+  augroup END
+  augroup ThumbnailBuffer
+    autocmd BufLeave,WinLeave <buffer>
+          \   if exists('b:thumbnail')
+          \ |   call s:set_cursor()
+          \ | endif
+    autocmd BufEnter <buffer>
+          \   call s:revive_thumbnail()
+          \ | if exists('b:thumbnail') && !b:thumbnail.visual_mode
+          \ |   call s:thumbnail_init(0)
+          \ | endif
+    autocmd WinEnter,WinLeave,VimResized <buffer>
+          \   if exists('b:thumbnail') && !b:thumbnail.selection
+          \ |   call s:update()
+          \ | endif
+    autocmd CursorMovedI <buffer>
+          \ call s:update_filter()
+    autocmd CursorMoved <buffer>
+          \ call s:cursor_moved()
+  augroup END
+endfunction
+
+function! s:setcontents(b)
+  for buf in a:b.bufs
+    let c = s:get_contents(buf.bufnr, a:b.thumbnail_width, a:b.thumbnail_height)
+    call extend(buf, {
+          \ 'contents': c,
+          \ 'firstlinelength': len(c) > 0 ? len(c[0]) : a:b.thumbnail_width - 4
+          \ })
+  endfor
 endfunction
 
 function! s:get_contents(nr, width, height)
@@ -90,6 +124,7 @@ endfunction
 function! s:arrangement(b)
   let b = a:b
   let l = len(b.bufs)
+  if l == 0 | return | endif
   let b.height = winheight(0)
   let b.width = winwidth(0)
   let b.num_height = 1
@@ -128,11 +163,11 @@ function! s:arrangement(b)
   let b.line_move = 0
   let b.v_count = 0
   let b.to_end = 0
-  if b.offset_top > 0
-    let b.insert_pos = (b.offset_top + 1) / 2
+  if b.offset_top + b.margin_top > 0
+    let b.insert_pos = (b.offset_top + b.margin_top + 1) / 2
   else
     let b.insert_pos = 1
-    let b.offset_top += 1
+    let b.margin_top += 1
   endif
   return b
 endfunction
@@ -295,9 +330,11 @@ function! s:mapping()
   nmap <buffer> <C-l> <Plug>(thumbnail_redraw)
   nmap <buffer> q <Plug>(thumbnail_exit)
 
-  " nmap <buffer> i <Plug>(thumbnail_start_insert)
-  " imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
-  " imap <buffer> <CR> <Plug>(thumbnail_select_insert)
+  if exists('g:thumbnail_dev')
+  nmap <buffer> i <Plug>(thumbnail_start_insert)
+  imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
+  imap <buffer> <CR> <Plug>(thumbnail_select_insert)
+  endif
 
 endfunction
 
@@ -366,53 +403,32 @@ function! s:unsave(b)
 endfunction
 
 function! s:thumbnail_init(isnewtab)
-  let b = s:init_buffer(a:isnewtab)
+  let b = {}
+  let b.input = ''
+  let b.bufs = s:gather_buffers()
+  if len(b.bufs) == 0
+    if a:isnewtab
+      silent bdelete!
+    endif
+    return b
+  endif
+  call s:arrangement(b)
+  call s:setcontents(b)
+  call s:marker(b)
+  call s:mapping()
   if len(b.bufs) > 0
     let b:thumbnail = s:unsave(b)
     silent call s:update()
   endif
 endfunction
 
-function! s:new()
-  let isnewtab = 0
-  if bufname('%') != '' || &modified
-    tabnew
-    let isnewtab = 1
-  endif
-  call s:thumbnail_init(isnewtab)
-  augroup Thumbnail
-    autocmd!
-    autocmd BufEnter,CursorHold,CursorHoldI,BufWritePost,VimResized *
-          \ call s:update_visible_thumbnail(expand('<abuf>'))
-  augroup END
-  augroup ThumbnailBuffer
-    autocmd BufLeave,WinLeave <buffer>
-          \   if exists('b:thumbnail')
-          \ |   call s:set_cursor()
-          \ | endif
-    autocmd BufEnter <buffer>
-          \   call s:revive_thumbnail()
-          \ | if exists('b:thumbnail') && !b:thumbnail.visual_mode
-          \ |   call s:thumbnail_init(0)
-          \ | endif
-    autocmd WinEnter,WinLeave,VimResized <buffer>
-          \   if exists('b:thumbnail') && !b:thumbnail.selection
-          \ |   call s:update()
-          \ | endif
-    autocmd CursorMovedI <buffer>
-          \ call s:update_filter()
-    autocmd CursorMoved <buffer>
-          \ call s:cursor_moved()
-  augroup END
-endfunction
-
 function! s:update()
-  if !exists('b:thumbnail') " must not be revived
+  if !exists('b:thumbnail') || len(b:thumbnail.bufs) == 0
     return
   endif
   call s:update_visual_selects()
   let b = b:thumbnail
-  let after_visual_mode = b.visual_mode == 4
+  let after_deletion = b.visual_mode == 4
   if b.visual_mode == 4
     " Case: d{motion}, [count]d{motion}, {Visual}d, dd, [count]dd
     let r = s:close(0)
@@ -422,13 +438,19 @@ function! s:update()
   if len(b.bufs) == 0
     return
   endif
-  if b.height != winheight(0) || b.width != winwidth(0) || after_visual_mode
-    let b = s:init_buffer(1)
+  if b.height != winheight(0) || b.width != winwidth(0) || after_deletion
+    let b = {}
+    let b.input = ''
+    let b.bufs = s:gather_buffers()
     if len(b.bufs) == 0
+      silent bdelete!
       return
     endif
+    call s:arrangement(b)
+    call s:setcontents(b)
+    call s:marker(b)
+    call s:mapping()
     let b:thumbnail = s:unsave(b)
-    let b = b:thumbnail
   endif
   setlocal modifiable noreadonly
   let b.v_count = 0
@@ -494,9 +516,10 @@ function! s:set_cursor()
       let offset += 4
     endif
   endfor
-  call cursor(b.margin_top
-        \ + b.select_i * (b.offset_top + b.thumbnail_height)
-        \ + b.offset_top + 1, offset + b.offset_left + 3 + b.conceal * 2) 
+  let b.cursor_x = b.margin_top + b.select_i * (b.offset_top + b.thumbnail_height)
+        \ + b.offset_top + 1
+  let b.cursor_y = offset + b.offset_left + 3 + b.conceal * 2
+  call cursor(b.cursor_x, b.cursor_y)
 endfunction
 
 function! s:update_visible_thumbnail(bufnr)
@@ -897,11 +920,14 @@ function! s:mouse_select()
 endfunction
 
 function! s:cursor_moved()
-  if !exists('b:thumbnail')
+  if !exists('b:thumbnail') || len(b:thumbnail.bufs) == 0
     return
   endif
   let b = b:thumbnail
   let [n, l, c, o] = getpos('.')
+  if has_key(b, 'cursor_x') && b.cursor_x == l && b.cursor_y == c
+    return
+  endif
   if c > len(getline(l)) - 4 || c == b.offset_left + 3
     " Case: :[range], d:[range]
     let new_i = min([l - 1, b.num_height - 1])
@@ -1266,7 +1292,10 @@ function! s:update_filter()
       call add(white, bufs[i])
     endif
   endfor
-  let b = s:init_buffer(0, white)
+  let b = {}
+  let b.bufs = []
+  let b.input = ''
+  let b.bufs = white
   let input = substitute(input, '^ *', '', '')
   let input = repeat(' ',
         \ (winwidth(0) - max([s:wcswidth(input), winwidth(0) / 8])) / 2) . input
@@ -1276,6 +1305,9 @@ function! s:update_filter()
   " let b:thumbnail = s:unsave(b)
   if len(white) > 0
     " let b:thumbnail = s:unsave(b)
+    call s:arrangement(b)
+    call s:setcontents(b)
+    call s:marker(b)
     call s:update()
     call s:start_insert()
   else
@@ -1304,7 +1336,17 @@ endfunction
 
 function! s:revive_thumbnail()
   if !exists('b:thumbnail')
-    let b = s:init_buffer(1)
+    let b = {}
+    let b.input = ''
+    let b.bufs = s:gather_buffers()
+    if len(b.bufs) == 0
+      silent bdelete!
+      return b
+    endif
+    call s:arrangement(b)
+    call s:setcontents(b)
+    call s:marker(b)
+    call s:mapping()
     if len(b.bufs) > 0
       let b:thumbnail = b
       let ij = s:nearest_ij()
