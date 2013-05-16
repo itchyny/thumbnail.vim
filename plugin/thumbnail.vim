@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/03/30 01:06:34.
+" Last Change: 2013/05/16 15:04:08.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -259,6 +259,15 @@ function! s:mapping()
   nnoremap <buffer><silent> <Plug>(thumbnail_exit_visual)
         \ :<C-u>call <SID>exit_visual()<CR>
 
+  " inoremap <buffer><silent><expr> <Plug>(thumbnail_move_left_i)
+  "       \ <SID>move_left()
+  " inoremap <buffer><silent><expr> <Plug>(thumbnail_move_right_i)
+  "       \ <SID>move_right()
+  " inoremap <buffer><silent><expr> <Plug>(thumbnail_move_down_i)
+  "       \ <SID>move_down()
+  " inoremap <buffer><silent><expr> <Plug>(thumbnail_move_up_i)
+  "       \ <SID>move_up()
+
   nmap <buffer> h <Plug>(thumbnail_move_left)
   nmap <buffer> l <Plug>(thumbnail_move_right)
   nmap <buffer> j <Plug>(thumbnail_move_down)
@@ -332,6 +341,8 @@ function! s:mapping()
 
   if exists('g:thumbnail_dev')
   nmap <buffer> i <Plug>(thumbnail_start_insert)
+  " imap <buffer> <C-n> <Plug>(thumbnail_move_down_i)
+  " imap <buffer> <C-p> <Plug>(thumbnail_move_up_i)
   imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
   imap <buffer> <CR> <Plug>(thumbnail_select_insert)
   endif
@@ -1253,6 +1264,9 @@ function! s:start_insert()
   if !exists('b:thumbnail')
     return
   endif
+  if exists(':NeoComplCacheLock')
+    NeoComplCacheLock
+  endif
   let b = b:thumbnail
   let b.insert_mode = 1
   setlocal modifiable noreadonly
@@ -1290,7 +1304,8 @@ function! s:update_filter()
   let b.bufs = white
   let input = substitute(input, '^ *', '', '')
   let input = repeat(' ',
-        \ (winwidth(0) - max([s:wcswidth(input), winwidth(0) / 8])) / 2) . input
+        \ (winwidth(0) - max([s:wcswidth(input), winwidth(0) / 8]))
+        \ / 2) . input
   let b.input = input
   let b.prev_bufs = bufs
   let b:thumbnail = b
