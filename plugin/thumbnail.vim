@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/16 15:04:08.
+" Last Change: 2013/05/18 17:43:23.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -536,6 +536,9 @@ endfunction
 function! s:update_visible_thumbnail(bufnr)
   let nr = -1
   let newnr = str2nr(a:bufnr)
+  if bufname(newnr) ==# '[Command Line]'
+    return
+  endif
   for buf in tabpagebuflist()
     if type(getbufvar(buf, 'thumbnail')) == type({}) && buf != newnr
       let nr = buf
