@@ -1,9 +1,9 @@
 " =============================================================================
 " Filename: plugin/thumbnail.vim
-" Version: 0.0
+" Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/25 02:17:00.
+" Last Change: 2013/05/25 02:21:11.
 " =============================================================================
 
 let s:save_cpo = &cpo
