@@ -145,6 +145,27 @@ X		|<Plug>(thumbnail_close_backspace)|
 <C-l>		|<Plug>(thumbnail_redraw)|
 q		|<Plug>(thumbnail_exit)|
 
+Insert mode key mappings.
+
+<Plug>(thumbnail_start_insert)			*<Plug>(thumbnail_start_insert)*
+		Start the filtering mode
+
+<Plug>(thumbnail_exit_insert)			*<Plug>(thumbnail_exit_insert)*
+		Exit the filtering mode
+
+<Plug>(thumbnail_select)			*<Plug>(thumbnail_select)*
+		Open the selected buffer.
+
+Insert mode default mappings.
+{lhs}		{rhs}
+--------	-------------------------
+i		<Plug>(thumbnail_start_insert)
+I		same as i
+a		same as i
+A		same as i
+<ESC>		<Plug>(thumbnail_exit_insert)
+<CR>		<Plug>(thumbnail_select)
+
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
 

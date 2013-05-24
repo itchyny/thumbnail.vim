@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/25 01:44:09.
+" Last Change: 2013/05/25 02:17:00.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -254,7 +254,7 @@ function! s:mapping()
         \ :<C-u>call <SID>start_insert()<CR>
   inoremap <buffer><silent> <Plug>(thumbnail_exit_insert)
         \ <ESC>:<C-u>call <SID>exit_insert()<CR>
-  inoremap <buffer><silent> <Plug>(thumbnail_select_insert)
+  inoremap <buffer><silent> <Plug>(thumbnail_select)
         \ <ESC>:<C-u>call <SID>select()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_exit_visual)
         \ :<C-u>call <SID>exit_visual()<CR>
@@ -339,17 +339,18 @@ function! s:mapping()
   nmap <buffer> <C-l> <Plug>(thumbnail_redraw)
   nmap <buffer> q <Plug>(thumbnail_exit)
 
-  if exists('g:thumbnail_dev')
   nmap <buffer> i <Plug>(thumbnail_start_insert)
+  nmap <buffer> I i
+  nmap <buffer> a i
+  nmap <buffer> A i
   " imap <buffer> <C-n> <Plug>(thumbnail_move_down_i)
   " imap <buffer> <C-p> <Plug>(thumbnail_move_up_i)
   imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
-  imap <buffer> <CR> <Plug>(thumbnail_select_insert)
-  endif
+  imap <buffer> <CR> <Plug>(thumbnail_select)
 
 endfunction
 
-function! s:unsave(b)
+function! s:unsave(b, ...)
   if !exists('b:thumbnail')
     return a:b
   endif
@@ -370,6 +371,7 @@ function! s:unsave(b)
       return a:b
     endif
   endif
+  if get(a:000, 1)
   let newbuf_nrs = map(copy(newbuf), 'v:val["bufnr"]')
   let prev_b_bufs_nrs = map(copy(prev_b.bufs), 'v:val["bufnr"]')
   let a:b.bufs = []
@@ -386,6 +388,7 @@ function! s:unsave(b)
     endif
   endfor
   unlet prev_b_bufs_nrs
+  endif
   if index < len(prev_b.bufs) && has_key(prev_b.bufs[index], 'bufnr')
         \ && index < len(a:b.bufs) && has_key(a:b.bufs[index], 'bufnr')
         \ && a:b.bufs[index].bufnr == prev_b.bufs[index].bufnr
@@ -1318,15 +1321,26 @@ function! s:update_filter()
         \ / 2) . input
   let b.input = input
   let b.prev_bufs = bufs
-  let b:thumbnail = b
-  " let b:thumbnail = s:unsave(b)
   if len(white) > 0
     call s:arrangement(b)
     call s:setcontents(b)
     let b.marker = s:marker(b)
+    let b:thumbnail = s:unsave(b, 1)
     call s:update()
     call s:start_insert()
   else
+    let b:thumbnail = b
+    let b.select_i = 0
+    let b.select_j = 0
+    let b.height = winheight(0)
+    let b.width = winwidth(0)
+    let b.num_width = 1
+    let b.num_height = 1
+    let b.visual_mode = 0
+    let b.visual_selects = []
+    let b.line_move = 0
+    let b.v_count = 0
+    let b.to_end = 0
     " No match
     let s = []
     for i in range(max([(winheight(0) - 2) / 2, 0]))
