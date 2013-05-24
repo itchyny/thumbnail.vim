@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/18 17:43:23.
+" Last Change: 2013/05/24 13:50:09.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -1293,9 +1293,14 @@ function! s:update_filter()
   for i in range(len(bufs))
     let f = 0
     for w in words
-      if bufname(bufs[i].bufnr) !~? w
-        let f = 1
-      endif
+      try
+        if bufname(bufs[i].bufnr) !~? w | let f = 1 | endif
+      catch
+        try
+          if bufname(bufs[i].bufnr) !~? escape(w, '\*[]?') | let f = 1 | endif
+        catch
+        endtry
+      endtry
     endfor
     if f == 0
       call add(white, bufs[i])
