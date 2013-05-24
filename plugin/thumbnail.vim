@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/24 13:50:09.
+" Last Change: 2013/05/25 01:29:50.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -940,6 +940,7 @@ function! s:cursor_moved()
   let b = b:thumbnail
   let [n, l, c, o] = getpos('.')
   if has_key(b, 'cursor_x') && b.cursor_x == l && b.cursor_y == c
+        \ || !has_key(b, 'insert_mode') || b.insert_mode
     return
   endif
   " if c > len(getline(l)) - 4 || c == b.offset_left + 3
@@ -1301,6 +1302,7 @@ function! s:update_filter()
         catch
         endtry
       endtry
+      if f | break | endif
     endfor
     if f == 0
       call add(white, bufs[i])
@@ -1319,7 +1321,6 @@ function! s:update_filter()
   let b:thumbnail = b
   " let b:thumbnail = s:unsave(b)
   if len(white) > 0
-    " let b:thumbnail = s:unsave(b)
     call s:arrangement(b)
     call s:setcontents(b)
     let b.marker = s:marker(b)
