@@ -3,7 +3,7 @@
 " Version: 0.0
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/25 01:29:50.
+" Last Change: 2013/05/25 01:44:09.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -940,7 +940,7 @@ function! s:cursor_moved()
   let b = b:thumbnail
   let [n, l, c, o] = getpos('.')
   if has_key(b, 'cursor_x') && b.cursor_x == l && b.cursor_y == c
-        \ || !has_key(b, 'insert_mode') || b.insert_mode
+        \ || has_key(b, 'insert_mode') && b.insert_mode
     return
   endif
   " if c > len(getline(l)) - 4 || c == b.offset_left + 3
