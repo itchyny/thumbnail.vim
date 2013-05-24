@@ -1,6 +1,6 @@
 *thumbnail.txt*	A thumbnail buffer selector for Vim
 
-Version: 0.0
+Version: 0.1
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
@@ -169,8 +169,13 @@ A		same as i
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
 
+version 0.0
 2013-03-19, ... , 03-24
 - Initial commit and implementation.
+
+version 0.1
+2013-05-25
+- Filtering mode.
 
 ==============================================================================
 vim:tw=78:sw=4:ts=8:ft=help:norl:noet:
