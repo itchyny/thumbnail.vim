@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/25 02:21:11.
+" Last Change: 2013/05/25 09:04:37.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -259,14 +259,14 @@ function! s:mapping()
   nnoremap <buffer><silent> <Plug>(thumbnail_exit_visual)
         \ :<C-u>call <SID>exit_visual()<CR>
 
-  " inoremap <buffer><silent><expr> <Plug>(thumbnail_move_left_i)
-  "       \ <SID>move_left()
-  " inoremap <buffer><silent><expr> <Plug>(thumbnail_move_right_i)
-  "       \ <SID>move_right()
-  " inoremap <buffer><silent><expr> <Plug>(thumbnail_move_down_i)
-  "       \ <SID>move_down()
-  " inoremap <buffer><silent><expr> <Plug>(thumbnail_move_up_i)
-  "       \ <SID>move_up()
+  imap <buffer><silent> <Plug>(thumbnail_move_left)
+        \ <ESC><Plug>(thumbnail_move_left)<Plug>(thumbnail_start_insert)
+  imap <buffer><silent> <Plug>(thumbnail_move_right)
+        \ <ESC><Plug>(thumbnail_move_right)<Plug>(thumbnail_start_insert)
+  imap <buffer><silent> <Plug>(thumbnail_move_down)
+        \ <ESC><Plug>(thumbnail_move_down)<Plug>(thumbnail_start_insert)
+  imap <buffer><silent> <Plug>(thumbnail_move_up)
+        \ <ESC><Plug>(thumbnail_move_up)<Plug>(thumbnail_start_insert)
 
   nmap <buffer> h <Plug>(thumbnail_move_left)
   nmap <buffer> l <Plug>(thumbnail_move_right)
@@ -343,8 +343,10 @@ function! s:mapping()
   nmap <buffer> I i
   nmap <buffer> a i
   nmap <buffer> A i
-  " imap <buffer> <C-n> <Plug>(thumbnail_move_down_i)
-  " imap <buffer> <C-p> <Plug>(thumbnail_move_up_i)
+  imap <buffer> <C-n> <Plug>(thumbnail_move_down)
+  imap <buffer> <C-p> <Plug>(thumbnail_move_up)
+  imap <buffer> <C-f> <Plug>(thumbnail_move_right)
+  imap <buffer> <C-b> <Plug>(thumbnail_move_left)
   imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
   imap <buffer> <CR> <Plug>(thumbnail_select)
 

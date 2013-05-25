@@ -62,6 +62,9 @@ Normal mode key mappings.
 <Plug>(thumbnail_move_column)			*<Plug>(thumbnail_move_column)*
 		Go to the column [count], in the current line.
 
+<Plug>(thumbnail_start_insert)			*<Plug>(thumbnail_start_insert)*
+		Start the filtering mode
+
 <Plug>(thumbnail_start_visual)			 *<Plug>(thumbnail_start_visual)*
 <Plug>(thumbnail_start_line_visual)		 *<Plug>(thumbnail_start_line_visual)*
 <Plug>(thumbnail_start_block_visual)		 *<Plug>(thumbnail_start_block_visual)*
@@ -132,6 +135,10 @@ gg		|<Plug>(thumbnail_move_count_line_first)|
 <C-Home>	same as gg
 G		|<Plug>(thumbnail_move_count_line_last)|
 |		|<Plug>(thumbnail_move_column)|
+i		|<Plug>(thumbnail_start_insert)|
+I		same as i
+a		same as i
+A		same as i
 v		|<Plug>(thumbnail_start_visual)|
 V		|<Plug>(thumbnail_start_line_visual)|
 <C-v>		|<Plug>(thumbnail_start_block_visual)|
@@ -147,8 +154,12 @@ q		|<Plug>(thumbnail_exit)|
 
 Insert mode key mappings.
 
-<Plug>(thumbnail_start_insert)			*<Plug>(thumbnail_start_insert)*
-		Start the filtering mode
+<Plug>(thumbnail_move_left)			*<Plug>(thumbnail_move_left)*
+<Plug>(thumbnail_move_right)			*<Plug>(thumbnail_move_right)*
+<Plug>(thumbnail_move_down)			*<Plug>(thumbnail_move_down)*
+<Plug>(thumbnail_move_up)			*<Plug>(thumbnail_move_up)*
+		Move the cursor by [count] thumbnails. These mappings stop
+		the selection each ends.
 
 <Plug>(thumbnail_exit_insert)			*<Plug>(thumbnail_exit_insert)*
 		Exit the filtering mode
@@ -159,12 +170,12 @@ Insert mode key mappings.
 Insert mode default mappings.
 {lhs}		{rhs}
 --------	-------------------------
-i		<Plug>(thumbnail_start_insert)
-I		same as i
-a		same as i
-A		same as i
-<ESC>		<Plug>(thumbnail_exit_insert)
-<CR>		<Plug>(thumbnail_select)
+<C-n>		|<Plug>(thumbnail_move_down)|
+<C-p>		|<Plug>(thumbnail_move_up)|
+<C-f>		|<Plug>(thumbnail_move_right)|
+<C-b>		|<Plug>(thumbnail_move_left)|
+<ESC>		|<Plug>(thumbnail_exit_insert)|
+<CR>		|<Plug>(thumbnail_select)|
 
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
