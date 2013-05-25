@@ -158,8 +158,7 @@ Insert mode key mappings.
 <Plug>(thumbnail_move_right)			*<Plug>(thumbnail_move_right)*
 <Plug>(thumbnail_move_down)			*<Plug>(thumbnail_move_down)*
 <Plug>(thumbnail_move_up)			*<Plug>(thumbnail_move_up)*
-		Move the cursor by [count] thumbnails. These mappings stop
-		the selection each ends.
+		Move the cursor. These mappings stop the selection each ends.
 
 <Plug>(thumbnail_exit_insert)			*<Plug>(thumbnail_exit_insert)*
 		Exit the filtering mode
