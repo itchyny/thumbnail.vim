@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/25 11:52:20.
+" Last Change: 2013/05/25 11:54:34.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -454,7 +454,7 @@ endfunction
 
 function! s:update()
   if !exists('b:thumbnail') || len(b:thumbnail.bufs) == 0
-        \ || exists('b:thumbnail_no_update')
+        \ || has_key(b:thumbnail, 'no_update')
     return
   endif
   call s:update_visual_selects()
@@ -1406,11 +1406,17 @@ function! s:revive_thumbnail()
 endfunction
 
 function! s:update_off()
-  let b:thumbnail_no_update = 1
+  if !exists('b:thumbnail')
+    return
+  endif
+  let b:thumbnail.no_update = 1
 endfunction
 
 function! s:update_on()
-  unlet b:thumbnail_no_update
+  if !exists('b:thumbnail')
+    return
+  endif
+  unlet b:thumbnail.no_update
 endfunction
 
 " The following codes were imported from vital.vim {{{
