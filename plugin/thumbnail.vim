@@ -3,13 +3,12 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/25 11:54:34.
+" Last Change: 2013/05/25 15:54:54.
 " =============================================================================
 
 let s:save_cpo = &cpo
 set cpo&vim
 
-" Utility functions {{{
 function! s:gather_buffers()
   let bufs = []
   for i in range(1, bufnr('$'))
@@ -35,7 +34,6 @@ function! s:redraw_buffer_with(s)
     endif
   endif
 endfunction
-" }}}
 
 function! s:new()
   let isnewtab = bufname('%') != '' || &modified
@@ -297,6 +295,10 @@ function! s:mapping()
   nmap <buffer> g<Up> k
   nmap <buffer> + j
   nmap <buffer> - k
+  nmap <buffer> <C-n> <Plug>(thumbnail_move_down)
+  nmap <buffer> <C-p> <Plug>(thumbnail_move_up)
+  nmap <buffer> <C-f> <Plug>(thumbnail_move_next)
+  nmap <buffer> <C-b> <Plug>(thumbnail_move_prev)
 
   nmap <buffer> w <Plug>(thumbnail_move_next)
   nmap <buffer> W w

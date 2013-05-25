@@ -120,6 +120,10 @@ b		|<Plug>(thumbnail_move_prev)|
 B		same as b
 <S-Tab>		same as b
 <S-Left>	same as b
+<C-n>		|<Plug>(thumbnail_move_down)|
+<C-p>		|<Plug>(thumbnail_move_up)|
+<C-f>		|<Plug>(thumbnail_move_next)|
+<C-b>		|<Plug>(thumbnail_move_prev)|
 0		|<Plug>(thumbnail_move_line_head)|
 ^		same as 0
 g0		same as 0
