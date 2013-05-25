@@ -158,20 +158,20 @@ q		|<Plug>(thumbnail_exit)|
 
 Insert mode key mappings.
 
-<Plug>(thumbnail_move_left)			*<Plug>(thumbnail_move_left)*
-<Plug>(thumbnail_move_right)			*<Plug>(thumbnail_move_right)*
-<Plug>(thumbnail_move_down)			*<Plug>(thumbnail_move_down)*
-<Plug>(thumbnail_move_up)			*<Plug>(thumbnail_move_up)*
+<Plug>(thumbnail_move_left)			*i_<Plug>(thumbnail_move_left)*
+<Plug>(thumbnail_move_right)			*i_<Plug>(thumbnail_move_right)*
+<Plug>(thumbnail_move_down)			*i_<Plug>(thumbnail_move_down)*
+<Plug>(thumbnail_move_up)			*i_<Plug>(thumbnail_move_up)*
 		Move the cursor. These mappings stop the selection each ends.
 
-<Plug>(thumbnail_move_next)			*<Plug>(thumbnail_move_next)*
-<Plug>(thumbnail_move_prev)			*<Plug>(thumbnail_move_prev)*
+<Plug>(thumbnail_move_next)			*i_<Plug>(thumbnail_move_next)*
+<Plug>(thumbnail_move_prev)			*i_<Plug>(thumbnail_move_prev)*
 		Move the cursor. These mappings rotate the selection.
 
 <Plug>(thumbnail_exit_insert)			*<Plug>(thumbnail_exit_insert)*
 		Exit the filtering mode
 
-<Plug>(thumbnail_select)			*<Plug>(thumbnail_select)*
+<Plug>(thumbnail_select)			*i_<Plug>(thumbnail_select)*
 		Open the selected buffer.
 
 Insert mode default mappings.
