@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/25 11:06:57.
+" Last Change: 2013/05/25 11:52:20.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -252,6 +252,8 @@ function! s:mapping()
         \ :<C-u>call <SID>delete_to_end()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_start_insert)
         \ :<C-u>call <SID>start_insert()<CR>
+  inoremap <silent><buffer> <Plug>(thumbnail_start_insert)
+        \ <ESC>:<C-u>call <SID>start_insert()<CR>
   inoremap <buffer><silent> <Plug>(thumbnail_exit_insert)
         \ <ESC>:<C-u>call <SID>exit_insert()<CR>
   inoremap <buffer><silent> <Plug>(thumbnail_select)
@@ -259,19 +261,22 @@ function! s:mapping()
   nnoremap <buffer><silent> <Plug>(thumbnail_exit_visual)
         \ :<C-u>call <SID>exit_visual()<CR>
 
-  imap <buffer><silent> <Plug>(thumbnail_move_left)
-        \ <Plug>(thumbnail_exit_insert)<Plug>(thumbnail_move_left)<Plug>(thumbnail_start_insert)
-  imap <buffer><silent> <Plug>(thumbnail_move_right)
-        \ <Plug>(thumbnail_exit_insert)<Plug>(thumbnail_move_right)<Plug>(thumbnail_start_insert)
-  imap <buffer><silent> <Plug>(thumbnail_move_down)
-        \ <Plug>(thumbnail_exit_insert)<Plug>(thumbnail_move_down)<Plug>(thumbnail_start_insert)
-  imap <buffer><silent> <Plug>(thumbnail_move_up)
-        \ <Plug>(thumbnail_exit_insert)<Plug>(thumbnail_move_up)<Plug>(thumbnail_start_insert)
+  nnoremap <buffer><silent> <Plug>(thumbnail_update_off)
+        \ :<C-u>call <SID>update_off()<CR>
+  inoremap <buffer><silent> <Plug>(thumbnail_update_off)
+        \ <ESC>:<C-u>call <SID>update_off()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_update_on)
+        \ :<C-u>call <SID>update_on()<CR>
+  inoremap <buffer><silent> <Plug>(thumbnail_update_on)
+        \ <ESC>:<C-u>call <SID>update_on()<CR>
 
-  imap <buffer><silent> <Plug>(thumbnail_move_prev)
-        \ <Plug>(thumbnail_exit_insert)<Plug>(thumbnail_move_prev)<Plug>(thumbnail_start_insert)
-  imap <buffer><silent> <Plug>(thumbnail_move_next)
-        \ <Plug>(thumbnail_exit_insert)<Plug>(thumbnail_move_next)<Plug>(thumbnail_start_insert)
+  for i in ['left', 'right', 'down', 'up', 'prev', 'next']
+    execute printf('imap <buffer><silent> <Plug>(thumbnail_move_%s) '
+          \.'<Plug>(thumbnail_update_off)'
+          \.'<Plug>(thumbnail_move_%s)'
+          \.'<Plug>(thumbnail_update_on)'
+          \.'<Plug>(thumbnail_start_insert)', i, i)
+  endfor
 
   nmap <buffer> h <Plug>(thumbnail_move_left)
   nmap <buffer> l <Plug>(thumbnail_move_right)
@@ -449,6 +454,7 @@ endfunction
 
 function! s:update()
   if !exists('b:thumbnail') || len(b:thumbnail.bufs) == 0
+        \ || exists('b:thumbnail_no_update')
     return
   endif
   call s:update_visual_selects()
@@ -541,8 +547,8 @@ function! s:set_cursor()
       let offset += 4
     endif
   endfor
-  let b.cursor_x = b.margin_top + b.select_i * (b.offset_top + b.thumbnail_height)
-        \ + b.offset_top + 1
+  let b.cursor_x = b.margin_top + b.select_i
+        \ * (b.offset_top + b.thumbnail_height) + b.offset_top + 1
   let b.cursor_y = offset + b.offset_left + 3 + b.marker.conceal * 2
   call cursor(b.cursor_x, b.cursor_y)
 endfunction
@@ -1397,6 +1403,14 @@ function! s:revive_thumbnail()
       endif
     endif
   endif
+endfunction
+
+function! s:update_off()
+  let b:thumbnail_no_update = 1
+endfunction
+
+function! s:update_on()
+  unlet b:thumbnail_no_update
 endfunction
 
 " The following codes were imported from vital.vim {{{
