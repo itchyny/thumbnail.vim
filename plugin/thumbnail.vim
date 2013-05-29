@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/25 15:54:54.
+" Last Change: 2013/05/29 17:06:16.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -35,9 +35,26 @@ function! s:redraw_buffer_with(s)
   endif
 endfunction
 
-function! s:new()
+function! s:new(args)
+  let args = split(a:args, '\s\+')
   let isnewtab = bufname('%') != '' || &modified
-  if isnewtab | tabnew | endif
+  let command = 'tabnew'
+  let below = ''
+  for arg in args
+    if arg == '-horizontal'
+      let command = 'new'
+    elseif arg == '-vertical'
+      let command = 'vnew'
+    elseif arg == '-nosplit' && !&modified
+      let command = 'new | wincmd p | quit'
+    elseif arg == '-newtab'
+      let command = 'tabnew'
+      let isnewtab = 1
+    elseif arg == '-below'
+      let below = 'below '
+    endif
+  endfor
+  silent execute 'if isnewtab | ' . below . command . ' | endif'
   let b = {}
   let b.input = ''
   let b.bufs = s:gather_buffers()
@@ -55,7 +72,7 @@ function! s:new()
 endfunction
 
 function! s:autocmds()
-  augroup Thumbnail
+  augroup ThumbnailAutoUpdate
     autocmd!
     autocmd BufEnter,CursorHold,CursorHoldI,BufWritePost,VimResized *
           \ call s:update_visible_thumbnail(expand('<abuf>'))
@@ -258,7 +275,8 @@ function! s:mapping()
         \ <ESC>:<C-u>call <SID>select()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_exit_visual)
         \ :<C-u>call <SID>exit_visual()<CR>
-
+  inoremap <buffer><silent> <Plug>(thumbnail_delete_backward_word)
+        \ <C-w>
   nnoremap <buffer><silent> <Plug>(thumbnail_update_off)
         \ :<C-u>call <SID>update_off()<CR>
   inoremap <buffer><silent> <Plug>(thumbnail_update_off)
@@ -364,6 +382,7 @@ function! s:mapping()
   imap <buffer> <Right> <Plug>(thumbnail_move_next)
   imap <buffer> <Left> <Plug>(thumbnail_move_prev)
   imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
+  imap <buffer> <C-w> <Plug>(thumbnail_delete_backward_word)
   imap <buffer> <CR> <Plug>(thumbnail_select)
 
 endfunction
@@ -1421,6 +1440,42 @@ function! s:update_on()
   unlet b:thumbnail.no_update
 endfunction
 
+function! s:complete(arglead, cmdline, cursorpos)
+  let options = [ '-horizontal', '-vertical', '-nosplit', '-newtab', '-below' ]
+  let noconflict = [
+        \ [ '-horizontal', '-vertical', '-nosplit', '-newtab' ],
+        \ [ '-nosplit', '-below' ],
+        \ [ '-newtab', '-below' ],
+        \ ]
+  if a:arglead != ''
+    return sort(filter(options, 'stridx(v:val, a:arglead) == 0'))
+  else
+    let d = {}
+    for opt in options
+      let d[opt] = 0
+    endfor
+    for opt in options
+      if d[opt] == 0
+        for ncf in noconflict
+          let flg = 0
+          for n in ncf
+            let flg = flg || stridx(a:cmdline, n) >= 0
+            if flg
+              break
+            endif
+          endfor
+          if flg
+            for n in ncf
+              let d[n] = 1
+            endfor
+          endif
+        endfor
+      endif
+    endfor
+    return sort(filter(options, 'd[v:val]==0 && stridx(a:cmdline, v:val)==-1'))
+  endif
+endfunction
+
 " The following codes were imported from vital.vim {{{
 " https://github.com/vim-jp/vital.vim (Public Domain)
 function! s:truncate(str, width)
@@ -1544,7 +1599,8 @@ endfunction
 
 " }}}
 
-command! Thumbnail call s:new()
+command! -nargs=* -complete=customlist,s:complete
+      \ Thumbnail call s:new(<q-args>)
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
