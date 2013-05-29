@@ -20,9 +20,37 @@ The *thumbnail* plug-in is a thumbnail-style buffer selector for Vim.
 ------------------------------------------------------------------------------
 COMMANDS					*thumbnail-commands*
 
-:Thumbnail
+:Thumbnail [{options}]
 						*:Thumbnail*
 		Open a new buffer and view the thumbnails of the buffers.
+
+------------------------------------------------------------------------------
+OPTIONS						*thumbnail-options*
+
+You can specify some options to modify the appearance of the thumbnail buffer.
+
+						*thumbnail-options-horizontal*
+		-horizontal
+		Open the thumbnail buffer in a horizontally opened buffer.
+
+						*thumbnail-options-vertical*
+		-vertical
+		Open the thumbnail buffer in a vertically opened buffer.
+
+						*thumbnail-options-below*
+		-below
+		Open the split window with below command prefix. This option
+		is be effective with -horizontal and -vertical.
+
+						*thumbnail-options-nosplit*
+		-nosplit
+		Open the thumbnail buffer in the current buffer.
+
+						*thumbnail-options-newtab*
+		-newtab
+		Open the thumbnail buffer in a new tab. When this option is
+		set, it opens a new tab even when the current buffer is a
+		unnamed buffer with no text.
 
 ------------------------------------------------------------------------------
 KEY MAPPINGS 					*thumbnail-key-mappings*
