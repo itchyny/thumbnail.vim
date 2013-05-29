@@ -196,7 +196,7 @@ Insert mode key mappings.
 <Plug>(thumbnail_move_prev)			*i_<Plug>(thumbnail_move_prev)*
 		Move the cursor. These mappings rotate the selection.
 
-<Plug>(thumbnail_exit_insert)			*<Plug>(thumbnail_exit_insert)*
+<Plug>(thumbnail_exit_insert)			*i_<Plug>(thumbnail_exit_insert)*
 		Exit the filtering mode
 
 <Plug>(thumbnail_select)			*i_<Plug>(thumbnail_select)*
@@ -205,16 +205,16 @@ Insert mode key mappings.
 Insert mode default mappings.
 {lhs}		{rhs}
 --------	-------------------------
-<C-n>		|<Plug>(thumbnail_move_down)|
-<C-p>		|<Plug>(thumbnail_move_up)|
-<C-f>		|<Plug>(thumbnail_move_next)|
-<C-b>		|<Plug>(thumbnail_move_prev)|
-<Down>		|<Plug>(thumbnail_move_down)|
-<Up>		|<Plug>(thumbnail_move_up)|
-<Right>		|<Plug>(thumbnail_move_next)|
-<Left>		|<Plug>(thumbnail_move_prev)|
-<ESC>		|<Plug>(thumbnail_exit_insert)|
-<CR>		|<Plug>(thumbnail_select)|
+<C-n>		|i_<Plug>(thumbnail_move_down)|
+<C-p>		|i_<Plug>(thumbnail_move_up)|
+<C-f>		|i_<Plug>(thumbnail_move_next)|
+<C-b>		|i_<Plug>(thumbnail_move_prev)|
+<Down>		|i_<Plug>(thumbnail_move_down)|
+<Up>		|i_<Plug>(thumbnail_move_up)|
+<Right>		|i_<Plug>(thumbnail_move_next)|
+<Left>		|i_<Plug>(thumbnail_move_prev)|
+<ESC>		|i_<Plug>(thumbnail_exit_insert)|
+<CR>		|i_<Plug>(thumbnail_select)|
 
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
