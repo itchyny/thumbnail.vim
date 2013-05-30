@@ -142,10 +142,14 @@ g<Up>		same as k
 -		same as k
 w		|<Plug>(thumbnail_move_next)|
 W		same as w
+e		same as w
+E		same as w
 <TAB>		same as w
 <S-Right>	same as w
 b		|<Plug>(thumbnail_move_prev)|
 B		same as b
+ge		same as b
+gE		same as b
 <S-Tab>		same as b
 <S-Left>	same as b
 <C-n>		|<Plug>(thumbnail_move_down)|

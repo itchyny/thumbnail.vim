@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/30 17:23:45.
+" Last Change: 2013/05/30 17:50:53.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -320,10 +320,14 @@ function! s:mapping()
 
   nmap <buffer> w <Plug>(thumbnail_move_next)
   nmap <buffer> W w
+  nmap <buffer> e w
+  nmap <buffer> E w
   nmap <buffer> <TAB> w
   nmap <buffer> <S-Right> w
   nmap <buffer> b <Plug>(thumbnail_move_prev)
   nmap <buffer> B b
+  nmap <buffer> ge b
+  nmap <buffer> gE b
   nmap <buffer> <S-Tab> b
   nmap <buffer> <S-Left> b
   nmap <buffer> 0 <Plug>(thumbnail_move_line_head)
@@ -1444,6 +1448,7 @@ endfunction
 
 function! s:complete(arglead, cmdline, cursorpos)
   let options = [ '-horizontal', '-vertical', '-nosplit', '-newtab', '-below' ]
+        " \ , '-include-filetype=', '-exclude-filetype=', '-filter-filetype=' ]
   let noconflict = [
         \ [ '-horizontal', '-vertical', '-nosplit', '-newtab' ],
         \ [ '-nosplit', '-below' ],
