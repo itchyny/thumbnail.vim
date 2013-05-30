@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/31 01:20:32.
+" Last Change: 2013/05/31 01:27:47.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -158,7 +158,7 @@ function! s:get_contents(nr, width, height)
   endfor
   if match(lines, '[\x00-\x08]') >= 0
     let lines = repeat([''], a:height / 2 - 2)
-    call extend(lines, [repeat(' ', (a:width - 4) / 2 - 6) . '[Binary file]'])
+    call extend(lines, [repeat(' ', (a:width - 4) / 2 - 7) . '[Binary file]'])
   endif
   call insert(lines, s:truncate_smart(name == '' ? '[No Name]' : name,
         \ a:width - 4, (a:width - 4) * 3 / 5, ' .. '))
