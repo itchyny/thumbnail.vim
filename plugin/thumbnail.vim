@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/30 22:37:45.
+" Last Change: 2013/05/30 23:08:18.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -12,8 +12,12 @@ set cpo&vim
 function! s:gather_buffers()
   let bufs = []
   for i in range(1, bufnr('$'))
-    if (len(bufname(i)) == 0 && (!bufexists(i) || !bufloaded(i)
-          \ || !getbufvar(i, '&modified'))) || !buflisted(i)
+    if (((len(bufname(i)) == 0 && (!bufexists(i) || !bufloaded(i)
+          \ || !getbufvar(i, '&modified'))) || !buflisted(i))
+          \ || exists('b:thumbnail_ft.exclude')
+          \ && index(b:thumbnail_ft.exclude, getbufvar(i, '&filetype')) >= 0)
+          \ && (!exists('b:thumbnail_ft.include')
+          \ || index(b:thumbnail_ft.include, getbufvar(i, '&filetype')) < 0)
       continue
     endif
     call add(bufs, { 'bufnr': i })
@@ -40,6 +44,9 @@ function! s:new(args)
   let isnewtab = bufname('%') != '' || &modified
   let command = 'tabnew'
   let below = ''
+  let thumbnail_ft = {
+        \ 'include': [],
+        \ 'exclude': [] }
   for arg in args
     if arg == '-horizontal'
       let command = 'new'
@@ -52,9 +59,20 @@ function! s:new(args)
       let isnewtab = 1
     elseif arg == '-below'
       let below = 'below '
+    elseif arg =~? '-include=.\+'
+      let thumbnail_ft.include = extend(thumbnail_ft.include,
+            \ split(substitute(arg, '-include=', '', ''), ','))
+      let thumbnail_ft.exclude = filter(copy(thumbnail_ft.exclude),
+            \ 'index(thumbnail_ft.include, v:val) < 0')
+    elseif arg =~? '-exclude=.\+'
+      let thumbnail_ft.exclude = extend(thumbnail_ft.exclude,
+            \ split(substitute(arg, '-exclude=', '', ''), ','))
+      let thumbnail_ft.include = filter(copy(thumbnail_ft.include),
+            \ 'index(thumbnail_ft.exclude, v:val) < 0')
     endif
   endfor
   silent execute 'if isnewtab | ' . below . command . ' | endif'
+  let b:thumbnail_ft = thumbnail_ft
   let b = {}
   let b.input = ''
   let b.bufs = s:gather_buffers()
@@ -1471,8 +1489,8 @@ function! s:update_on()
 endfunction
 
 function! s:complete(arglead, cmdline, cursorpos)
-  let options = [ '-horizontal', '-vertical', '-nosplit', '-newtab', '-below' ]
-        " \ , '-include-filetype=', '-exclude-filetype=', '-filter-filetype=' ]
+  let options = [ '-horizontal', '-vertical', '-nosplit', '-newtab', '-below'
+        \ , '-include=', '-exclude=' ]
   let noconflict = [
         \ [ '-horizontal', '-vertical', '-nosplit', '-newtab' ],
         \ [ '-nosplit', '-below' ],

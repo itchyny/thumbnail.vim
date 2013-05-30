@@ -52,6 +52,18 @@ You can specify some options to modify the appearance of the thumbnail buffer.
 		set, it opens a new tab even when the current buffer is a
 		unnamed buffer with no text.
 
+						*thumbnail-options-include*
+		-include={filetypes}
+		Include the buffers of specified filetypes, even if the
+		buffers are not buffer-listed. You can specify multiple
+		filetypes separated by commas.
+
+						*thumbnail-options-exclude*
+		-exclude={filetypes}
+		Exclude the buffers of specified filetypes, even if the
+		buffers are to be gathered into thumbnails with no options.
+		You can specify multiple filetypes separated by commas.
+
 ------------------------------------------------------------------------------
 KEY MAPPINGS 					*thumbnail-key-mappings*
 
