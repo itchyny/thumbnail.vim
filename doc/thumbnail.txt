@@ -266,7 +266,7 @@ version 0.0
 
 version 0.1
 2013-05-25, 5-29, 5-30
-- Filtering mode, options, filetype include/exclude.
+- Filtering mode, options, filetype include/exclude/specify.
 
 ==============================================================================
 vim:tw=78:sw=4:ts=8:ft=help:norl:noet:

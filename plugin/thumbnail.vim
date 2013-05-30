@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/31 00:38:11.
+" Last Change: 2013/05/31 00:57:36.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -20,7 +20,7 @@ function! s:gather_buffers()
       let e = index(b:thumbnail_ft.exclude, getbufvar(i, '&filetype')) >= 0
       let n = index(b:thumbnail_ft.include, getbufvar(i, '&filetype')) >= 0
     catch
-      let [s, e, n, l] = [0, 0, 0, []]
+      let [s, e, n, l] = [0, 0, 0, 0]
     endtry
     if !((!l && !e && (!f || n)) || (l && !e && (s || n)))
       continue
