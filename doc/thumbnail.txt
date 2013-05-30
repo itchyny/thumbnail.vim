@@ -171,6 +171,8 @@ i		|<Plug>(thumbnail_start_insert)|
 I		same as i
 a		same as i
 A		same as i
+/		|<Plug>(thumbnail_start_insert)|
+?		|<Plug>(thumbnail_start_insert)|
 v		|<Plug>(thumbnail_start_visual)|
 V		|<Plug>(thumbnail_start_line_visual)|
 <C-v>		|<Plug>(thumbnail_start_block_visual)|
