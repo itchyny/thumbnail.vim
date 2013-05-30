@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/31 01:27:47.
+" Last Change: 2013/05/31 07:49:45.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -388,9 +388,9 @@ function! s:mapping()
   nnoremap <buffer><silent> <LeftMouse> <LeftMouse>
         \ :<C-u>call <SID>update_select(0)<CR>
   nnoremap <buffer><silent> <LeftDrag> <LeftMouse>
-        \ :<C-u>call <SID>drag_select()<CR>
+        \ :<C-u>call <SID>drag_select(1)<CR>
   nnoremap <buffer><silent> <LeftRelease> <LeftMouse>
-        \ :<C-u>call <SID>drag_select()<CR>
+        \ :<C-u>call <SID>drag_select(0)<CR>
   nnoremap <buffer><silent> <2-LeftMouse> <LeftMouse>
         \ :<C-u>call <SID>mouse_select()<CR>
   map <buffer> <ScrollWheelUp> w
@@ -993,18 +993,21 @@ function! s:update_select(savepos)
     if a:savepos
       silent call setpos('.', pos)
     endif
+    let b.dragging = 1
     return 0
   else
+    let b.dragging = 0
     return -1
   endif
 endfunction
 
-function! s:drag_select()
+function! s:drag_select(while)
   if !exists('b:thumbnail')
     return
   endif
   let b = b:thumbnail
   let ij = s:nearest_ij()
+  let b.dragging = a:while
   if ij.i != -1 && ij.j != -1
     let index = b.select_i * b.num_width + b.select_j
     let selection = b.bufs[index]
@@ -1046,6 +1049,7 @@ function! s:cursor_moved()
   let [n, l, c, o] = getpos('.')
   if has_key(b, 'cursor_x') && b.cursor_x == l && b.cursor_y == c
         \ || has_key(b, 'insert_mode') && b.insert_mode
+        \ || has_key(b, 'dragging') && b.dragging
     return
   endif
   " if c > len(getline(l)) - 4 || c == b.offset_left + 3
