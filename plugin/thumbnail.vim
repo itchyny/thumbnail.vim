@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/30 23:08:18.
+" Last Change: 2013/05/31 00:38:11.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -12,12 +12,17 @@ set cpo&vim
 function! s:gather_buffers()
   let bufs = []
   for i in range(1, bufnr('$'))
-    if (((len(bufname(i)) == 0 && (!bufexists(i) || !bufloaded(i)
-          \ || !getbufvar(i, '&modified'))) || !buflisted(i))
-          \ || exists('b:thumbnail_ft.exclude')
-          \ && index(b:thumbnail_ft.exclude, getbufvar(i, '&filetype')) >= 0)
-          \ && (!exists('b:thumbnail_ft.include')
-          \ || index(b:thumbnail_ft.include, getbufvar(i, '&filetype')) < 0)
+    let f = (len(bufname(i)) == 0 && (!bufexists(i) || !bufloaded(i)
+          \ || !getbufvar(i, '&modified'))) || !buflisted(i)
+    try
+      let l = len(b:thumbnail_ft.specify) > 0
+      let s = index(b:thumbnail_ft.specify, getbufvar(i, '&filetype')) >= 0
+      let e = index(b:thumbnail_ft.exclude, getbufvar(i, '&filetype')) >= 0
+      let n = index(b:thumbnail_ft.include, getbufvar(i, '&filetype')) >= 0
+    catch
+      let [s, e, n, l] = [0, 0, 0, []]
+    endtry
+    if !((!l && !e && (!f || n)) || (l && !e && (s || n)))
       continue
     endif
     call add(bufs, { 'bufnr': i })
@@ -46,7 +51,8 @@ function! s:new(args)
   let below = ''
   let thumbnail_ft = {
         \ 'include': [],
-        \ 'exclude': [] }
+        \ 'exclude': [],
+        \ 'specify': [] }
   for arg in args
     if arg == '-horizontal'
       let command = 'new'
@@ -69,6 +75,11 @@ function! s:new(args)
             \ split(substitute(arg, '-exclude=', '', ''), ','))
       let thumbnail_ft.include = filter(copy(thumbnail_ft.include),
             \ 'index(thumbnail_ft.exclude, v:val) < 0')
+    elseif arg =~? '-specify=.\+'
+      let thumbnail_ft.specify = extend(thumbnail_ft.specify,
+            \ split(substitute(arg, '-specify=', '', ''), ','))
+      let thumbnail_ft.include = []
+      let thumbnail_ft.exclude = []
     endif
   endfor
   silent execute 'if isnewtab | ' . below . command . ' | endif'
@@ -1490,7 +1501,7 @@ endfunction
 
 function! s:complete(arglead, cmdline, cursorpos)
   let options = [ '-horizontal', '-vertical', '-nosplit', '-newtab', '-below'
-        \ , '-include=', '-exclude=' ]
+        \ , '-include=', '-exclude=', '-specify=' ]
   let noconflict = [
         \ [ '-horizontal', '-vertical', '-nosplit', '-newtab' ],
         \ [ '-nosplit', '-below' ],
