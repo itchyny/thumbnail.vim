@@ -65,6 +65,10 @@ You can specify some options to modify the appearance of the thumbnail buffer.
 		options.  You can specify multiple filetypes separated by
 		commas.
 
+		-specify={filetypes}
+		Only buffers of specifyed filetypes are gathered. You can
+		cpecify multiple filetypes separated by commas.
+
 ------------------------------------------------------------------------------
 KEY MAPPINGS 					*thumbnail-key-mappings*
 
