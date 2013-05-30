@@ -118,6 +118,9 @@ Normal mode key mappings.
 <Plug>(thumbnail_exit)				*<Plug>(thumbnail_exit)*
 		Close the thumbnail buffer.
 
+<Plug>(thumbnail_nop)				*<Plug>(thumbnail_nop)*
+		Nothing.
+
 Normal mode default mappings.
 {lhs}		{rhs}
 --------	-------------------------
@@ -189,6 +192,17 @@ x		|<Plug>(thumbnail_close)|
 X		|<Plug>(thumbnail_close_backspace)|
 <C-l>		|<Plug>(thumbnail_redraw)|
 q		|<Plug>(thumbnail_exit)|
+c		|<Plug>(thumbnail_nop)|
+C		|<Plug>(thumbnail_nop)|
+o		|<Plug>(thumbnail_nop)|
+O		|<Plug>(thumbnail_nop)|
+p		|<Plug>(thumbnail_nop)|
+P		|<Plug>(thumbnail_nop)|
+r		|<Plug>(thumbnail_nop)|
+R		|<Plug>(thumbnail_nop)|
+s		|<Plug>(thumbnail_nop)|
+S		|<Plug>(thumbnail_nop)|
+z		|<Plug>(thumbnail_nop)|
 
 Insert mode key mappings.
 
@@ -207,6 +221,9 @@ Insert mode key mappings.
 
 <Plug>(thumbnail_select)			*i_<Plug>(thumbnail_select)*
 		Open the selected buffer.
+
+<Plug>(thumbnail_nop)				*i_<Plug>(thumbnail_nop)*
+		Nothing.
 
 Insert mode default mappings.
 {lhs}		{rhs}

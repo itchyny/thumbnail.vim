@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/30 17:50:53.
+" Last Change: 2013/05/30 18:14:07.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -255,6 +255,10 @@ function! s:mapping()
         \ :<C-u>bdelete!<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_redraw)
         \ :<C-u>call <SID>update_current_thumbnail()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_nop)
+        \ <Nop>
+  inoremap <buffer><silent> <Plug>(thumbnail_nop)
+        \ <Nop>
   nnoremap <buffer><silent> <Plug>(thumbnail_start_visual)
         \ :<C-u>call <SID>start_visual(1)<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_start_line_visual)
@@ -372,6 +376,11 @@ function! s:mapping()
   nmap <buffer> X <Plug>(thumbnail_close_backspace)
   nmap <buffer> <C-l> <Plug>(thumbnail_redraw)
   nmap <buffer> q <Plug>(thumbnail_exit)
+
+  let nop = 'cCoOpPrRsSuUz'
+  for i in range(len(nop))
+    execute 'nmap <buffer> ' . nop[i] . ' <Plug>(thumbnail_nop)'
+  endfor
 
   nmap <buffer> i <Plug>(thumbnail_start_insert)
   nmap <buffer> I i
