@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/30 18:53:45.
+" Last Change: 2013/05/30 22:37:45.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -1081,7 +1081,9 @@ function! s:open_buffer_tabs(nrs)
 endfunction
 
 function! s:select(...)
-  try
+  if !exists('b:thumbnail')
+    let prev_first_line = substitute(getline(line('.'))[col('.') - 1:],
+          \ '|\].*', '', '')
     call s:revive_thumbnail()
     if exists('b:thumbnail')
       call s:update()
@@ -1105,10 +1107,6 @@ function! s:select(...)
       call s:open_buffer(b.bufs[i].bufnr)
     endif
   endif
-  catch
-    call s:revive_thumbnail()
-    call s:update()
-  endtry
 endfunction
 
 function! s:close_buffer(nr, multiple, type)
