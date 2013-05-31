@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/31 11:28:05.
+" Last Change: 2013/05/31 14:34:09.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -46,7 +46,7 @@ endfunction
 
 function! s:new(args)
   let args = split(a:args, '\s\+')
-  let isnewtab = bufname('%') != '' || &modified
+  let isnewbuffer = bufname('%') != '' || &modified
   let command = 'tabnew'
   let below = ''
   let thumbnail_ft = {
@@ -56,13 +56,15 @@ function! s:new(args)
   for arg in args
     if arg == '-horizontal'
       let command = 'new'
+      let isnewbuffer = 1
     elseif arg == '-vertical'
       let command = 'vnew'
+      let isnewbuffer = 1
     elseif arg == '-here' && !&modified
       let command = 'new | wincmd p | quit'
     elseif arg == '-newtab'
       let command = 'tabnew'
-      let isnewtab = 1
+      let isnewbuffer = 1
     elseif arg == '-below'
       let below = 'below '
     elseif arg =~? '-include=.\+'
@@ -82,13 +84,17 @@ function! s:new(args)
       let thumbnail_ft.exclude = []
     endif
   endfor
-  silent execute 'if isnewtab | ' . below . command . ' | endif'
+  try
+    silent execute 'if isnewbuffer | ' . below . command . ' | endif'
+  catch
+    return
+  endtry
   let b:thumbnail_ft = thumbnail_ft
   let b = {}
   let b.input = ''
   let b.bufs = s:gather_buffers()
   if len(b.bufs) == 0
-    if isnewtab | silent bdelete! | endif
+    if isnewbuffer | silent bdelete! | endif
     return
   endif
   call s:arrangement(b)
@@ -500,12 +506,12 @@ function! s:unsave(b, ...)
   return a:b
 endfunction
 
-function! s:thumbnail_init(isnewtab)
+function! s:thumbnail_init(isnewbuffer)
   let b = {}
   let b.input = ''
   let b.bufs = s:gather_buffers()
   if len(b.bufs) == 0
-    if a:isnewtab
+    if a:isnewbuffer
       silent bdelete!
     endif
     return b
