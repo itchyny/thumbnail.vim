@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/31 14:34:09.
+" Last Change: 2013/05/31 14:38:59.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -16,11 +16,23 @@ function! s:gather_buffers()
           \ || !getbufvar(i, '&modified'))) || !buflisted(i)
     try
       let l = len(b:thumbnail_ft.specify) > 0
+    catch
+      let l = 0
+    endtry
+    try
       let s = index(b:thumbnail_ft.specify, getbufvar(i, '&filetype')) >= 0
+    catch
+      let s = 0
+    endtry
+    try
       let e = index(b:thumbnail_ft.exclude, getbufvar(i, '&filetype')) >= 0
+    catch
+      let e = 0
+    endtry
+    try
       let n = index(b:thumbnail_ft.include, getbufvar(i, '&filetype')) >= 0
     catch
-      let [s, e, n, l] = [0, 0, 0, 0]
+      let n = 0
     endtry
     if !((!l && !e && (!f || n)) || (l && !e && (s || n)))
       continue
