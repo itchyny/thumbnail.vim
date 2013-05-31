@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/31 14:38:59.
+" Last Change: 2013/05/31 15:49:55.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -356,6 +356,10 @@ function! s:mapping()
   nmap <buffer> <Right> l
   nmap <buffer> <Down> j
   nmap <buffer> <Up> k
+  nmap <buffer> OD h
+  nmap <buffer> OC l
+  nmap <buffer> OA k
+  nmap <buffer> OB j
   nmap <buffer> <BS> h
   nmap <buffer> gh h
   nmap <buffer> gl l
