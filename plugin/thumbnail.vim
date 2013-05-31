@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/31 15:49:55.
+" Last Change: 2013/05/31 16:05:44.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -624,6 +624,7 @@ function! s:set_cursor()
   if !exists('b:thumbnail')
     return
   endif
+  try
   let b = b:thumbnail
   let offset = 0
   for j in range(b.select_j)
@@ -641,6 +642,8 @@ function! s:set_cursor()
         \ * (b.offset_top + b.thumbnail_height) + b.offset_top + 1
   let b.cursor_y = offset + b.offset_left + 3 + b.marker.conceal * 2
   call cursor(b.cursor_x, b.cursor_y)
+  catch
+  endtry
 endfunction
 
 function! s:update_visible_thumbnail(bufnr)
@@ -1468,6 +1471,7 @@ function! s:update_filter()
     let b.visual_selects = []
     let b.line_move = 0
     let b.v_count = 0
+    let b.selection = 0
     let b.to_end = 0
     " No match
     let s = []
@@ -1489,6 +1493,7 @@ function! s:exit_insert()
   endif
   let b = b:thumbnail
   let b.insert_mode = 0
+  setlocal nomodifiable readonly
   call s:update()
 endfunction
 
