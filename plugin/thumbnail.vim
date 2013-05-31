@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/31 11:15:42.
+" Last Change: 2013/05/31 11:28:05.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -58,7 +58,7 @@ function! s:new(args)
       let command = 'new'
     elseif arg == '-vertical'
       let command = 'vnew'
-    elseif arg == '-nosplit' && !&modified
+    elseif arg == '-here' && !&modified
       let command = 'new | wincmd p | quit'
     elseif arg == '-newtab'
       let command = 'tabnew'
@@ -1507,11 +1507,11 @@ function! s:update_on()
 endfunction
 
 function! s:complete(arglead, cmdline, cursorpos)
-  let options = [ '-horizontal', '-vertical', '-nosplit', '-newtab', '-below'
+  let options = [ '-horizontal', '-vertical', '-here', '-newtab', '-below'
         \ , '-include=', '-exclude=', '-specify=' ]
   let noconflict = [
-        \ [ '-horizontal', '-vertical', '-nosplit', '-newtab' ],
-        \ [ '-nosplit', '-below' ],
+        \ [ '-horizontal', '-vertical', '-here', '-newtab' ],
+        \ [ '-here', '-below' ],
         \ [ '-newtab', '-below' ],
         \ ]
   if a:arglead != ''

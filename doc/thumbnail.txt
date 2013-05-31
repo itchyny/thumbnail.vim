@@ -42,8 +42,8 @@ You can specify some options to modify the appearance of the thumbnail buffer.
 		Open the split window with below command prefix. This option
 		is be effective with -horizontal and -vertical.
 
-						*thumbnail-options-nosplit*
-		-nosplit
+						*thumbnail-options-here*
+		-here
 		Open the thumbnail buffer in the current buffer.
 
 						*thumbnail-options-newtab*
