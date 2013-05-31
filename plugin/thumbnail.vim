@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/31 07:49:45.
+" Last Change: 2013/05/31 11:01:16.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -68,12 +68,12 @@ function! s:new(args)
     elseif arg =~? '-include=.\+'
       let thumbnail_ft.include = extend(thumbnail_ft.include,
             \ split(substitute(arg, '-include=', '', ''), ','))
-      let thumbnail_ft.exclude = filter(copy(thumbnail_ft.exclude),
+      let thumbnail_ft.exclude = filter(thumbnail_ft.exclude,
             \ 'index(thumbnail_ft.include, v:val) < 0')
     elseif arg =~? '-exclude=.\+'
       let thumbnail_ft.exclude = extend(thumbnail_ft.exclude,
             \ split(substitute(arg, '-exclude=', '', ''), ','))
-      let thumbnail_ft.include = filter(copy(thumbnail_ft.include),
+      let thumbnail_ft.include = filter(thumbnail_ft.include,
             \ 'index(thumbnail_ft.exclude, v:val) < 0')
     elseif arg =~? '-specify=.\+'
       let thumbnail_ft.specify = extend(thumbnail_ft.specify,
