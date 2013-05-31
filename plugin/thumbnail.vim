@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/31 11:01:16.
+" Last Change: 2013/05/31 11:15:42.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -162,11 +162,10 @@ function! s:get_contents(nr, width, height)
   endif
   call insert(lines, s:truncate_smart(name == '' ? '[No Name]' : name,
         \ a:width - 4, (a:width - 4) * 3 / 5, ' .. '))
-  let contents = map(lines,
-        \ 's:truncate(substitute(v:val, "\t",' .
+  return map(lines,
+        \ 's:truncate(substitute(substitute(v:val, "\t",' .
         \ string(repeat(' ', getbufvar(a:nr, '&tabstop'))) .
-        \ ', "g") . "' . '", ' .  (a:width - 4) . ')')
-  return contents
+        \ ', "g"), "\x0d", "^M", "g") . "' . '", ' .  (a:width - 4) . ')')
 endfunction
 
 function! s:arrangement(b)
