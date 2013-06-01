@@ -133,6 +133,9 @@ Normal mode key mappings.
 <Plug>(thumbnail_redraw)			*<Plug>(thumbnail_redraw)*
 		Redraw the thumbnail buffer.
 
+<Plug>(thumbnail_toggle_help)				*<Plug>(thumbnail_toggle_help)*
+		Toggle the help of key mappings.
+
 <Plug>(thumbnail_exit)				*<Plug>(thumbnail_exit)*
 		Exit the thumbnail buffer.
 
@@ -146,10 +149,10 @@ h		|<Plug>(thumbnail_move_left)|
 l		|<Plug>(thumbnail_move_right)|
 j		|<Plug>(thumbnail_move_down)|
 k		|<Plug>(thumbnail_move_up)|
-<Left>		same as h
-<Right>		same as l
-<Down>		same as j
-<Up>		same as k
+<Left>		|<Plug>(thumbnail_move_left)|
+<Right>		|<Plug>(thumbnail_move_right)|
+<Down>		|<Plug>(thumbnail_move_down)|
+<Up>		|<Plug>(thumbnail_move_up)|
 <BS>		same as h
 gh		same as h
 gl		same as l
@@ -197,7 +200,6 @@ I		same as i
 a		same as i
 A		same as i
 /		|<Plug>(thumbnail_start_insert)|
-?		|<Plug>(thumbnail_start_insert)|
 v		|<Plug>(thumbnail_start_visual)|
 V		|<Plug>(thumbnail_start_line_visual)|
 <C-v>		|<Plug>(thumbnail_start_block_visual)|
@@ -209,6 +211,7 @@ D		|<Plug>(thumbnail_delete_to_end)|
 x		|<Plug>(thumbnail_delete)|
 X		|<Plug>(thumbnail_delete_backspace)|
 <C-l>		|<Plug>(thumbnail_redraw)|
+?		|<Plug>(thumbnail_toggle_help)|
 q		|<Plug>(thumbnail_exit)|
 c		|<Plug>(thumbnail_nop)|
 C		|<Plug>(thumbnail_nop)|
@@ -234,6 +237,9 @@ Insert mode key mappings.
 <Plug>(thumbnail_move_prev)			*i_<Plug>(thumbnail_move_prev)*
 		Move the cursor. These mappings rotate the selection.
 
+<Plug>(thumbnail_delete_backward_word)		*i_<Plug>(thumbnail_delete_backward_word)*
+		Delete one word
+
 <Plug>(thumbnail_exit_insert)			*i_<Plug>(thumbnail_exit_insert)*
 		Exit the filtering mode
 
@@ -254,6 +260,7 @@ Insert mode default mappings.
 <Up>		|i_<Plug>(thumbnail_move_up)|
 <Right>		|i_<Plug>(thumbnail_move_next)|
 <Left>		|i_<Plug>(thumbnail_move_prev)|
+<C-w>		|i_<Plug>(thumbnail_delete_backward_word)|
 <ESC>		|i_<Plug>(thumbnail_exit_insert)|
 <CR>		|i_<Plug>(thumbnail_select)|
 
