@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/01 23:53:44.
+" Last Change: 2013/06/02 07:45:42.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -1699,7 +1699,7 @@ function! s:update_filter()
         if bufname(bufs[i].bufnr) !~? w | let f = 1 | endif
       catch
         try
-          if bufname(bufs[i].bufnr) !~? escape(w, '\*[]?') | let f = 1 | endif
+          if bufname(bufs[i].bufnr) !~? escape(w, '~\*[]?') | let f = 1 | endif
         endtry
       endtry
       if f | break | endif
