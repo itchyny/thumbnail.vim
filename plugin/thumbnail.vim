@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/01 15:35:28.
+" Last Change: 2013/06/01 15:59:11.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -144,8 +144,6 @@ function! s:autocmds()
           \ call s:update_filter()
     autocmd InsertEnter,InsertChange <buffer>
           \ call s:disable_complete()
-    " autocmd InsertLeave <buffer>
-    "       \ set nopaste
   augroup END
 endfunction
 
@@ -306,12 +304,12 @@ function! s:mapping()
         \ :<C-u>call <SID>close(0)<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_delete_backspace)
         \ :<C-u>call <SID>close(1)<CR>
-  nnoremap <buffer><silent> <Plug>(thumbnail_exit)
-        \ :<C-u>bdelete!<CR>
-  nnoremap <buffer><silent> <Plug>(thumbnail_toggle_help)
-        \ :<C-u>call <SID>toggle_help()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_redraw)
         \ :<C-u>call <SID>update_current_thumbnail()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_toggle_help)
+        \ :<C-u>call <SID>toggle_help()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_exit)
+        \ :<C-u>bdelete!<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_nop)
         \ <Nop>
   inoremap <buffer><silent> <Plug>(thumbnail_nop)
@@ -436,8 +434,8 @@ function! s:mapping()
   nmap <buffer> <Del> x
   nmap <buffer> X <Plug>(thumbnail_delete_backspace)
   nmap <buffer> <C-l> <Plug>(thumbnail_redraw)
-  nmap <buffer> q <Plug>(thumbnail_exit)
   nmap <buffer> ? <Plug>(thumbnail_toggle_help)
+  nmap <buffer> q <Plug>(thumbnail_exit)
 
   let nop = 'cCoOpPrRsSuUz'
   for i in range(len(nop))
@@ -457,8 +455,8 @@ function! s:mapping()
   imap <buffer> <Up> <Plug>(thumbnail_move_up)
   imap <buffer> <Right> <Plug>(thumbnail_move_right)
   imap <buffer> <Left> <Plug>(thumbnail_move_left)
-  imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
   imap <buffer> <C-w> <Plug>(thumbnail_delete_backward_word)
+  imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
   imap <buffer> <CR> <Plug>(thumbnail_select)
 
 endfunction
@@ -510,7 +508,7 @@ function! s:compare_length(a, b)
   return len(a:a) == len(a:b) ? (a:a =~ '^[a-z]\+$' ? -1 : 1) :
         \ a:a !~# '-' ? -1 : a:b !=# '-' ? 1 : len(a:a) > len(a:b) ? 1 : -1
 endfunction
-function! s:insert_mapping(b, s)
+function! s:help_mapping(b, s)
   redir => redir
   silent! nmap
   redir END
@@ -656,6 +654,7 @@ function! s:insert_mapping(b, s)
   call insert(m, '')
   call insert(m, '', -1)
   call insert(m, '', -1)
+  let a:b.help_offset = (len(a:s) - len(m)) / 2
   for i in range(len(m) - 1)
     if len(a:s) <= i + (len(a:s) - len(m)) / 2
       break
@@ -820,10 +819,10 @@ function! s:update()
   endfor
   call extend(s, repeat([line_white], b.margin_bottom))
   if b.help_mode
-    call s:insert_mapping(b, s)
+    call s:help_mapping(b, s)
   endif
   call s:redraw_buffer_with(s)
-  if !b.help_mode
+  if !b.help_mode || b.help_offset >= b.insert_pos
     call setline(b.insert_pos, b.input)
   endif
   call s:set_cursor()
