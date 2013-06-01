@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/01 15:59:11.
+" Last Change: 2013/06/01 16:29:51.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -374,12 +374,12 @@ function! s:mapping()
   nmap <buffer> g<Right> l
   nmap <buffer> g<Down> j
   nmap <buffer> g<Up> k
-  nmap <buffer> + j
-  nmap <buffer> - k
   nmap <buffer> <C-n> <Plug>(thumbnail_move_down)
   nmap <buffer> <C-p> <Plug>(thumbnail_move_up)
   nmap <buffer> <C-f> <Plug>(thumbnail_move_next)
   nmap <buffer> <C-b> <Plug>(thumbnail_move_prev)
+  nmap <buffer> + j
+  nmap <buffer> - k
 
   nmap <buffer> w <Plug>(thumbnail_move_next)
   nmap <buffer> W w
@@ -505,8 +505,9 @@ let s:nmapping_order =
       \     , [ 'i_select', 'Open the selected buffer' ] ] ] ]
 
 function! s:compare_length(a, b)
-  return len(a:a) == len(a:b) ? (a:a =~ '^[a-z]\+$' ? -1 : 1) :
-        \ a:a !~# '-' ? -1 : a:b !=# '-' ? 1 : len(a:a) > len(a:b) ? 1 : -1
+  return len(a:a) == 1 ? -1 : len(a:b) == 1 ? 1 :
+        \ len(a:a) == len(a:b) ? (a:a =~ '^[a-z]\+$' ? -1 : 1) :
+        \ a:a !~# '\S-' ? -1 : a:b !=# '\S-' ? 1 : len(a:a) > len(a:b) ? 1 : -1
 endfunction
 function! s:help_mapping(b, s)
   redir => redir
@@ -525,20 +526,26 @@ function! s:help_mapping(b, s)
   let nmap_dict_rev = {}
   let nmap_dict_alias = {}
   for n in nmappings
-    let [key, name] = split(n, '\s\+')
-    let nmap_dict[key] = name
-    if has_key(nmap_dict_rev, name)
-      call add(nmap_dict_rev[name], key)
-    else
-      let nmap_dict_rev[name] = [key]
-    endif
+    try
+      let [key, name] = split(n, '\s\+')
+      let nmap_dict[key] = name
+      if has_key(nmap_dict_rev, name)
+        call add(nmap_dict_rev[name], key)
+      else
+        let nmap_dict_rev[name] = [key]
+      endif
+    catch
+    endtry
   endfor
   for n in nmappings_alias
-    let [key, name] = split(n, '\s\+')
-    if key =~# '^\(O[A-D]\|g\(.\|<\S\+>\)\|.*Wheel.*\)$'
-      continue
-    endif
-    let nmap_dict_alias[key] = name
+    try
+      let [key, name] = split(n, '\s\+')
+      if key =~# '^\(O[A-D]\|g\(.\|<\S\+>\)\|.*Wheel.*\)$'
+        continue
+      endif
+      let nmap_dict_alias[key] = name
+    catch
+    endtry
   endfor
   redir => iredir
   silent! imap
@@ -555,21 +562,24 @@ function! s:help_mapping(b, s)
   let imap_dict = {}
   let imap_dict_alias = {}
   for n in imappings
-    let [key, name] = split(n, '\s\+')
-    let name = 'i_' . name
-    if has_key(nmap_dict_rev, name)
-      call add(nmap_dict_rev[name], key)
-    else
-      let nmap_dict_rev[name] = [key]
-    endif
-    let imap_dict[key] = name
+    try
+      let [key, name] = split(n, '\s\+')
+      let name = 'i_' . name
+      if has_key(nmap_dict_rev, name)
+        call add(nmap_dict_rev[name], key)
+      else
+        let nmap_dict_rev[name] = [key]
+      endif
+      let imap_dict[key] = name
+    catch
+    endtry
   endfor
   for n in imappings_alias
-    let [key, name] = split(n, '\s\+')
-    let imap_dict_alias[key] = name
-  endfor
-  for [key, value] in items(nmap_dict_rev)
-    call sort(value, 's:compare_length')
+    try
+      let [key, name] = split(n, '\s\+')
+      let imap_dict_alias[key] = name
+    catch
+    endtry
   endfor
   for [key, name] in items(nmap_dict_alias)
     if has_key(nmap_dict, name)
@@ -600,7 +610,7 @@ function! s:help_mapping(b, s)
     for j in range(1, len(s:nmapping_order[i]) - 1)
       for [name, description] in s:nmapping_order[i][j]
         if has_key(nmap_dict_rev, name)
-          let keystr = join(sort(nmap_dict_rev[name], 's:compare_length'), ' / ')
+          let keystr = join(nmap_dict_rev[name], ' / ')
           call add(keylist[i], keystr . ' : ' . description)
         endif
       endfor
