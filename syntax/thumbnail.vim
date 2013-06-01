@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/01 18:50:15.
+" Last Change: 2013/06/01 19:14:30.
 " =============================================================================
 
 if version < 700
@@ -20,6 +20,7 @@ if has('conceal') && (!exists('b:thumbnail_conceal') || b:thumbnail_conceal)
   syntax match ThumbnailVisualMarker '\[\^\|\^\]' contained conceal
   syntax match ThumbnailMarker '\[\\\|\\\]' conceal
   setlocal conceallevel=3
+  let b:thumbnail_conceal = 1
 else
   syntax match ThumbnailSelectMarker '\[|\||\]' contained
   syntax match ThumbnailVisualMarker '\[\^\|\^\]' contained
