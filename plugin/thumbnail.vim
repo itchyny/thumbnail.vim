@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/01 16:29:51.
+" Last Change: 2013/06/01 18:11:29.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -263,6 +263,10 @@ function! s:marker(b)
 endfunction
 
 function! s:mapping()
+
+  if &l:filetype ==# 'thumbnail'
+    return
+  endif
 
   nnoremap <buffer><silent> <Plug>(thumbnail_move_left)
         \ :<C-u>call <SID>move_left()<CR>
@@ -837,8 +841,11 @@ function! s:update()
   endif
   call s:set_cursor()
   setlocal nomodifiable buftype=nofile noswapfile readonly nonumber
-        \ bufhidden=hide nobuflisted filetype=thumbnail
+        \ bufhidden=hide nobuflisted
         \ nofoldenable foldcolumn=0 nolist nowrap concealcursor=nvic
+  if &l:filetype !=# 'thumbnail'
+    setlocal filetype=thumbnail
+  endif
 endfunction
 
 function! s:set_cursor()
