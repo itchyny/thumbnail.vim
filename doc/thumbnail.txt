@@ -126,15 +126,15 @@ Normal mode key mappings.
 <Plug>(thumbnail_delete_to_end)		 	*<Plug>(thumbnail_delete_to_end)*
 		Delete thumbnails till the end of the current line.
 
-<Plug>(thumbnail_close)				*<Plug>(thumbnail_close)*
-<Plug>(thumbnail_close_backspace)		*<Plug>(thumbnail_close_backspace)*
-		Close the selected buffer.
+<Plug>(thumbnail_delete)			*<Plug>(thumbnail_delete)*
+<Plug>(thumbnail_delete_backspace)		*<Plug>(thumbnail_delete_backspace)*
+		Delete the selected buffer.
 
 <Plug>(thumbnail_redraw)			*<Plug>(thumbnail_redraw)*
 		Redraw the thumbnail buffer.
 
 <Plug>(thumbnail_exit)				*<Plug>(thumbnail_exit)*
-		Close the thumbnail buffer.
+		Exit the thumbnail buffer.
 
 <Plug>(thumbnail_nop)				*<Plug>(thumbnail_nop)*
 		Nothing.
@@ -206,8 +206,8 @@ D		|<Plug>(thumbnail_delete_to_end)|
 <ESC>		|<Plug>(thumbnail_exit_visual)|
 <CR>		|<Plug>(thumbnail_select)|
 <SPACE>		same as <CR>
-x		|<Plug>(thumbnail_close)|
-X		|<Plug>(thumbnail_close_backspace)|
+x		|<Plug>(thumbnail_delete)|
+X		|<Plug>(thumbnail_delete_backspace)|
 <C-l>		|<Plug>(thumbnail_redraw)|
 q		|<Plug>(thumbnail_exit)|
 c		|<Plug>(thumbnail_nop)|
