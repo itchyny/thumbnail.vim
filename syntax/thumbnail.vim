@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/05/25 02:21:15.
+" Last Change: 2013/06/01 18:37:41.
 " =============================================================================
 
 if version < 700
@@ -14,7 +14,7 @@ endif
 
 syntax match ThumbnailSelect '\[|.\{-}|\]' contains=ThumbnailSMarker
 
-if has('conceal') && (!exists('b:thumbnail') || b:thumbnail.marker.conceal)
+if has('conceal') && (!exists('b:thumbnail_conceal') || b:thumbnail_conceal)
   syntax match ThumbnailSMarker '\[|\||\]' contained conceal
   syntax match ThumbnailMarker '\[\\\|\\\]' conceal
   setlocal conceallevel=3

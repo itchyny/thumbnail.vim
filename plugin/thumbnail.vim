@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/01 18:11:29.
+" Last Change: 2013/06/01 18:37:45.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -242,7 +242,8 @@ endfunction
 
 function! s:marker(b)
   let b = {}
-  if has('conceal')
+  if exists('b:thumbnail_conceal') && b:thumbnail_conceal || 
+        \ !exists('b:thumbnail_conceal') && has('conceal')
       \ && winwidth(0) > (a:b.num_width - 1)
       \ * (a:b.offset_left + a:b.thumbnail_width + 4) + a:b.offset_left + 5
     let b.left_select = '  [|'
@@ -844,6 +845,7 @@ function! s:update()
         \ bufhidden=hide nobuflisted
         \ nofoldenable foldcolumn=0 nolist nowrap concealcursor=nvic
   if &l:filetype !=# 'thumbnail'
+    let b:thumbnail_conceal = b.marker.conceal
     setlocal filetype=thumbnail
   endif
 endfunction
