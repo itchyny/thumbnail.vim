@@ -9,7 +9,9 @@ CONTENTS					*thumbnail-contents*
 
 Introduction				|thumbnail-introduction|
 Commands				|thumbnail-commands|
+Options					|thumbnail-options|
 Key Mappings				|thumbnail-key-mappings|
+Syntax					|thumbnail-syntax|
 Changelog				|thumbnail-changelog|
 
 ==============================================================================
@@ -263,6 +265,35 @@ Insert mode default mappings.
 <C-w>		|i_<Plug>(thumbnail_delete_backward_word)|
 <ESC>		|i_<Plug>(thumbnail_exit_insert)|
 <CR>		|i_<Plug>(thumbnail_select)|
+
+------------------------------------------------------------------------------
+SYNTAX						*thumbnail-syntax*
+
+You can change the appearance of the thumbnails by changing the following
+syntax groups.
+
+ThumbnailMarker					*ThumbnailMarker*
+		Markers for unselected thumbnails.
+		Linked to Ignore, concealed in default.
+
+ThumbnailSelectMarker				*ThumbnailSelectMarker*
+		Markers for the thumbnail under the cursor.
+		Linked to Ignore, concealed in default.
+
+ThumbnailVisualMarker				*ThumbnailVisualMarker*
+		Markers for the visual-selected thumbnails, excluding the
+		thumbnail under the cursor.
+		Linked to Ignore, concealed in default.
+
+ThumbnailSelect					*ThumbnailSelect*
+		Syntax for the inner region for the thumbnail under the
+		cursor. The default value is the following.
+		term=none cterm=none ctermbg=236 gui=none guibg=#2c2c2c
+
+ThumbnailVisual					*ThumbnailVisual*
+		Syntax for the inner region for visual-selected thumbnails.
+		The default value is the following.
+		term=none cterm=none ctermbg=234 gui=none guibg=#1c1c1c
 
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*

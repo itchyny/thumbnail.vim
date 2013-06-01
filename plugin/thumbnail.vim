@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/01 19:00:43.
+" Last Change: 2013/06/01 19:02:58.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -1795,6 +1795,7 @@ function! s:update_on()
 endfunction
 
 function! s:complete(arglead, cmdline, cursorpos)
+  try
   let options = [ '-horizontal', '-vertical', '-here', '-newtab', '-below'
         \ , '-include=', '-exclude=', '-specify=' ]
   let noconflict = [
@@ -1829,6 +1830,9 @@ function! s:complete(arglead, cmdline, cursorpos)
     endfor
     return sort(filter(options, 'd[v:val]==0 && stridx(a:cmdline, v:val)==-1'))
   endif
+  catch
+    return []
+  endtry
 endfunction
 
 " The following codes were imported from vital.vim {{{
