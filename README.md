@@ -9,6 +9,7 @@
 The basic concept is graphical vim.
 We should not stay still at old-style stage.
 The user interface is largely influenced by the new tab of Google Chrome.
+This plugin is also inspired by Launchpad of Mac and unite.vim.
 
 ## Author
 itchyny (https://github.com/itchyny)
