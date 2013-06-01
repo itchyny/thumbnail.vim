@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/01 20:58:12.
+" Last Change: 2013/06/01 23:53:44.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -242,7 +242,7 @@ endfunction
 
 function! s:marker(b)
   let b = {}
-  if exists('b:thumbnail_conceal') && b:thumbnail_conceal || 
+  if exists('b:thumbnail_conceal') && b:thumbnail_conceal ||
         \ !exists('b:thumbnail_conceal') && has('conceal')
         \ && winwidth(0) > (a:b.num_width - 1)
         \ * (a:b.offset_left + a:b.thumbnail_width + 4) + a:b.offset_left + 5
@@ -599,7 +599,7 @@ function! s:help_mapping(b, s)
   for [key, value] in items(nmap_dict_rev)
     let new_value = []
     for v in value
-      if index(new_value, v) == -1 && 
+      if index(new_value, v) == -1 &&
             \ (v ==# tolower(v) && v != '/' || len(v) > 1
             \ || index(value, tolower(v)) == -1)
         call add(new_value, v)
