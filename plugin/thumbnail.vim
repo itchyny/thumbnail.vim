@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/01 18:37:45.
+" Last Change: 2013/06/01 18:48:52.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -248,6 +248,8 @@ function! s:marker(b)
       \ * (a:b.offset_left + a:b.thumbnail_width + 4) + a:b.offset_left + 5
     let b.left_select = '  [|'
     let b.right_select = '|]  '
+    let b.left_visual_select = '  [^'
+    let b.right_visual_select = '^]  '
     let b.left = '  [\'
     let b.right = '\]  '
     let b.last = '    \]\]'
@@ -255,6 +257,8 @@ function! s:marker(b)
   else
     let b.left_select = '[|'
     let b.right_select = '|]'
+    let b.left_visual_select = '[^'
+    let b.right_visual_select = '^]'
     let b.left = '  '
     let b.right = '  '
     let b.last = '\]\]'
@@ -819,10 +823,12 @@ function! s:update()
         else
           let contents = thumbnail_white
         endif
-        if b.visual_mode && index(b.visual_selects, m) != -1
-              \ || b.select_i == i && b.select_j == j
+        if b.select_i == i && b.select_j == j
           let l = b.marker.left_select
           let r = b.marker.right_select
+        elseif b.visual_mode && index(b.visual_selects, m) != -1
+          let l = b.marker.left_visual_select
+          let r = b.marker.right_visual_select
         else
           let l = b.marker.left
           let r = b.marker.right
