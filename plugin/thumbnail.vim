@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/01 20:25:28.
+" Last Change: 2013/06/01 20:58:12.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -244,8 +244,8 @@ function! s:marker(b)
   let b = {}
   if exists('b:thumbnail_conceal') && b:thumbnail_conceal || 
         \ !exists('b:thumbnail_conceal') && has('conceal')
-      \ && winwidth(0) > (a:b.num_width - 1)
-      \ * (a:b.offset_left + a:b.thumbnail_width + 4) + a:b.offset_left + 5
+        \ && winwidth(0) > (a:b.num_width - 1)
+        \ * (a:b.offset_left + a:b.thumbnail_width + 4) + a:b.offset_left + 5
     let b.left_select = '  [|'
     let b.right_select = '|]  '
     let b.left_visual_select = '  [^'
@@ -638,7 +638,8 @@ function! s:help_mapping(b, s)
     if j >= len(m)
       call add(m, prev_len_white)
     endif
-    let m[j] = m[j] . separator . s:truncate(s:nmapping_order[i][0], len + len(indent))
+    let m[j] = m[j] . separator .
+          \ s:truncate(s:nmapping_order[i][0], len + len(indent))
     for k in keylist[i]
       let j = j + 1
       if j >= len(m)
@@ -654,7 +655,8 @@ function! s:help_mapping(b, s)
   endfor
   let prev_len = len(m[0])
   let j = 0
-  let m[j] = m[j] . separator . s:truncate(s:nmapping_order[4][0], len + len(indent))
+  let m[j] = m[j] . separator .
+        \ s:truncate(s:nmapping_order[4][0], len + len(indent))
   let len = max([max([len, max(map(copy(keylist[4]), 'len(v:val)'))]), 21])
   for k in keylist[4]
     let j = j + 1
@@ -703,22 +705,22 @@ function! s:unsave(b, ...)
     endif
   endif
   if get(a:000, 1)
-  let newbuf_nrs = map(copy(newbuf), 'v:val["bufnr"]')
-  let prev_b_bufs_nrs = map(copy(prev_b.bufs), 'v:val["bufnr"]')
-  let a:b.bufs = []
-  for i in range(len(prev_b.bufs))
-    let j = index(newbuf_nrs, prev_b.bufs[i].bufnr)
-    if j != -1
-      call add(a:b.bufs, newbuf[j])
-    endif
-  endfor
-  unlet newbuf_nrs
-  for i in range(len(newbuf))
-    if index(prev_b_bufs_nrs, newbuf[i].bufnr) == -1
-      call add(a:b.bufs, newbuf[i])
-    endif
-  endfor
-  unlet prev_b_bufs_nrs
+    let newbuf_nrs = map(copy(newbuf), 'v:val["bufnr"]')
+    let prev_b_bufs_nrs = map(copy(prev_b.bufs), 'v:val["bufnr"]')
+    let a:b.bufs = []
+    for i in range(len(prev_b.bufs))
+      let j = index(newbuf_nrs, prev_b.bufs[i].bufnr)
+      if j != -1
+        call add(a:b.bufs, newbuf[j])
+      endif
+    endfor
+    unlet newbuf_nrs
+    for i in range(len(newbuf))
+      if index(prev_b_bufs_nrs, newbuf[i].bufnr) == -1
+        call add(a:b.bufs, newbuf[i])
+      endif
+    endfor
+    unlet prev_b_bufs_nrs
   endif
   if index < len(prev_b.bufs) && has_key(prev_b.bufs[index], 'bufnr')
         \ && index < len(a:b.bufs) && has_key(a:b.bufs[index], 'bufnr')
@@ -860,23 +862,23 @@ function! s:set_cursor()
     return
   endif
   try
-  let b = b:thumbnail
-  let offset = 0
-  for j in range(b.select_j)
-    let index = b.select_i * b.num_width + j
-    if index < len(b.bufs) && has_key(b.bufs[index], 'firstlinelength')
-      let offset += b.bufs[index].firstlinelength + b.offset_left + 4
-    else
-      let offset += b.offset_left + b.thumbnail_width
-    endif
-    if b.marker.conceal
-      let offset += 4
-    endif
-  endfor
-  let b.cursor_x = b.margin_top + b.select_i
-        \ * (b.offset_top + b.thumbnail_height) + b.offset_top + 1
-  let b.cursor_y = offset + b.offset_left + 3 + b.marker.conceal * 2
-  call cursor(b.cursor_x, b.cursor_y)
+    let b = b:thumbnail
+    let offset = 0
+    for j in range(b.select_j)
+      let index = b.select_i * b.num_width + j
+      if index < len(b.bufs) && has_key(b.bufs[index], 'firstlinelength')
+        let offset += b.bufs[index].firstlinelength + b.offset_left + 4
+      else
+        let offset += b.offset_left + b.thumbnail_width
+      endif
+      if b.marker.conceal
+        let offset += 4
+      endif
+    endfor
+    let b.cursor_x = b.margin_top + b.select_i
+          \ * (b.offset_top + b.thumbnail_height) + b.offset_top + 1
+    let b.cursor_y = offset + b.offset_left + 3 + b.marker.conceal * 2
+    call cursor(b.cursor_x, b.cursor_y)
   endtry
 endfunction
 
@@ -909,7 +911,7 @@ endfunction
 
 function! s:update_current_thumbnail()
   try
-  call s:thumbnail_init(1)
+    call s:thumbnail_init(1)
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -918,14 +920,14 @@ endfunction
 
 function! s:move_left()
   try
-  let b = b:thumbnail
-  let new_j = max([b.select_j - max([v:count, b.v_count, 1]), 0])
-  if s:thumbnail_exists(b.select_i, new_j)
-    let b.prev_j = b.select_j
-    let b.select_j = new_j
-    let b.line_move = 0
-  endif
-  call s:update()
+    let b = b:thumbnail
+    let new_j = max([b.select_j - max([v:count, b.v_count, 1]), 0])
+    if s:thumbnail_exists(b.select_i, new_j)
+      let b.prev_j = b.select_j
+      let b.select_j = new_j
+      let b.line_move = 0
+    endif
+    call s:update()
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -934,16 +936,16 @@ endfunction
 
 function! s:move_right()
   try
-  let b = b:thumbnail
-  let new_j = min([b.select_j + max([v:count, b.v_count, 1]),
-        \ b.num_width - 1,
-        \ len(b.bufs) - b.select_i * b.num_width - 1])
-  if s:thumbnail_exists(b.select_i, new_j)
-    let b.prev_j = b.select_j
-    let b.select_j = new_j
-    let b.line_move = 0
-  endif
-  call s:update()
+    let b = b:thumbnail
+    let new_j = min([b.select_j + max([v:count, b.v_count, 1]),
+          \ b.num_width - 1,
+          \ len(b.bufs) - b.select_i * b.num_width - 1])
+    if s:thumbnail_exists(b.select_i, new_j)
+      let b.prev_j = b.select_j
+      let b.select_j = new_j
+      let b.line_move = 0
+    endif
+    call s:update()
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -952,13 +954,13 @@ endfunction
 
 function! s:move_up()
   try
-  let b = b:thumbnail
-  let new_i = max([b.select_i - max([v:count, b.v_count, 1]), 0])
-  if s:thumbnail_exists(new_i, b.select_j)
-    let b.select_i = new_i
-    let b.line_move = 1
-  endif
-  call s:update()
+    let b = b:thumbnail
+    let new_i = max([b.select_i - max([v:count, b.v_count, 1]), 0])
+    if s:thumbnail_exists(new_i, b.select_j)
+      let b.select_i = new_i
+      let b.line_move = 1
+    endif
+    call s:update()
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -967,18 +969,18 @@ endfunction
 
 function! s:move_down(...)
   try
-  let b = b:thumbnail
-  let d = get(a:000, 0)
-  let new_i = min([b.select_i + max([v:count, b.v_count, 1, d]),
-        \ b.num_height - 1])
-  if s:thumbnail_exists(new_i, b.select_j)
-    let b.select_i = new_i
-    let b.line_move = 1
-  elseif s:thumbnail_exists(new_i - 1, b.select_j)
-    let b.select_i = new_i - 1
-    let b.line_move = 1
-  endif
-  call s:update()
+    let b = b:thumbnail
+    let d = get(a:000, 0)
+    let new_i = min([b.select_i + max([v:count, b.v_count, 1, d]),
+          \ b.num_height - 1])
+    if s:thumbnail_exists(new_i, b.select_j)
+      let b.select_i = new_i
+      let b.line_move = 1
+    elseif s:thumbnail_exists(new_i - 1, b.select_j)
+      let b.select_i = new_i - 1
+      let b.line_move = 1
+    endif
+    call s:update()
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -987,17 +989,17 @@ endfunction
 
 function! s:move_next()
   try
-  let b = b:thumbnail
-  let index = b.select_i * b.num_width + b.select_j
-  let new_index = s:modulo(index + max([v:count, b.v_count, 1]), len(b.bufs))
-  let new_i = new_index / b.num_width
-  let new_j = new_index % b.num_width
-  if s:thumbnail_exists(new_i, new_j)
-    let b.select_i = new_i
-    let b.select_j = new_j
-    let b.line_move = 0
-  endif
-  call s:update()
+    let b = b:thumbnail
+    let index = b.select_i * b.num_width + b.select_j
+    let new_index = s:modulo(index + max([v:count, b.v_count, 1]), len(b.bufs))
+    let new_i = new_index / b.num_width
+    let new_j = new_index % b.num_width
+    if s:thumbnail_exists(new_i, new_j)
+      let b.select_i = new_i
+      let b.select_j = new_j
+      let b.line_move = 0
+    endif
+    call s:update()
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -1006,17 +1008,17 @@ endfunction
 
 function! s:move_prev()
   try
-  let b = b:thumbnail
-  let index = b.select_i * b.num_width + b.select_j
-  let new_index = s:modulo(index - max([v:count, b.v_count, 1]), len(b.bufs))
-  let new_i = new_index / b.num_width
-  let new_j = new_index % b.num_width
-  if s:thumbnail_exists(new_i, new_j)
-    let b.select_i = new_i
-    let b.select_j = new_j
-    let b.line_move = 0
-  endif
-  call s:update()
+    let b = b:thumbnail
+    let index = b.select_i * b.num_width + b.select_j
+    let new_index = s:modulo(index - max([v:count, b.v_count, 1]), len(b.bufs))
+    let new_i = new_index / b.num_width
+    let new_j = new_index % b.num_width
+    if s:thumbnail_exists(new_i, new_j)
+      let b.select_i = new_i
+      let b.select_j = new_j
+      let b.line_move = 0
+    endif
+    call s:update()
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -1025,13 +1027,13 @@ endfunction
 
 function! s:move_line_head()
   try
-  let b = b:thumbnail
-  if s:thumbnail_exists(b.select_i, 0)
-    let b.prev_j = b.select_j
-    let b.select_j = 0
-    let b.line_move = 0
-  endif
-  call s:update()
+    let b = b:thumbnail
+    if s:thumbnail_exists(b.select_i, 0)
+      let b.prev_j = b.select_j
+      let b.select_j = 0
+      let b.line_move = 0
+    endif
+    call s:update()
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -1040,20 +1042,20 @@ endfunction
 
 function! s:move_line_last()
   try
-  let b = b:thumbnail
-  if s:thumbnail_exists(b.select_i, b.num_width - 1)
-    let b.prev_j = b.select_j
-    let b.select_j = b.num_width - 1
-    let b.to_end = 1
-    let b.line_move = 0
-  elseif s:thumbnail_exists(b.select_i,
-        \ len(b.bufs) - b.select_i * b.num_width - 1)
-    let b.prev_j = b.select_j
-    let b.select_j = len(b.bufs) - b.select_i * b.num_width - 1
-    let b.to_end = 1
-    let b.line_move = 0
-  endif
-  call s:update()
+    let b = b:thumbnail
+    if s:thumbnail_exists(b.select_i, b.num_width - 1)
+      let b.prev_j = b.select_j
+      let b.select_j = b.num_width - 1
+      let b.to_end = 1
+      let b.line_move = 0
+    elseif s:thumbnail_exists(b.select_i,
+          \ len(b.bufs) - b.select_i * b.num_width - 1)
+      let b.prev_j = b.select_j
+      let b.select_j = len(b.bufs) - b.select_i * b.num_width - 1
+      let b.to_end = 1
+      let b.line_move = 0
+    endif
+    call s:update()
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -1062,18 +1064,18 @@ endfunction
 
 function! s:move_line_middle()
   try
-  let b = b:thumbnail
-  if s:thumbnail_exists(b.select_i, b.num_width / 2)
-    let b.prev_j = b.select_j
-    let b.select_j = b.num_width / 2
-    let b.line_move = 0
-  elseif s:thumbnail_exists(b.select_i,
-        \ len(b.bufs) - b.select_i * b.num_width - 1)
-    let b.prev_j = b.select_j
-    let b.select_j = len(b.bufs) - b.select_i * b.num_width - 1
-    let b.line_move = 0
-  endif
-  call s:update()
+    let b = b:thumbnail
+    if s:thumbnail_exists(b.select_i, b.num_width / 2)
+      let b.prev_j = b.select_j
+      let b.select_j = b.num_width / 2
+      let b.line_move = 0
+    elseif s:thumbnail_exists(b.select_i,
+          \ len(b.bufs) - b.select_i * b.num_width - 1)
+      let b.prev_j = b.select_j
+      let b.select_j = len(b.bufs) - b.select_i * b.num_width - 1
+      let b.line_move = 0
+    endif
+    call s:update()
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -1082,13 +1084,13 @@ endfunction
 
 function! s:move_head()
   try
-  let b = b:thumbnail
-  if s:thumbnail_exists(0, 0)
-    let b.select_i = 0
-    let b.select_j = 0
-    let b.line_move = 1
-  endif
-  call s:update()
+    let b = b:thumbnail
+    if s:thumbnail_exists(0, 0)
+      let b.select_i = 0
+      let b.select_j = 0
+      let b.line_move = 1
+    endif
+    call s:update()
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -1097,14 +1099,14 @@ endfunction
 
 function! s:move_last()
   try
-  let b = b:thumbnail
-  if s:thumbnail_exists(b.num_height - 1,
-        \ len(b.bufs) - (b.num_height - 1) * b.num_width - 1)
-    let b.select_i = b.num_height - 1
-    let b.select_j = len(b.bufs) - (b.num_height - 1) * b.num_width - 1
-    let b.line_move = 0
-  endif
-  call s:update()
+    let b = b:thumbnail
+    if s:thumbnail_exists(b.num_height - 1,
+          \ len(b.bufs) - (b.num_height - 1) * b.num_width - 1)
+      let b.select_i = b.num_height - 1
+      let b.select_j = len(b.bufs) - (b.num_height - 1) * b.num_width - 1
+      let b.line_move = 0
+    endif
+    call s:update()
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -1118,13 +1120,13 @@ endfunction
 
 function! s:move_last_line()
   try
-  let b = b:thumbnail
-  if s:thumbnail_exists(b.num_height - 1, 0)
-    let b.select_i = b.num_height - 1
-    let b.select_j = 0
-    let b.line_move = 1
-  endif
-  call s:update()
+    let b = b:thumbnail
+    if s:thumbnail_exists(b.num_height - 1, 0)
+      let b.select_i = b.num_height - 1
+      let b.select_j = 0
+      let b.line_move = 1
+    endif
+    call s:update()
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -1133,16 +1135,16 @@ endfunction
 
 function! s:move_line_gg()
   try
-  let b = b:thumbnail
-  let new_i = v:count || b.v_count
-        \   ? min([max([v:count, b.v_count, 1]) - 1, b.num_height - 1])
-        \   : 0
-  if s:thumbnail_exists(new_i, 0)
-    let b.select_i = new_i
-    let b.select_j = 0
-    let b.line_move = 1
-  endif
-  call s:update()
+    let b = b:thumbnail
+    let new_i = v:count || b.v_count
+          \   ? min([max([v:count, b.v_count, 1]) - 1, b.num_height - 1])
+          \   : 0
+    if s:thumbnail_exists(new_i, 0)
+      let b.select_i = new_i
+      let b.select_j = 0
+      let b.line_move = 1
+    endif
+    call s:update()
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -1151,16 +1153,16 @@ endfunction
 
 function! s:move_line_G()
   try
-  let b = b:thumbnail
-  let new_i = v:count || b.v_count
-        \   ? min([max([v:count, b.v_count, 1]) - 1, b.num_height - 1])
-        \   : b.num_height - 1
-  if s:thumbnail_exists(new_i, 0)
-    let b.select_i = new_i
-    let b.select_j = 0
-    let b.line_move = 1
-  endif
-  call s:update()
+    let b = b:thumbnail
+    let new_i = v:count || b.v_count
+          \   ? min([max([v:count, b.v_count, 1]) - 1, b.num_height - 1])
+          \   : b.num_height - 1
+    if s:thumbnail_exists(new_i, 0)
+      let b.select_i = new_i
+      let b.select_j = 0
+      let b.line_move = 1
+    endif
+    call s:update()
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -1169,16 +1171,16 @@ endfunction
 
 function! s:move_column()
   try
-  let b = b:thumbnail
-  let new_j = min([max([v:count, b.v_count, 1]) - 1,
-        \ b.num_width - 1,
-        \ len(b.bufs) - b.select_i * b.num_width - 1])
-  if s:thumbnail_exists(b.select_i, new_j)
-    let b.prev_j = b.select_j
-    let b.select_j = new_j
-    let b.line_move = 0
-  endif
-  call s:update()
+    let b = b:thumbnail
+    let new_j = min([max([v:count, b.v_count, 1]) - 1,
+          \ b.num_width - 1,
+          \ len(b.bufs) - b.select_i * b.num_width - 1])
+    if s:thumbnail_exists(b.select_i, new_j)
+      let b.prev_j = b.select_j
+      let b.select_j = new_j
+      let b.line_move = 0
+    endif
+    call s:update()
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -1377,32 +1379,33 @@ endfunction
 
 function! s:select(...)
   try
-  if !exists('b:thumbnail')
-    let prev_first_line = substitute(getline(line('.'))[col('.') - 1:],
-          \ '|\].*', '', '')
-    call s:revive_thumbnail()
-    if exists('b:thumbnail')
-      call s:update()
-      let new_first_line = substitute(getline(line('.'))[col('.') - 1:],
+    if !exists('b:thumbnail')
+      let prev_first_line = substitute(getline(line('.'))[col('.') - 1:],
             \ '|\].*', '', '')
-      let l = min([len(prev_first_line), len(new_first_line)])
-      if prev_first_line[:l - 1] != new_first_line[:l - 1]
+      call s:revive_thumbnail()
+      if exists('b:thumbnail')
+        call s:update()
+        let new_first_line = substitute(getline(line('.'))[col('.') - 1:],
+              \ '|\].*', '', '')
+        let l = min([len(prev_first_line), len(new_first_line)])
+        if prev_first_line[:l - 1] != new_first_line[:l - 1]
+          return -1
+        endif
+      else
         return -1
       endif
+    endif
+    let b = b:thumbnail
+    let b.selection = 1
+    if b.visual_mode
+      call s:open_buffer_tabs(map(copy(b.visual_selects),
+            \ 'b.bufs[v:val].bufnr'))
     else
-      return -1
+      let i = get(a:000, 0, b.select_i * b.num_width + b.select_j)
+      if s:thumbnail_exists(i / b.num_width, i % b.num_width)
+        call s:open_buffer(b.bufs[i].bufnr)
+      endif
     endif
-  endif
-  let b = b:thumbnail
-  let b.selection = 1
-  if b.visual_mode
-    call s:open_buffer_tabs(map(copy(b.visual_selects), 'b.bufs[v:val].bufnr'))
-  else
-    let i = get(a:000, 0, b.select_i * b.num_width + b.select_j)
-    if s:thumbnail_exists(i / b.num_width, i % b.num_width)
-      call s:open_buffer(b.bufs[i].bufnr)
-    endif
-  endif
   endtry
 endfunction
 
@@ -1523,31 +1526,31 @@ endfunction
 
 function! s:start_visual(mode)
   try
-  let b = b:thumbnail
-  if b.visual_mode && a:mode == 4
-    " Case: {Visual}d
-    if b.visual_mode == 4
-      " Case: dd
-      call s:start_visual(2)
-      if b.v_count
-        " Case: [count]dd
-        call s:move_down(b.v_count - 1)
+    let b = b:thumbnail
+    if b.visual_mode && a:mode == 4
+      " Case: {Visual}d
+      if b.visual_mode == 4
+        " Case: dd
+        call s:start_visual(2)
+        if b.v_count
+          " Case: [count]dd
+          call s:move_down(b.v_count - 1)
+        endif
+        call s:update_visual_selects()
       endif
-      call s:update_visual_selects()
+      let b.visual_mode = a:mode
+      let b.line_move = 3 " not update visual selection
+      call s:update()
+      return
     endif
     let b.visual_mode = a:mode
-    let b.line_move = 3 " not update visual selection
-    call s:update()
-    return
-  endif
-  let b.visual_mode = a:mode
-  let b.visual_selects = []
-  call extend(b.visual_selects, [ b.select_i * b.num_width + b.select_j ])
-  if a:mode == 4
-    let b.v_count = v:count
-  else
-    call s:update()
-  endif
+    let b.visual_selects = []
+    call extend(b.visual_selects, [ b.select_i * b.num_width + b.select_j ])
+    if a:mode == 4
+      let b.v_count = v:count
+    else
+      call s:update()
+    endif
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -1556,35 +1559,35 @@ endfunction
 
 function! s:delete_to_end()
   try
-  let b = b:thumbnail
-  if b.visual_mode && b.visual_mode != 4
-    for i in range(b.num_height)
-      let f = 0
-      for j in range(min([b.num_width, len(b.bufs) - i * b.num_width]))
-        let idx = i * b.num_width + j
-        let c = index(b.visual_selects, idx)
-        if f == 0 && c != -1
-          let f = 1
-        endif
-        if f == 1 && c == -1
-          call extend(b.visual_selects, [ idx ])
-        endif
+    let b = b:thumbnail
+    if b.visual_mode && b.visual_mode != 4
+      for i in range(b.num_height)
+        let f = 0
+        for j in range(min([b.num_width, len(b.bufs) - i * b.num_width]))
+          let idx = i * b.num_width + j
+          let c = index(b.visual_selects, idx)
+          if f == 0 && c != -1
+            let f = 1
+          endif
+          if f == 1 && c == -1
+            call extend(b.visual_selects, [ idx ])
+          endif
+        endfor
       endfor
-    endfor
-    let b.line_move = 1
-    call s:close(0)
-  else
-    " Case: D
-    call s:start_visual(4)
-    if v:count > 1
-      " Case: [count]D
-      let b.select_i = min([b.select_i + v:count - 1, b.num_height - 1])
-      let b.select_j = 0
+      let b.line_move = 1
+      call s:close(0)
+    else
+      " Case: D
+      call s:start_visual(4)
+      if v:count > 1
+        " Case: [count]D
+        let b.select_i = min([b.select_i + v:count - 1, b.num_height - 1])
+        let b.select_j = 0
+      endif
+      call s:move_line_last()
     endif
-    call s:move_line_last()
-  endif
-  call s:exit_visual()
-  call s:update()
+    call s:exit_visual()
+    call s:update()
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -1593,11 +1596,11 @@ endfunction
 
 function! s:exit_visual()
   try
-  let b = b:thumbnail
-  let b.visual_mode = 0
-  let b.help_mode = 0
-  let b.visual_selects = []
-  call s:update()
+    let b = b:thumbnail
+    let b.visual_mode = 0
+    let b.help_mode = 0
+    let b.visual_selects = []
+    call s:update()
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -1658,20 +1661,20 @@ endfunction
 
 function! s:start_insert()
   try
-  if exists(':NeoComplCacheLock')
-    NeoComplCacheLock
-  endif
-  let b = b:thumbnail
-  let b.insert_mode = 1
-  let b.help_mode = 0
-  setlocal modifiable noreadonly
-  call setline(b.insert_pos, b.input)
-  call cursor(b.insert_pos, 1)
-  startinsert!
-  call s:disable_complete()
-  if exists('*neocomplcache#skip_next_complete')
-    call neocomplcache#skip_next_complete()
-  endif
+    if exists(':NeoComplCacheLock')
+      NeoComplCacheLock
+    endif
+    let b = b:thumbnail
+    let b.insert_mode = 1
+    let b.help_mode = 0
+    setlocal modifiable noreadonly
+    call setline(b.insert_pos, b.input)
+    call cursor(b.insert_pos, 1)
+    startinsert!
+    call s:disable_complete()
+    if exists('*neocomplcache#skip_next_complete')
+      call neocomplcache#skip_next_complete()
+    endif
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -1802,40 +1805,41 @@ endfunction
 
 function! s:complete(arglead, cmdline, cursorpos)
   try
-  let options = [ '-horizontal', '-vertical', '-here', '-newtab', '-below'
-        \ , '-include=', '-exclude=', '-specify=' ]
-  let noconflict = [
-        \ [ '-horizontal', '-vertical', '-here', '-newtab' ],
-        \ [ '-here', '-below' ],
-        \ [ '-newtab', '-below' ],
-        \ ]
-  if a:arglead != ''
-    return sort(filter(options, 'stridx(v:val, a:arglead) == 0'))
-  else
-    let d = {}
-    for opt in options
-      let d[opt] = 0
-    endfor
-    for opt in options
-      if d[opt] == 0
-        for ncf in noconflict
-          let flg = 0
-          for n in ncf
-            let flg = flg || stridx(a:cmdline, n) >= 0
+    let options = [ '-horizontal', '-vertical', '-here', '-newtab', '-below'
+          \ , '-include=', '-exclude=', '-specify=' ]
+    let noconflict = [
+          \ [ '-horizontal', '-vertical', '-here', '-newtab' ],
+          \ [ '-here', '-below' ],
+          \ [ '-newtab', '-below' ],
+          \ ]
+    if a:arglead != ''
+      return sort(filter(options, 'stridx(v:val, a:arglead) == 0'))
+    else
+      let d = {}
+      for opt in options
+        let d[opt] = 0
+      endfor
+      for opt in options
+        if d[opt] == 0
+          for ncf in noconflict
+            let flg = 0
+            for n in ncf
+              let flg = flg || stridx(a:cmdline, n) >= 0
+              if flg
+                break
+              endif
+            endfor
             if flg
-              break
+              for n in ncf
+                let d[n] = 1
+              endfor
             endif
           endfor
-          if flg
-            for n in ncf
-              let d[n] = 1
-            endfor
-          endif
-        endfor
-      endif
-    endfor
-    return sort(filter(options, 'd[v:val]==0 && stridx(a:cmdline, v:val)==-1'))
-  endif
+        endif
+      endfor
+      return sort(filter(options,
+            \ 'd[v:val]==0 && stridx(a:cmdline, v:val)==-1'))
+    endif
   catch
     return []
   endtry
