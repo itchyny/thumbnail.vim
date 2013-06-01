@@ -134,7 +134,7 @@ Normal mode key mappings.
 		Redraw the thumbnail buffer.
 
 <Plug>(thumbnail_toggle_help)				*<Plug>(thumbnail_toggle_help)*
-		Toggle the help of key mappings.
+		Toggle the help menu of key mappings.
 
 <Plug>(thumbnail_exit)				*<Plug>(thumbnail_exit)*
 		Exit the thumbnail buffer.
@@ -238,10 +238,10 @@ Insert mode key mappings.
 		Move the cursor. These mappings rotate the selection.
 
 <Plug>(thumbnail_delete_backward_word)		*i_<Plug>(thumbnail_delete_backward_word)*
-		Delete one word
+		Delete one word.
 
 <Plug>(thumbnail_exit_insert)			*i_<Plug>(thumbnail_exit_insert)*
-		Exit the filtering mode
+		Exit the filtering mode.
 
 <Plug>(thumbnail_select)			*i_<Plug>(thumbnail_select)*
 		Open the selected buffer.
@@ -272,8 +272,8 @@ version 0.0
 - Initial commit and implementation.
 
 version 0.1
-2013-05-25, 5-29, 5-30
-- Filtering mode, options, filetype include/exclude/specify.
+2013-05-25, ... , 06-01
+- Filtering mode, options, filetype include/exclude/specify, help menu.
 
 ==============================================================================
 vim:tw=78:sw=4:ts=8:ft=help:norl:noet:
