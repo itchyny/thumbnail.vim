@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/01 19:02:58.
+" Last Change: 2013/06/01 20:25:28.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -683,6 +683,9 @@ function! s:unsave(b, ...)
     return a:b
   endif
   let prev_b = b:thumbnail
+  if has_key(prev_b, 'help_mode')
+    let a:b.help_mode = prev_b.help_mode
+  endif
   let index = prev_b.select_i * prev_b.num_width + prev_b.select_j
   let newbuf = a:b.bufs
   if len(prev_b.bufs) == len(newbuf) && index < len(newbuf)
@@ -1771,6 +1774,9 @@ function! s:revive_thumbnail()
   let b.marker = s:marker(b)
   call s:mapping()
   if len(b.bufs) > 0
+    if has_key(b:thumbnail, 'help_mode')
+      let b.help_mode = b:thumbnail.help_mode
+    endif
     let b:thumbnail = b
     let ij = s:nearest_ij()
     if ij.i != -1 && ij.j != -1
