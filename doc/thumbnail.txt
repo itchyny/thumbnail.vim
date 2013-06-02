@@ -463,7 +463,7 @@ Problem 5:					*thumbnail-problem-5*
 	Some thumbnails look weird.
 
 		This plugin cannot correctly deal with a buffer which contains
-			+ text identical to markers: [|, [\, [^, \], \], |]
+			+ text identical to markers: [|, [\, [^, ^], \], |]
 			+ some multibyte characters
 			+ some byte character sequences.
 		Let me know by opening an issue at the repository.
