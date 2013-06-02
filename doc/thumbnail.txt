@@ -138,7 +138,7 @@ Normal mode key mappings.
 <Plug>(thumbnail_redraw)			*<Plug>(thumbnail_redraw)*
 		Redraw the thumbnail buffer.
 
-<Plug>(thumbnail_toggle_help)				*<Plug>(thumbnail_toggle_help)*
+<Plug>(thumbnail_toggle_help)			*<Plug>(thumbnail_toggle_help)*
 		Toggle the help menu of key mappings.
 
 <Plug>(thumbnail_exit)				*<Plug>(thumbnail_exit)*
