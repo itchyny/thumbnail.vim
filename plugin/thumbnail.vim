@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/02 18:17:01.
+" Last Change: 2013/06/02 20:20:09.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -1876,7 +1876,7 @@ function! s:complete(arglead, cmdline, cursorpos)
         endif
       endfor
       return sort(filter(options,
-            \ 'd[v:val]==0 && stridx(a:cmdline, v:val)==-1'))
+            \ 'd[v:val] == 0 && stridx(a:cmdline, v:val) == -1'))
     endif
   catch
     return []
