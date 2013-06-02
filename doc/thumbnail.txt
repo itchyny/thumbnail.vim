@@ -65,7 +65,7 @@ You can specify some options to modify the appearance of the thumbnail buffer.
 		-exclude={filetypes}
 		Exclude the buffers of specified filetypes, even if the
 		buffers are to be gathered into thumbnails in case with no
-		options.  You can specify multiple filetypes separated by
+		options. You can specify multiple filetypes separated by
 		commas.
 
 						*thumbnail-options-specify*
@@ -74,7 +74,7 @@ You can specify some options to modify the appearance of the thumbnail buffer.
 		specify multiple filetypes separated by commas.
 
 ------------------------------------------------------------------------------
-KEY MAPPINGS 					*thumbnail-key-mappings*
+KEY MAPPINGS					*thumbnail-key-mappings*
 
 Normal mode key mappings.
 
@@ -116,19 +116,19 @@ Normal mode key mappings.
 <Plug>(thumbnail_start_insert)			*<Plug>(thumbnail_start_insert)*
 		Start the filtering mode
 
-<Plug>(thumbnail_start_visual)			 *<Plug>(thumbnail_start_visual)*
-<Plug>(thumbnail_start_line_visual)		 *<Plug>(thumbnail_start_line_visual)*
-<Plug>(thumbnail_start_block_visual)		 *<Plug>(thumbnail_start_block_visual)*
-<Plug>(thumbnail_exit_visual)			 *<Plug>(thumbnail_exit_visual)*
+<Plug>(thumbnail_start_visual)			*<Plug>(thumbnail_start_visual)*
+<Plug>(thumbnail_start_line_visual)		*<Plug>(thumbnail_start_line_visual)*
+<Plug>(thumbnail_start_block_visual)		*<Plug>(thumbnail_start_block_visual)*
+<Plug>(thumbnail_exit_visual)			*<Plug>(thumbnail_exit_visual)*
 		Start/Exit the visual mode.
 
 <Plug>(thumbnail_select)			*<Plug>(thumbnail_select)*
 		Open the selected buffer.
 
-<Plug>(thumbnail_start_delete)		 	*<Plug>(thumbnail_start_delete)*
+<Plug>(thumbnail_start_delete)			*<Plug>(thumbnail_start_delete)*
 		Delete thumbnails with {motion}.
 
-<Plug>(thumbnail_delete_to_end)		 	*<Plug>(thumbnail_delete_to_end)*
+<Plug>(thumbnail_delete_to_end)			*<Plug>(thumbnail_delete_to_end)*
 		Delete thumbnails till the end of the current line.
 
 <Plug>(thumbnail_delete)			*<Plug>(thumbnail_delete)*
