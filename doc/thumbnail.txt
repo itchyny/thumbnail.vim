@@ -429,9 +429,9 @@ Problem 5:					*thumbnail-problem-5*
 			|buflisted|.
 		In order to include a buffer which is not |buflisted|, use the
 		`-include={filetypes}` option. For example, use the following
-		command to include a buffer filetype of which is |twitvim|.
+		command to include a buffer filetype of which is |help|.
 >
-			:Thumbnail -include=twitvim
+			:Thumbnail -include=help
 <
 		See |thumbnail-options-include| for further details.
 
