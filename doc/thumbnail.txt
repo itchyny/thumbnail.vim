@@ -163,10 +163,12 @@ gh		same as h
 gl		same as l
 gj		same as j
 gk		same as k
-g<Left>		same as h
-g<Right>	same as l
-g<Down>		same as j
-g<Up>		same as k
+g<Left>		same as <Left>
+g<Right>	same as <Right>
+g<Down>		same as <Down>
+g<Up>		same as <Up>
+<S-Down>	same as <Down>
+<S-Up>		same as <Up>
 +		same as j
 -		same as k
 w		|<Plug>(thumbnail_move_next)|
@@ -175,12 +177,14 @@ e		same as w
 E		same as w
 <TAB>		same as w
 <S-Right>	same as w
+<C-Right>	same as w
 b		|<Plug>(thumbnail_move_prev)|
 B		same as b
 ge		same as b
 gE		same as b
 <S-Tab>		same as b
 <S-Left>	same as b
+<C-Left>	same as b
 <C-n>		|<Plug>(thumbnail_move_down)|
 <C-p>		|<Plug>(thumbnail_move_up)|
 <C-f>		|<Plug>(thumbnail_move_next)|
