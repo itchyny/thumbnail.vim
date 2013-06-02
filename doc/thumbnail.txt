@@ -240,15 +240,23 @@ Insert mode key mappings.
 <Plug>(thumbnail_move_right)			*i_<Plug>(thumbnail_move_right)*
 <Plug>(thumbnail_move_down)			*i_<Plug>(thumbnail_move_down)*
 <Plug>(thumbnail_move_up)			*i_<Plug>(thumbnail_move_up)*
-		Move the cursor. These mappings stop the selection each ends.
+		Move the thumbnail cursor. These mappings stop the selection each ends.
 
 <Plug>(thumbnail_move_next)			*i_<Plug>(thumbnail_move_next)*
 <Plug>(thumbnail_move_prev)			*i_<Plug>(thumbnail_move_prev)*
-		Move the cursor. These mappings rotate the selection.
+		Move the thumbnail cursor. These mappings rotate the selection.
+
+<Plug>(thumbnail_move_cursor_left)		*i_<Plug>(thumbnail_move_cursor_left)*
+<Plug>(thumbnail_move_cursor_right)		*i_<Plug>(thumbnail_move_cursor_right)*
+		Move the input cursor.
 
 <Plug>(thumbnail_delete_backward_word)
 						*i_<Plug>(thumbnail_delete_backward_word)*
-		Delete one word.
+<Plug>(thumbnail_delete_backward_char)
+						*i_<Plug>(thumbnail_delete_backward_char)*
+<Plug>(thumbnail_delete_backward_line)
+						*i_<Plug>(thumbnail_delete_backward_line)*
+		Delete one word/one char/the backward inputs.
 
 <Plug>(thumbnail_exit_insert)			*i_<Plug>(thumbnail_exit_insert)*
 		Exit the filtering mode.
@@ -271,6 +279,9 @@ Insert mode default mappings.
 <Right>		|i_<Plug>(thumbnail_move_next)|
 <Left>		|i_<Plug>(thumbnail_move_prev)|
 <C-w>		|i_<Plug>(thumbnail_delete_backward_word)|
+<BS>		|i_<Plug>(thumbnail_delete_backward_char)|
+<C-h>		|i_<Plug>(thumbnail_delete_backward_char)|
+<C-u>		|i_<Plug>(thumbnail_delete_backward_line)|
 <ESC>		|i_<Plug>(thumbnail_exit_insert)|
 <CR>		|i_<Plug>(thumbnail_select)|
 
@@ -322,18 +333,21 @@ Problem 5:				|thumbnail-problem-5|
 	Some thumbnails look weird.
 
 Problem 6:				|thumbnail-problem-6|
-	This plugin does not gather some buffers.
+	The cursor deviates from the mouse pointer.
 
 Problem 7:				|thumbnail-problem-7|
+	This plugin does not gather some buffers.
+
+Problem 8:				|thumbnail-problem-8|
 	This plugin deal with a text file as a binary file.
 	This plugin deal with a binary file as a text file, resulting in a
 	slowdown of redrawing.
 
-Problem 8:				|thumbnail-problem-8|
+Problem 9:				|thumbnail-problem-9|
 	This plugin conflicts with another plugin (for example, with an
 	auto-completion plugin).
 
-Problem 9:				|thumbnail-problem-9|
+Problem 10:				|thumbnail-problem-10|
 	Found a bug of this plugin.
 	Got many errors while using this plugin.
 	Vim hungs up while using this plugin.
@@ -431,6 +445,17 @@ Problem 4:					*thumbnail-problem-4*
 				\ <Plug>(thumbnail_start_visual)
 		augroup END
 <
+		In the following configuration, you can use the keys <C-f> and
+		<C-b> to move the cursor in filtering mode.
+>
+		augroup ThumbnailKey
+			autocmd!
+			autocmd FileType thumbnail imap <buffer> <C-f>
+				\ <Plug>(thumbnail_move_cursor_right)
+			autocmd FileType thumbnail imap <buffer> <C-b>
+				\ <Plug>(thumbnail_move_cursor_left)
+		augroup END
+<
 		For more key mappings, see the |thumbnail-key-mappings|
 		section.
 
@@ -444,6 +469,11 @@ Problem 5:					*thumbnail-problem-5*
 		Let me know by opening an issue at the repository.
 
 Problem 6:					*thumbnail-problem-6*
+	The cursor deviates from the mouse pointer.
+
+		It is a bug in the conceal feature of Vim.
+
+Problem 7:					*thumbnail-problem-7*
 	This plugin does not gather some buffers.
 
 		This plugin gather buffers which is:
@@ -457,7 +487,7 @@ Problem 6:					*thumbnail-problem-6*
 <
 		See |thumbnail-options-include| for further details.
 
-Problem 7:				|thumbnail-problem-7|
+Problem 8:					*thumbnail-problem-8*
 	This plugin deal with a text file as a binary file.
 	This plugin deal with a binary file as a text file, resulting in a
 	slowdown of redrawing.
@@ -465,14 +495,14 @@ Problem 7:				|thumbnail-problem-7|
 		That is a bug of this plugin.
 		Let me know by opening an issue at the repository.
 
-Problem 8:					*thumbnail-problem-8*
+Problem 9:					*thumbnail-problem-9*
 	This plugin conflicts with another plugin (for example, with an
 	auto-completion plugin).
 
 		1. Update your plugins.
-		2. Open an issue as in Problem 9.
+		2. Open an issue as in Problem 10.
 
-Problem 9:					*thumbnail-problem-9*
+Problem 10:					*thumbnail-problem-10*
 	Found a bug of this plugin.
 	Got many errors while using this plugin.
 	Vim hungs up while using this plugin.

@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/02 16:18:59.
+" Last Change: 2013/06/02 18:05:21.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -332,9 +332,9 @@ function! s:mapping()
   nnoremap <buffer><silent> <Plug>(thumbnail_delete_to_end)
         \ :<C-u>call <SID>delete_to_end()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_start_insert)
-        \ :<C-u>call <SID>start_insert()<CR>
+        \ :<C-u>call <SID>start_insert(0)<CR>
   inoremap <silent><buffer> <Plug>(thumbnail_start_insert)
-        \ <ESC>:<C-u>call <SID>start_insert()<CR>
+        \ <ESC>:<C-u>call <SID>start_insert(0)<CR>
   inoremap <buffer><silent> <Plug>(thumbnail_exit_insert)
         \ <ESC>:<C-u>call <SID>exit_insert()<CR>
   inoremap <buffer><silent> <Plug>(thumbnail_select)
@@ -343,6 +343,16 @@ function! s:mapping()
         \ :<C-u>call <SID>exit_visual()<CR>
   inoremap <buffer><silent> <Plug>(thumbnail_delete_backward_word)
         \ <C-w>
+  inoremap <buffer><silent> <Plug>(thumbnail_delete_backward_char)
+        \ <BS>
+  inoremap <buffer><silent><expr> <Plug>(thumbnail_delete_backward_line)
+        \ b:thumbnail.input =~# '^ *$' ? '' :
+        \ repeat("\<BS>", col('.') - len(substitute(b:thumbnail.input,
+        \ '^ *', '', '')))
+  inoremap <buffer><silent> <Plug>(thumbnail_move_cursor_left)
+        \ <Left>
+  inoremap <buffer><silent> <Plug>(thumbnail_move_cursor_right)
+        \ <Right>
   nnoremap <buffer><silent> <Plug>(thumbnail_update_off)
         \ :<C-u>call <SID>update_off()<CR>
   inoremap <buffer><silent> <Plug>(thumbnail_update_off)
@@ -466,7 +476,12 @@ function! s:mapping()
   imap <buffer> <Up> <Plug>(thumbnail_move_up)
   imap <buffer> <Right> <Plug>(thumbnail_move_right)
   imap <buffer> <Left> <Plug>(thumbnail_move_left)
+  imap <buffer> <Right> <Plug>(thumbnail_move_cursor_right)
+  imap <buffer> <Left> <Plug>(thumbnail_move_cursor_left)
   imap <buffer> <C-w> <Plug>(thumbnail_delete_backward_word)
+  imap <buffer> <BS> <Plug>(thumbnail_delete_backward_char)
+  imap <buffer> <C-h> <Plug>(thumbnail_delete_backward_char)
+  imap <buffer> <C-u> <Plug>(thumbnail_delete_backward_line)
   imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
   imap <buffer> <CR> <Plug>(thumbnail_select)
 
@@ -511,7 +526,11 @@ let s:nmapping_order =
       \     , [ 'i_move_up', 'Move up' ]
       \     , [ 'i_move_next', 'Move next' ]
       \     , [ 'i_move_prev', 'Move previous' ]
+      \     , [ 'i_move_cursor_left', 'Move the cursor left' ]
+      \     , [ 'i_move_cursor_right', 'Move the cursor right' ]
       \     , [ 'i_delete_backward_word', 'Delete the backward word' ]
+      \     , [ 'i_delete_backward_char', 'Delete the backward char' ]
+      \     , [ 'i_delete_backward_line', 'Delete the backward inputs' ]
       \     , [ 'i_exit_insert', 'Exit the insert mode' ]
       \     , [ 'i_select', 'Open the selected buffer' ] ] ] ]
 
@@ -1676,15 +1695,20 @@ function! s:update_visual_selects()
   endtry
 endfunction
 
-function! s:start_insert()
+function! s:start_insert(col)
   try
     let b = b:thumbnail
     let b.insert_mode = 1
     let b.help_mode = 0
     setlocal modifiable noreadonly
     call setline(b.insert_pos, b.input)
-    call cursor(b.insert_pos, 1)
-    startinsert!
+    if a:col
+      call cursor(b.insert_pos, a:col)
+      startinsert
+    else
+      call cursor(b.insert_pos, 1)
+      startinsert!
+    endif
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -1721,18 +1745,20 @@ function! s:update_filter()
     let b.input = ''
     let b.bufs = white
     let input = substitute(input, '^ *', '', '')
-    let input = repeat(' ',
+    let padding = repeat(' ',
           \ (winwidth(0) - max([s:wcswidth(input), winwidth(0) / 8]))
-          \ / 2) . input
+          \ / 2)
+    let input = padding . input
     let b.input = input
     let b.prev_bufs = bufs
+    let c = max([col('.'), len(padding) + 1])
     if len(white) > 0
       call s:arrangement(b)
       call s:setcontents(b)
       let b.marker = s:marker(b)
       let b:thumbnail = s:unsave(b, 1)
       call s:update()
-      call s:start_insert()
+      call s:start_insert(c)
     else
       let b:thumbnail = b
       let b.select_i = 0
@@ -1758,7 +1784,7 @@ function! s:update_filter()
       call s:redraw_buffer_with(s)
       call setline(pos, input)
       let b.insert_pos = pos
-      call s:start_insert()
+      call s:start_insert(c)
     endif
   catch
   endtry
