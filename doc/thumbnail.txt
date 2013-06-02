@@ -336,7 +336,7 @@ Problem 1:					*thumbnail-problem-1*
 
 			1. Put plugin/thumbnail.vim to $VIM/plugin/.
 			2. Put syntax/thumbnail.vim to $VIM/syntax/.
-			3. Put doc/thumbnail.vim to $VIM/doc/.
+			3. Put doc/thumbnail.txt to $VIM/doc/.
 
 		If you are to install this plugin using Vundle:
 
@@ -378,7 +378,7 @@ Problem 3:					*thumbnail-problem-3*
 
 		If you have installed this plugin manually:
 
-			1. Remove all the `thumbnail.vim`s under $VIM.
+			1. Remove all the `thumbnail.*`s under $VIM.
 
 		If you have installed this plugin using Vundle:
 
