@@ -319,15 +319,22 @@ Problem 4:				|thumbnail-problem-4|
 	How to change key-mapping settings for thumbnail buffers.
 
 Problem 5:				|thumbnail-problem-5|
-	This plugin does not include some buffers.
+	Some thumbnails look weird.
 
 Problem 6:				|thumbnail-problem-6|
+	This plugin does not gather some buffers.
+
+Problem 7:				|thumbnail-problem-7|
+	This plugin deal with a text file as a binary file.
+
+Problem 8:				|thumbnail-problem-8|
 	This plugin conflicts with another plugin (for example, with an
 	auto-completion plugin).
 
-Problem 7:				|thumbnail-problem-7|
+Problem 9:				|thumbnail-problem-9|
 	Found a bug of this plugin.
 	Got many errors while using this plugin.
+	Vim hungs up while using this plugin.
 	Need a new mapping.
 	Want this plugin to be more configurable.
 
@@ -426,11 +433,20 @@ Problem 4:					*thumbnail-problem-4*
 		section.
 
 Problem 5:					*thumbnail-problem-5*
-	This plugin does not include some buffers.
+	Some thumbnails look weird.
 
-		This plugin includes buffers which is:
-			a new buffer and is modified
-			|buflisted|.
+		This plugin cannot correctly deal with a buffer which contains
+			+ text identical to markers: [|, [\, [^, \], \], |]
+			+ some multibyte characters
+			+ some byte character sequences.
+		Let me know by opening an issue at the repository.
+
+Problem 6:					*thumbnail-problem-6*
+	This plugin does not gather some buffers.
+
+		This plugin gather buffers which is:
+			+ a new buffer and is modified
+			+ |buflisted|.
 		In order to include a buffer which is not |buflisted|, use the
 		`-include={filetypes}` option. For example, use the following
 		command to include a buffer filetype of which is |help|.
@@ -439,16 +455,23 @@ Problem 5:					*thumbnail-problem-5*
 <
 		See |thumbnail-options-include| for further details.
 
-Problem 6:					*thumbnail-problem-6*
+Problem 7:				|thumbnail-problem-7|
+	This plugin deal with a text file as a binary file.
+
+		That is a bug of this plugin.
+		Let me know by opening an issue at the repository.
+
+Problem 8:					*thumbnail-problem-8*
 	This plugin conflicts with another plugin (for example, with an
 	auto-completion plugin).
 
 		1. Update your plugins.
-		2. Open an issue as in Problem 7.
+		2. Open an issue as in Problem 9.
 
-Problem 7:					*thumbnail-problem-7*
+Problem 9:					*thumbnail-problem-9*
 	Found a bug of this plugin.
 	Got many errors while using this plugin.
+	Vim hungs up while using this plugin.
 	Need a new mapping.
 	Want this plugin to be more configurable.
 
