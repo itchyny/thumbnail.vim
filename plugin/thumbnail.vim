@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/02 12:43:56.
+" Last Change: 2013/06/02 12:45:03.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -1516,11 +1516,14 @@ function! s:close(direction)
 endfunction
 
 function! s:toggle_help()
-  if !exists('b:thumbnail')
-    return
-  endif
-  let b:thumbnail.help_mode = !b:thumbnail.help_mode
-  call s:update()
+  try
+    let b:thumbnail.help_mode = !b:thumbnail.help_mode
+    call s:update()
+  catch
+    call s:revive_thumbnail()
+    let b:thumbnail.help_mode = !b:thumbnail.help_mode
+    call s:update()
+  endtry
 endfunction
 
 function! s:start_visual(mode)
