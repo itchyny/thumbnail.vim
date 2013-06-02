@@ -326,6 +326,8 @@ Problem 6:				|thumbnail-problem-6|
 
 Problem 7:				|thumbnail-problem-7|
 	This plugin deal with a text file as a binary file.
+	This plugin deal with a binary file as a text file, resulting in a
+	slowdown of redrawing.
 
 Problem 8:				|thumbnail-problem-8|
 	This plugin conflicts with another plugin (for example, with an
@@ -457,6 +459,8 @@ Problem 6:					*thumbnail-problem-6*
 
 Problem 7:				|thumbnail-problem-7|
 	This plugin deal with a text file as a binary file.
+	This plugin deal with a binary file as a text file, resulting in a
+	slowdown of redrawing.
 
 		That is a bug of this plugin.
 		Let me know by opening an issue at the repository.
