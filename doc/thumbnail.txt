@@ -302,16 +302,29 @@ ThumbnailVisual					*ThumbnailVisual*
 ------------------------------------------------------------------------------
 TROUBLESHOOTING					*thumbnail-troubleshooting*
 
-Problem 1: How to install this plugin.		|thumbnail-problem-1|
-Problem 2: How to update this plugin.		|thumbnail-problem-2|
-Problem 3: How to uninstall this plugin.	|thumbnail-problem-3|
-Problem 4: This plugin conflicts with another plugin (for example, with an
-	auto-completion plugin).		|thumbnail-problem-4|
-Problem 5: I found a bug of this plugin. I got many errors while using this
-	plugin. I need a new mapping. I want the plugin to be more
-	configurable.				|thumbnail-problem-5|
+Problem 1:					|thumbnail-problem-1|
+	How to install this plugin.
 
-Problem 1: How to install this plugin.		*thumbnail-problem-1*
+Problem 2:					|thumbnail-problem-2|
+	How to update this plugin.
+
+Problem 3:					|thumbnail-problem-3|
+	How to uninstall this plugin.
+
+Problem 4:					|thumbnail-problem-4|
+	This plugin conflicts with another plugin (for example, with an
+	auto-completion plugin).
+
+Problem 5:					|thumbnail-problem-5|
+	I found a bug of this plugin.
+	I got many errors while using this plugin.
+	I need a new mapping.
+	I want this plugin to be more configurable.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Problem 1:					*thumbnail-problem-1*
+	How to install this plugin.
 
 	If you are to install this plugin manually:
 
@@ -335,7 +348,8 @@ Problem 1: How to install this plugin.		*thumbnail-problem-1*
 <
 		2. Install with `:NeoBundleInstall`.
 
-Problem 2: How to update this plugin.		*thumbnail-problem-2*
+Problem 2:					*thumbnail-problem-2*
+	How to update this plugin.
 
 	If you have installed this plugin manually:
 
@@ -351,7 +365,8 @@ Problem 2: How to update this plugin.		*thumbnail-problem-2*
 
 		1. Execute `:NeoBundleInstall!`. Or try git pull in the directory.
 
-Problem 3: How to uninstall this plugin.	*thumbnail-problem-3*
+Problem 3:					*thumbnail-problem-3*
+	How to uninstall this plugin.
 
 	If you have installed this plugin manually:
 
@@ -369,15 +384,18 @@ Problem 3: How to uninstall this plugin.	*thumbnail-problem-3*
 		from your .vimrc.
 		2. Update with `:NeoBundleClean`.
 
-Problem 4: This plugin conflicts with another plugin (for example, with an
-	auto-completion plugin).		*thumbnail-problem-4*
+Problem 4:					*thumbnail-problem-4*
+	This plugin conflicts with another plugin (for example, with an
+	auto-completion plugin).
 
 		1. Update your plugins.
 		2. Open an issue as in Problem 4.
 
-Problem 5: I found a bug of this plugin. I got many errors while using this
-	plugin. I need a new mapping. I want the plugin to be more
-	configurable.				*thumbnail-problem-5*
+Problem 5:					*thumbnail-problem-5*
+	I found a bug of this plugin.
+	I got many errors while using this plugin.
+	I need a new mapping.
+	I want this plugin to be more configurable.
 
 		Report the issue/feature at
 		https://github.com/itchyny/thumbnail.vim/issues .
