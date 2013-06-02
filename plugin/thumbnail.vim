@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/02 12:45:03.
+" Last Change: 2013/06/02 12:51:13.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -541,6 +541,7 @@ function! s:help_mapping(b, s)
       else
         let nmap_dict_rev[name] = [key]
       endif
+    catch
     endtry
   endfor
   for n in nmappings_alias
@@ -550,6 +551,7 @@ function! s:help_mapping(b, s)
         continue
       endif
       let nmap_dict_alias[key] = name
+    catch
     endtry
   endfor
   redir => iredir
@@ -576,12 +578,14 @@ function! s:help_mapping(b, s)
         let nmap_dict_rev[name] = [key]
       endif
       let imap_dict[key] = name
+    catch
     endtry
   endfor
   for n in imappings_alias
     try
       let [key, name] = split(n, '\s\+')
       let imap_dict_alias[key] = name
+    catch
     endtry
   endfor
   for [key, name] in items(nmap_dict_alias)
@@ -878,6 +882,7 @@ function! s:set_cursor()
           \ * (b.offset_top + b.thumbnail_height) + b.offset_top + 1
     let b.cursor_y = offset + b.offset_left + 3 + b.marker.conceal * 2
     call cursor(b.cursor_x, b.cursor_y)
+  catch
   endtry
 endfunction
 
@@ -1405,6 +1410,9 @@ function! s:select(...)
         call s:open_buffer(b.bufs[i].bufnr)
       endif
     endif
+  catch
+    call s:revive_thumbnail()
+    call s:update()
   endtry
 endfunction
 
@@ -1685,6 +1693,7 @@ function! s:update_filter()
       catch
         try
           if bufname(bufs[i].bufnr) !~? escape(w, '~\*[]?') | let f = 1 | endif
+        catch
         endtry
       endtry
       if f | break | endif
@@ -1777,12 +1786,14 @@ endfunction
 function! s:update_off()
   try
     let b:thumbnail.no_update = 1
+  catch
   endtry
 endfunction
 
 function! s:update_on()
   try
     unlet b:thumbnail.no_update
+  catch
   endtry
 endfunction
 
