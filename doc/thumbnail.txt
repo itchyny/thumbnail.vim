@@ -302,20 +302,26 @@ ThumbnailVisual					*ThumbnailVisual*
 ------------------------------------------------------------------------------
 TROUBLESHOOTING					*thumbnail-troubleshooting*
 
-Problem 1:					|thumbnail-problem-1|
+Problem 1:				|thumbnail-problem-1|
 	How to install this plugin.
 
-Problem 2:					|thumbnail-problem-2|
+Problem 2:				|thumbnail-problem-2|
 	How to update this plugin.
 
-Problem 3:					|thumbnail-problem-3|
+Problem 3:				|thumbnail-problem-3|
 	How to uninstall this plugin.
 
-Problem 4:					|thumbnail-problem-4|
+Problem 4:				|thumbnail-problem-4|
+	How to change key-mapping settings for thumbnail buffers.
+
+Problem 5:				|thumbnail-problem-5|
+	This plugin does not include some buffers.
+
+Problem 6:				|thumbnail-problem-6|
 	This plugin conflicts with another plugin (for example, with an
 	auto-completion plugin).
 
-Problem 5:					|thumbnail-problem-5|
+Problem 7:				|thumbnail-problem-7|
 	Found a bug of this plugin.
 	Got many errors while using this plugin.
 	Need a new mapping.
@@ -326,72 +332,117 @@ Problem 5:					|thumbnail-problem-5|
 Problem 1:					*thumbnail-problem-1*
 	How to install this plugin.
 
-	If you are to install this plugin manually:
+		If you are to install this plugin manually:
 
-		1. Put plugin/thumbnail.vim to $VIM/plugin/.
-		2. Put syntax/thumbnail.vim to $VIM/syntax/.
-		3. Put doc/thumbnail.vim to $VIM/doc/.
+			1. Put plugin/thumbnail.vim to $VIM/plugin/.
+			2. Put syntax/thumbnail.vim to $VIM/syntax/.
+			3. Put doc/thumbnail.vim to $VIM/doc/.
 
-	If you are to install this plugin using Vundle:
+		If you are to install this plugin using Vundle:
 
-		1. Add the following configuration to your .vimrc.
+			1. Add the following configuration to your .vimrc.
 >
-		Bundle 'itchyny/thumbnail.vim'
+			Bundle 'itchyny/thumbnail.vim'
 <
-		2. Install with `:BundleInstall`.
+			2. Install with `:BundleInstall`.
 
-	If you are to install this plugin using NeoBundle:
+		If you are to install this plugin using NeoBundle:
 
-		1. Add the following configuration to your .vimrc.
+			1. Add the following configuration to your .vimrc.
 >
-		NeoBundle 'itchyny/thumbnail.vim'
+			NeoBundle 'itchyny/thumbnail.vim'
 <
-		2. Install with `:NeoBundleInstall`.
+			2. Install with `:NeoBundleInstall`.
 
 Problem 2:					*thumbnail-problem-2*
 	How to update this plugin.
 
-	If you have installed this plugin manually:
+		If you have installed this plugin manually:
 
-		1. Access https://github.com/itchyny/thumbnail.vim .
-		2. Download the scripts.
-		3. Place the scripts as written in Problem 1.
+			1. Access https://github.com/itchyny/thumbnail.vim .
+			2. Download the scripts.
+			3. Place the scripts as written in Problem 1.
 
-	If you have installed this plugin using Vundle:
+		If you have installed this plugin using Vundle:
 
-		1. Execute `:BundleInstall!`. Or try git pull in the directory.
+			1. Execute `:BundleInstall!`. Or try git pull in the 
+			directory.
 
-	If you have installed this plugin using NeoBundle:
+		If you have installed this plugin using NeoBundle:
 
-		1. Execute `:NeoBundleInstall!`. Or try git pull in the directory.
+			1. Execute `:NeoBundleInstall!`. Or try git pull in
+			the directory.
 
 Problem 3:					*thumbnail-problem-3*
 	How to uninstall this plugin.
 
-	If you have installed this plugin manually:
+		If you have installed this plugin manually:
 
-		1. Remove all the `thumbnail.vim`s under $VIM.
+			1. Remove all the `thumbnail.vim`s under $VIM.
 
-	If you have installed this plugin using Vundle:
+		If you have installed this plugin using Vundle:
 
-		1. Remove the :Bundle 'itchynythumbnail.vim' configuration
-		from your .vimrc.
-		2. Update with `:BundleClean`.
+			1. Remove the :Bundle 'itchynythumbnail.vim'
+			configuration from your .vimrc.
+			2. Update with `:BundleClean`.
 
-	If you have installed this plugin using NeoBundle:
+		If you have installed this plugin using NeoBundle:
 
-		1. Remove the :NeoBundle 'itchynythumbnail.vim' configuration
-		from your .vimrc.
-		2. Update with `:NeoBundleClean`.
+			1. Remove the :NeoBundle 'itchynythumbnail.vim'
+			configuration from your .vimrc.
+			2. Update with `:NeoBundleClean`.
 
 Problem 4:					*thumbnail-problem-4*
+	How to change key-mapping settings for thumbnail buffers.
+
+		Add the following configuration to you .vimrc.
+>
+		augroup ThumbnailKey
+			autocmd!
+			" Normal mode key mapping setting
+			autocmd FileType thumbnail nmap <buffer> {key}
+				\ <Plug>(thumbnail_...)
+			" Insert mode key mapping setting
+			autocmd FileType thumbnail imap <buffer> {key}
+				\ <Plug>(thumbnail_...)
+		augroup END
+<
+		For example, in order to exchange keys for visual mode and
+		line-visual mode, use the following configuration.
+>
+		augroup ThumbnailKey
+			autocmd!
+			autocmd FileType thumbnail nmap <buffer> v
+				\ <Plug>(thumbnail_start_line_visual)
+			autocmd FileType thumbnail nmap <buffer> V
+				\ <Plug>(thumbnail_start_visual)
+		augroup END
+<
+		For more key mappings, see the |thumbnail-key-mappings|
+		section.
+
+Problem 5:					*thumbnail-problem-5*
+	This plugin does not include some buffers.
+
+		This plugin includes buffers which is:
+			a new buffer and is modified
+			|buflisted|.
+		In order to include a buffer which is not |buflisted|, use the
+		`-include={filetypes}` option. For example, use the following
+		command to include a buffer filetype of which is |twitvim|.
+>
+			:Thumbnail -include=twitvim
+<
+		See |thumbnail-options-include| for further details.
+
+Problem 6:					*thumbnail-problem-6*
 	This plugin conflicts with another plugin (for example, with an
 	auto-completion plugin).
 
 		1. Update your plugins.
-		2. Open an issue as in Problem 4.
+		2. Open an issue as in Problem 7.
 
-Problem 5:					*thumbnail-problem-5*
+Problem 7:					*thumbnail-problem-7*
 	Found a bug of this plugin.
 	Got many errors while using this plugin.
 	Need a new mapping.
