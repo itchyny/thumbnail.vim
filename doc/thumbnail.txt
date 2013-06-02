@@ -407,7 +407,7 @@ Problem 4:					*thumbnail-problem-4*
 				\ <Plug>(thumbnail_...)
 		augroup END
 <
-		For example, in order to exchange keys for visual mode and
+		For example, in order to exchange the keys for visual mode and
 		line-visual mode, use the following configuration.
 >
 		augroup ThumbnailKey
@@ -456,11 +456,14 @@ CHANGELOG					*thumbnail-changelog*
 
 version 0.0
 2013-03-19, ... , 03-24
-- Initial commit and implementation.
+- Initial commit and implementation
 
 version 0.1
 2013-05-25, ... , 06-02
-- Filtering mode, options, filetype include/exclude/specify, help menu.
+- Filtering mode
+- Options (filetype include/exclude/specify)
+- Help menu for key mappings
+- Improve document (troubleshooting section)
 
 ==============================================================================
 vim:tw=78:sw=4:ts=8:ft=help:norl:noet:
