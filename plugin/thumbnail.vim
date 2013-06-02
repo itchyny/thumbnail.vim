@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/02 18:05:21.
+" Last Change: 2013/06/02 18:17:01.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -518,7 +518,7 @@ let s:nmapping_order =
       \ , [ 'UTILITY'
       \   , [ [ 'select', 'Open the selected buffer' ]
       \     , [ 'redraw', 'Redraw the thumbnails' ]
-      \     , [ 'exit', 'Exit thumbnail view' ] ] ]
+      \     , [ 'exit', 'Exit the thumbnail buffer' ] ] ]
       \ , [ 'INSERT MODE MAPPING'
       \   , [ [ 'i_move_left', 'Move left' ]
       \     , [ 'i_move_right', 'Move right' ]
