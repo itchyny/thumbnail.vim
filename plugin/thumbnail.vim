@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/02 12:51:13.
+" Last Change: 2013/06/02 14:23:57.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -377,10 +377,12 @@ function! s:mapping()
   nmap <buffer> gl l
   nmap <buffer> gj j
   nmap <buffer> gk k
-  nmap <buffer> g<Left> h
-  nmap <buffer> g<Right> l
-  nmap <buffer> g<Down> j
-  nmap <buffer> g<Up> k
+  nmap <buffer> g<Left> <Left>
+  nmap <buffer> g<Right> <Right>
+  nmap <buffer> g<Down> <Down>
+  nmap <buffer> g<Up> <Up>
+  nmap <buffer> <S-Down> <Down>
+  nmap <buffer> <S-Up> <Up>
   nmap <buffer> <C-n> <Plug>(thumbnail_move_down)
   nmap <buffer> <C-p> <Plug>(thumbnail_move_up)
   nmap <buffer> <C-f> <Plug>(thumbnail_move_next)
@@ -394,12 +396,14 @@ function! s:mapping()
   nmap <buffer> E w
   nmap <buffer> <TAB> w
   nmap <buffer> <S-Right> w
+  nmap <buffer> <C-Right> w
   nmap <buffer> b <Plug>(thumbnail_move_prev)
   nmap <buffer> B b
   nmap <buffer> ge b
   nmap <buffer> gE b
   nmap <buffer> <S-Tab> b
   nmap <buffer> <S-Left> b
+  nmap <buffer> <C-Left> b
   nmap <buffer> 0 <Plug>(thumbnail_move_line_head)
   nmap <buffer> ^ 0
   nmap <buffer> g0 0
