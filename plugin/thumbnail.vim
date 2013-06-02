@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/02 07:45:42.
+" Last Change: 2013/06/02 11:45:20.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -142,8 +142,6 @@ function! s:autocmds()
           \ call s:cursor_moved()
     autocmd CursorMovedI <buffer>
           \ call s:update_filter()
-    autocmd InsertEnter,InsertChange <buffer>
-          \ call s:disable_complete()
   augroup END
 endfunction
 
@@ -851,6 +849,7 @@ function! s:update()
   setlocal nomodifiable buftype=nofile noswapfile readonly nonumber
         \ bufhidden=hide nobuflisted
         \ nofoldenable foldcolumn=0 nolist nowrap concealcursor=nvic
+        \ completefunc= omnifunc=
   if &l:filetype !=# 'thumbnail'
     let b:thumbnail_conceal = b.marker.conceal
     setlocal filetype=thumbnail
@@ -1650,20 +1649,8 @@ function! s:update_visual_selects()
   endif
 endfunction
 
-function! s:disable_complete()
-  if &l:completefunc != ''
-    let &l:completefunc=''
-  endif
-  if &l:omnifunc != ''
-    let &l:omnifunc=''
-  endif
-endfunction
-
 function! s:start_insert()
   try
-    if exists(':NeoComplCacheLock')
-      NeoComplCacheLock
-    endif
     let b = b:thumbnail
     let b.insert_mode = 1
     let b.help_mode = 0
@@ -1671,10 +1658,6 @@ function! s:start_insert()
     call setline(b.insert_pos, b.input)
     call cursor(b.insert_pos, 1)
     startinsert!
-    call s:disable_complete()
-    if exists('*neocomplcache#skip_next_complete')
-      call neocomplcache#skip_next_complete()
-    endif
   catch
     call s:revive_thumbnail()
     call s:update()
@@ -1685,7 +1668,6 @@ function! s:update_filter()
   if !exists('b:thumbnail')
     return
   endif
-  call s:disable_complete()
   let b = b:thumbnail
   let pos = b.insert_pos
   let input = getline(pos)
@@ -1790,17 +1772,15 @@ function! s:revive_thumbnail()
 endfunction
 
 function! s:update_off()
-  if !exists('b:thumbnail')
-    return
-  endif
-  let b:thumbnail.no_update = 1
+  try
+    let b:thumbnail.no_update = 1
+  endtry
 endfunction
 
 function! s:update_on()
-  if !exists('b:thumbnail')
-    return
-  endif
-  unlet b:thumbnail.no_update
+  try
+    unlet b:thumbnail.no_update
+  endtry
 endfunction
 
 function! s:complete(arglead, cmdline, cursorpos)

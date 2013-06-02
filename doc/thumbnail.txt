@@ -12,6 +12,7 @@ Commands				|thumbnail-commands|
 Options					|thumbnail-options|
 Key Mappings				|thumbnail-key-mappings|
 Syntax					|thumbnail-syntax|
+Troubleshooting				|thumbnail-troubleshooting|
 Changelog				|thumbnail-changelog|
 
 ==============================================================================
@@ -42,7 +43,7 @@ You can specify some options to modify the appearance of the thumbnail buffer.
 						*thumbnail-options-below*
 		-below
 		Open the split window with below command prefix. This option
-		is be effective with -horizontal and -vertical.
+		is effective with -horizontal and -vertical.
 
 						*thumbnail-options-here*
 		-here
@@ -69,8 +70,8 @@ You can specify some options to modify the appearance of the thumbnail buffer.
 
 						*thumbnail-options-specify*
 		-specify={filetypes}
-		Only buffers of specifyed filetypes are gathered. You can
-		cpecify multiple filetypes separated by commas.
+		Only buffers of specified filetypes are gathered. You can
+		specify multiple filetypes separated by commas.
 
 ------------------------------------------------------------------------------
 KEY MAPPINGS 					*thumbnail-key-mappings*
@@ -101,10 +102,12 @@ Normal mode key mappings.
 <Plug>(thumbnail_move_last_line_head)		*<Plug>(thumbnail_move_last_line_head)*
 		Go to the head of the last line.
 
-<Plug>(thumbnail_move_count_line_first)		*<Plug>(thumbnail_move_count_line_first)*
+<Plug>(thumbnail_move_count_line_first)
+						*<Plug>(thumbnail_move_count_line_first)*
 		Go to the line [count], the first line in default.
 
-<Plug>(thumbnail_move_count_line_last)		 *<Plug>(thumbnail_move_count_line_last)*
+<Plug>(thumbnail_move_count_line_last)
+						*<Plug>(thumbnail_move_count_line_last)*
 		Go to the line [count], the last line in default.
 
 <Plug>(thumbnail_move_column)			*<Plug>(thumbnail_move_column)*
@@ -146,7 +149,7 @@ Normal mode key mappings.
 
 Normal mode default mappings.
 {lhs}		{rhs}
---------	-------------------------
+--------	---------------------------------------
 h		|<Plug>(thumbnail_move_left)|
 l		|<Plug>(thumbnail_move_right)|
 j		|<Plug>(thumbnail_move_down)|
@@ -239,7 +242,8 @@ Insert mode key mappings.
 <Plug>(thumbnail_move_prev)			*i_<Plug>(thumbnail_move_prev)*
 		Move the cursor. These mappings rotate the selection.
 
-<Plug>(thumbnail_delete_backward_word)		*i_<Plug>(thumbnail_delete_backward_word)*
+<Plug>(thumbnail_delete_backward_word)
+						*i_<Plug>(thumbnail_delete_backward_word)*
 		Delete one word.
 
 <Plug>(thumbnail_exit_insert)			*i_<Plug>(thumbnail_exit_insert)*
@@ -253,7 +257,7 @@ Insert mode key mappings.
 
 Insert mode default mappings.
 {lhs}		{rhs}
---------	-------------------------
+--------	----------------------------------------
 <C-n>		|i_<Plug>(thumbnail_move_down)|
 <C-p>		|i_<Plug>(thumbnail_move_up)|
 <C-f>		|i_<Plug>(thumbnail_move_next)|
@@ -295,6 +299,89 @@ ThumbnailVisual					*ThumbnailVisual*
 		The default value is the following.
 		term=none cterm=none ctermbg=234 gui=none guibg=#1c1c1c
 
+------------------------------------------------------------------------------
+TROUBLESHOOTING					*thumbnail-troubleshooting*
+
+Problem 1: How to install this plugin.		|thumbnail-problem-1|
+Problem 2: How to update this plugin.		|thumbnail-problem-2|
+Problem 3: How to uninstall this plugin.	|thumbnail-problem-3|
+Problem 4: This plugin conflicts with another plugin (for example, with an
+	auto-completion plugin).		|thumbnail-problem-4|
+Problem 5: I found a bug of this plugin. I got many errors while using this
+	plugin. I need a new mapping. I want the plugin to be more
+	configurable.				|thumbnail-problem-5|
+
+Problem 1: How to install this plugin.		*thumbnail-problem-1*
+
+	If you are to install this plugin manually:
+
+		1. Put plugin/thumbnail.vim to $VIM/plugin/.
+		2. Put syntax/thumbnail.vim to $VIM/syntax/.
+		3. Put doc/thumbnail.vim to $VIM/doc/.
+
+	If you are to install this plugin using Vundle:
+
+		1. Add the following configuration to your .vimrc.
+>
+		Bundle 'itchyny/thumbnail.vim'
+<
+		2. Install with `:BundleInstall`.
+
+	If you are to install this plugin using NeoBundle:
+
+		1. Add the following configuration to your .vimrc.
+>
+		NeoBundle 'itchyny/thumbnail.vim'
+<
+		2. Install with `:NeoBundleInstall`.
+
+Problem 2: How to update this plugin.		*thumbnail-problem-2*
+
+	If you have installed this plugin manually:
+
+		1. Access https://github.com/itchyny/thumbnail.vim .
+		2. Download the scripts.
+		3. Place the scripts as written in Problem 1.
+
+	If you have installed this plugin using Vundle:
+
+		1. Execute `:BundleInstall!`. Or try git pull in the directory.
+
+	If you have installed this plugin using NeoBundle:
+
+		1. Execute `:NeoBundleInstall!`. Or try git pull in the directory.
+
+Problem 3: How to uninstall this plugin.	*thumbnail-problem-3*
+
+	If you have installed this plugin manually:
+
+		1. Remove all the `thumbnail.vim`s under $VIM.
+
+	If you have installed this plugin using Vundle:
+
+		1. Remove the :Bundle 'itchynythumbnail.vim' configuration
+		from your .vimrc.
+		2. Update with `:BundleClean`.
+
+	If you have installed this plugin using NeoBundle:
+
+		1. Remove the :NeoBundle 'itchynythumbnail.vim' configuration
+		from your .vimrc.
+		2. Update with `:NeoBundleClean`.
+
+Problem 4: This plugin conflicts with another plugin (for example, with an
+	auto-completion plugin).		*thumbnail-problem-4*
+
+		1. Update your plugins.
+		2. Open an issue as in Problem 4.
+
+Problem 5: I found a bug of this plugin. I got many errors while using this
+	plugin. I need a new mapping. I want the plugin to be more
+	configurable.				*thumbnail-problem-5*
+
+		Report the issue/feature at
+		https://github.com/itchyny/thumbnail.vim/issues .
+
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
 
@@ -303,7 +390,7 @@ version 0.0
 - Initial commit and implementation.
 
 version 0.1
-2013-05-25, ... , 06-01
+2013-05-25, ... , 06-02
 - Filtering mode, options, filetype include/exclude/specify, help menu.
 
 ==============================================================================
