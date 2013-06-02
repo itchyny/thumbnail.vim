@@ -316,10 +316,10 @@ Problem 4:					|thumbnail-problem-4|
 	auto-completion plugin).
 
 Problem 5:					|thumbnail-problem-5|
-	I found a bug of this plugin.
-	I got many errors while using this plugin.
-	I need a new mapping.
-	I want this plugin to be more configurable.
+	Found a bug of this plugin.
+	Got many errors while using this plugin.
+	Need a new mapping.
+	Want this plugin to be more configurable.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -392,12 +392,12 @@ Problem 4:					*thumbnail-problem-4*
 		2. Open an issue as in Problem 4.
 
 Problem 5:					*thumbnail-problem-5*
-	I found a bug of this plugin.
-	I got many errors while using this plugin.
-	I need a new mapping.
-	I want this plugin to be more configurable.
+	Found a bug of this plugin.
+	Got many errors while using this plugin.
+	Need a new mapping.
+	Want this plugin to be more configurable.
 
-		Report the issue/feature at
+		Report/Request the issue/feature at
 		https://github.com/itchyny/thumbnail.vim/issues .
 
 ==============================================================================

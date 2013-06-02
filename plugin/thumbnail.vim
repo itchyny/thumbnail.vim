@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/02 11:45:20.
+" Last Change: 2013/06/02 12:43:56.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -1759,7 +1759,7 @@ function! s:revive_thumbnail()
   let b.marker = s:marker(b)
   call s:mapping()
   if len(b.bufs) > 0
-    if has_key(b:thumbnail, 'help_mode')
+    if exists('b:thumbnail') && has_key(b:thumbnail, 'help_mode')
       let b.help_mode = b:thumbnail.help_mode
     endif
     let b:thumbnail = b
