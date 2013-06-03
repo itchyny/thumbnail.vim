@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/02 20:20:09.
+" Last Change: 2013/06/04 00:07:37.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -1588,13 +1588,19 @@ function! s:start_visual(mode)
       call s:update()
       return
     endif
-    let b.visual_mode = a:mode
-    let b.visual_selects = []
-    call extend(b.visual_selects, [ b.select_i * b.num_width + b.select_j ])
-    if a:mode == 4
-      let b.v_count = v:count
+    if b.visual_mode == a:mode
+      call s:exit_visual()
     else
-      call s:update()
+      if !b.visual_mode
+        let b.visual_selects = []
+        call extend(b.visual_selects, [ b.select_i * b.num_width + b.select_j ])
+      endif
+      let b.visual_mode = a:mode
+      if a:mode == 4
+        let b.v_count = v:count
+      else
+        call s:update()
+      endif
     endif
   catch
     call s:revive_thumbnail()
@@ -1669,11 +1675,12 @@ function! s:update_visual_selects()
       elseif b.visual_mode == 2 || (b.visual_mode == 4 && b.line_move == 1)
         let n = b.visual_selects[0]
         let n_i = n / b.num_width
-        let b.visual_selects = []
+        let b.visual_selects = [n]
         for i in range(n_i, b.select_i, 2 * (n_i < b.select_i) - 1)
           for j in range(b.num_width)
-            if s:thumbnail_exists(i, j)
-              call extend(b.visual_selects, [ i * b.num_width + j ])
+            let new_elem = i * b.num_width + j 
+            if s:thumbnail_exists(i, j) && n != new_elem
+              call extend(b.visual_selects, [ new_elem ])
             endif
           endfor
         endfor
@@ -1681,11 +1688,12 @@ function! s:update_visual_selects()
         let n = b.visual_selects[0]
         let n_i = n / b.num_width
         let n_j = n % b.num_width
-        let b.visual_selects = []
+        let b.visual_selects = [n]
         for i in range(n_i, b.select_i, 2 * (n_i < b.select_i) - 1)
           for j in range(n_j, b.select_j, 2 * (n_j < b.select_j) - 1)
-            if s:thumbnail_exists(i, j)
-              call extend(b.visual_selects, [ i * b.num_width + j ])
+            let new_elem = i * b.num_width + j 
+            if s:thumbnail_exists(i, j) && n != new_elem
+              call extend(b.visual_selects, [ new_elem ])
             endif
           endfor
         endfor
