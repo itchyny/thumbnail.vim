@@ -519,11 +519,12 @@ Problem 10:					*thumbnail-problem-10*
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
 
-0.1	2013-05-25, ... , 06-02
+0.1	2013-05-25, ... , 06-03
 	- Filtering mode
 	- Options (filetype include/exclude/specify)
 	- Help menu for key mappings
 	- Improve document (troubleshooting section)
+	- Improve visual mode
 
 0.0	2013-03-19, ... , 03-24
 	- Initial commit and implementation
