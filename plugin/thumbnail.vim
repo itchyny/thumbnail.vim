@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/04 00:07:37.
+" Last Change: 2013/06/04 00:13:49.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -1589,11 +1589,13 @@ function! s:start_visual(mode)
       return
     endif
     if b.visual_mode == a:mode
+      " Case: vv, VV, <C-v><C-v>
       call s:exit_visual()
     else
       if !b.visual_mode
         let b.visual_selects = []
         call extend(b.visual_selects, [ b.select_i * b.num_width + b.select_j ])
+      " Else: vV, v<C-v>, Vv, V<C-v>, <C-v>v, <C-v>V
       endif
       let b.visual_mode = a:mode
       if a:mode == 4
