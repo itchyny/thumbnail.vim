@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/04 00:13:49.
+" Last Change: 2013/06/04 07:48:30.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -794,7 +794,7 @@ function! s:thumbnail_init(isnewbuffer)
   endif
 endfunction
 
-function! s:update()
+function! s:update(...)
   if !exists('b:thumbnail') || len(b:thumbnail.bufs) == 0
         \ || has_key(b:thumbnail, 'no_update')
     return
@@ -804,14 +804,20 @@ function! s:update()
   let after_deletion = b.visual_mode == 4
   if b.visual_mode == 4
     " Case: d{motion}, [count]d{motion}, {Visual}d, dd, [count]dd
-    let r = s:close(0)
-    call s:exit_visual()
-    if r | return | endif
+    if get(a:000, 0, 0)
+      let r = s:close(0)
+      if r
+        return
+      else
+        call s:exit_visual()
+      endif
+    endif
   endif
   if len(b.bufs) == 0
     return
   endif
-  if b.height != winheight(0) || b.width != winwidth(0) || after_deletion
+  if b.height != winheight(0) || b.width != winwidth(0)
+        \ || after_deletion && len(a:000)
     let b = {}
     let b.input = ''
     let b.bufs = s:gather_buffers()
@@ -827,7 +833,6 @@ function! s:update()
   endif
   setlocal modifiable noreadonly
   let b.selection = 0
-  let b.to_end = 0
   let s = []
   let thumbnail_white = repeat(' ', b.thumbnail_width - 4)
   let offset_white = repeat(' ', b.offset_left)
@@ -880,6 +885,10 @@ function! s:update()
   if &l:filetype !=# 'thumbnail'
     let b:thumbnail_conceal = b.marker.conceal
     setlocal filetype=thumbnail
+  endif
+  if len(a:000) == 0 && after_deletion
+    " Dirty hack to redraw before d{motion}.
+    call s:update(1)
   endif
 endfunction
 
@@ -1386,7 +1395,6 @@ function! s:open_buffer(nr)
   elseif buflisted(a:nr)
     execute a:nr 'buffer!'
   else
-    call s:thumbnail_init(1)
   endif
 endfunction
 
@@ -1442,8 +1450,6 @@ function! s:select(...)
       endif
     endif
   catch
-    call s:revive_thumbnail()
-    call s:update()
   endtry
 endfunction
 
@@ -1655,8 +1661,6 @@ function! s:exit_visual()
     let b.visual_selects = []
     call s:update()
   catch
-    call s:revive_thumbnail()
-    call s:update()
   endtry
 endfunction
 
