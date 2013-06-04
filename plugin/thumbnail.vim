@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/05 00:17:55.
+" Last Change: 2013/06/05 00:21:52.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -472,8 +472,6 @@ function! s:mapping()
   imap <buffer> <Up> <Plug>(thumbnail_move_up)
   imap <buffer> <Right> <Plug>(thumbnail_move_right)
   imap <buffer> <Left> <Plug>(thumbnail_move_left)
-  imap <buffer> <Right> <Plug>(thumbnail_move_cursor_right)
-  imap <buffer> <Left> <Plug>(thumbnail_move_cursor_left)
   imap <buffer> <C-w> <Plug>(thumbnail_delete_backward_word)
   imap <buffer> <BS> <Plug>(thumbnail_delete_backward_char)
   imap <buffer> <C-h> <Plug>(thumbnail_delete_backward_char)
