@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/04 13:00:40.
+" Last Change: 2013/06/04 20:09:47.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -41,10 +41,6 @@ function! s:gather_buffers()
     call add(bufs, { 'bufnr': i })
   endfor
   return bufs
-endfunction
-
-function! s:escape(dir)
-  return escape(a:dir, '.$*')
 endfunction
 
 function! s:redraw_buffer_with(s)
@@ -169,9 +165,9 @@ function! s:get_contents(nr, width, height)
   let abbrnames = []
   call add(abbrnames, substitute(bufname, expand('~'), '~', ''))
   let updir = substitute(expand('%:p:h'), '[^/]*$', '', '')
-  call add(abbrnames, substitute(bufname, s:escape(updir), '../', ''))
+  call add(abbrnames, substitute(bufname, escape(updir, '.$*'), '../', ''))
   let upupdir = substitute(updir, '[^/]*/$', '', '')
-  call add(abbrnames, substitute(bufname, s:escape(upupdir), '../../', ''))
+  call add(abbrnames, substitute(bufname, escape(upupdir, '.$*'), '../../', ''))
   for abbrname in abbrnames
     let name = len(name) > len(abbrname) ? abbrname : name
   endfor
@@ -228,6 +224,7 @@ function! s:arrangement(b)
   let b.visual_selects = []
   let b.line_move = 0
   let b.v_count = 0
+  let b.to_head = 0
   let b.to_end = 0
   let b.help_mode = 0
   if b.offset_top + b.margin_top > 0
@@ -888,8 +885,9 @@ function! s:update(...)
     setlocal filetype=thumbnail
   endif
   if len(a:000) == 0 && after_deletion
-    " Dirty hack to redraw before d{motion}.
-    call s:update(1)
+    redraw
+    sleep 50m
+    call s:update(1) " Dirty hack to redraw before d{motion}.
   endif
 endfunction
 
@@ -897,16 +895,17 @@ function! s:set_cursor()
   try
     let b = b:thumbnail
     let offset = 0
+    let index_offset = b.select_i * b.num_width 
+    let len_b_bufs = len(b.bufs)
+    let conceal_offset = b.marker.conceal ? 4 : 0
     for j in range(b.select_j)
-      let index = b.select_i * b.num_width + j
-      if index < len(b.bufs) && has_key(b.bufs[index], 'firstlinelength')
+      let index = index_offset + j
+      if index < len_b_bufs && has_key(b.bufs[index], 'firstlinelength')
         let offset += b.bufs[index].firstlinelength + b.offset_left + 4
       else
         let offset += b.offset_left + b.thumbnail_width
       endif
-      if b.marker.conceal
-        let offset += 4
-      endif
+      let offset += conceal_offset
     endfor
     let b.cursor_x = b.margin_top + b.select_i
           \ * (b.offset_top + b.thumbnail_height) + b.offset_top + 1
@@ -963,6 +962,7 @@ function! s:move_left()
       let b.prev_j = b.select_j
       let b.select_j = new_j
       let b.line_move = 0
+      let b.to_head = 1
     endif
     call s:update()
   catch
@@ -1069,6 +1069,7 @@ function! s:move_line_head()
       let b.prev_j = b.select_j
       let b.select_j = 0
       let b.line_move = 0
+      let b.to_head = 1
     endif
     call s:update()
   catch
@@ -1522,6 +1523,11 @@ function! s:close(direction)
             call remove(b.visual_selects, -1)
           endif
         endif
+      elseif len(b.visual_selects) == 1 && b.visual_mode == 4
+        if b.line_move == 0 && b.to_head
+          " Case: dh, d^ at the head of line close nothing
+          call remove(b.visual_selects, 0)
+        endif
       endif
       for i in b.visual_selects
         let r = s:close_buffer(b.bufs[i].bufnr, 1, r)
@@ -1789,6 +1795,7 @@ function! s:update_filter()
       let b.line_move = 0
       let b.v_count = 0
       let b.selection = 0
+      let b.to_head = 0
       let b.to_end = 0
       let b.help_mode = 0
       " No match
