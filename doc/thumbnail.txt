@@ -109,14 +109,17 @@ Normal mode key mappings.
 
 <Plug>(thumbnail_move_count_line_first)
 						*<Plug>(thumbnail_move_count_line_first)*
-		Go to the line [count], the first line in default.
-
 <Plug>(thumbnail_move_count_line_last)
 						*<Plug>(thumbnail_move_count_line_last)*
-		Go to the line [count], the last line in default.
+		Go to the head of the line [count], the first/last line in default.
+
+<Plug>(thumbnail_move_count_line_last_last)
+						*<Plug>(thumbnail_move_count_line_last_last)*
+		Go to the last of the line [count], the last line in default.
 
 <Plug>(thumbnail_move_column)			*<Plug>(thumbnail_move_column)*
-		Go to the column [count], in the current line.
+		Go to the column [count], the head in default, in the current
+		line.
 
 <Plug>(thumbnail_start_insert)			*<Plug>(thumbnail_start_insert)*
 		Start the filtering mode
@@ -127,20 +130,20 @@ Normal mode key mappings.
 <Plug>(thumbnail_exit_visual)			*<Plug>(thumbnail_exit_visual)*
 		Start/Exit the visual mode.
 
-<Plug>(thumbnail_select)			*<Plug>(thumbnail_select)*
-		Open the selected buffer.
-
 <Plug>(thumbnail_start_delete)			*<Plug>(thumbnail_start_delete)*
 		Delete thumbnails with {motion}.
-
-<Plug>(thumbnail_delete_to_end)			*<Plug>(thumbnail_delete_to_end)*
-		Delete thumbnails till the end of the current line.
 
 <Plug>(thumbnail_delete)			*<Plug>(thumbnail_delete)*
 		Delete the selected buffer.
 
+<Plug>(thumbnail_delete_to_end)			*<Plug>(thumbnail_delete_to_end)*
+		Delete thumbnails till the end of the current line.
+
 <Plug>(thumbnail_delete_backspace)		*<Plug>(thumbnail_delete_backspace)*
 		Delete the thumbnail before the cursor.
+
+<Plug>(thumbnail_select)			*<Plug>(thumbnail_select)*
+		Open the selected buffer.
 
 <Plug>(thumbnail_redraw)			*<Plug>(thumbnail_redraw)*
 		Redraw the thumbnail buffer.
@@ -219,13 +222,14 @@ A		same as i
 v		|<Plug>(thumbnail_start_visual)|
 V		|<Plug>(thumbnail_start_line_visual)|
 <C-v>		|<Plug>(thumbnail_start_block_visual)|
-d		|<Plug>(thumbnail_start_delete)|
-D		|<Plug>(thumbnail_delete_to_end)|
 <ESC>		|<Plug>(thumbnail_exit_visual)|
+d		|<Plug>(thumbnail_start_delete)|
+x		|<Plug>(thumbnail_delete)|
+<Del>		same as x
+D		|<Plug>(thumbnail_delete_to_end)|
+X		|<Plug>(thumbnail_delete_backspace)|
 <CR>		|<Plug>(thumbnail_select)|
 <SPACE>		same as <CR>
-x		|<Plug>(thumbnail_delete)|
-X		|<Plug>(thumbnail_delete_backspace)|
 <C-l>		|<Plug>(thumbnail_redraw)|
 ?		|<Plug>(thumbnail_toggle_help)|
 q		|<Plug>(thumbnail_exit)|
@@ -265,11 +269,11 @@ Insert mode key mappings.
 						*i_<Plug>(thumbnail_delete_backward_line)*
 		Delete one word/one char/the backward inputs.
 
-<Plug>(thumbnail_exit_insert)			*i_<Plug>(thumbnail_exit_insert)*
-		Exit the filtering mode.
-
 <Plug>(thumbnail_select)			*i_<Plug>(thumbnail_select)*
 		Open the selected buffer.
+
+<Plug>(thumbnail_exit_insert)			*i_<Plug>(thumbnail_exit_insert)*
+		Exit the filtering mode.
 
 <Plug>(thumbnail_nop)				*i_<Plug>(thumbnail_nop)*
 		Nothing.
@@ -289,8 +293,8 @@ Insert mode default mappings.
 <BS>		|i_<Plug>(thumbnail_delete_backward_char)|
 <C-h>		|i_<Plug>(thumbnail_delete_backward_char)|
 <C-u>		|i_<Plug>(thumbnail_delete_backward_line)|
-<ESC>		|i_<Plug>(thumbnail_exit_insert)|
 <CR>		|i_<Plug>(thumbnail_select)|
+<ESC>		|i_<Plug>(thumbnail_exit_insert)|
 
 ------------------------------------------------------------------------------
 SYNTAX						*thumbnail-syntax*

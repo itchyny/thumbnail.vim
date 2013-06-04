@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/05 00:21:52.
+" Last Change: 2013/06/05 00:50:15.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -275,7 +275,6 @@ function! s:mapping()
         \ :<C-u>call <SID>move_down()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_up)
         \ :<C-u>call <SID>move_up()<CR>
-
   nnoremap <buffer><silent> <Plug>(thumbnail_move_next)
         \ :<C-u>call <SID>move_next()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_prev)
@@ -290,23 +289,39 @@ function! s:mapping()
         \ :<C-u>call <SID>move_head()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_last)
         \ :<C-u>call <SID>move_last()<CR>
-  nnoremap <buffer><silent> <Plug>(thumbnail_move_count_line_last_last)
-        \ :<C-u>call <SID>move_line_G_last()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_last_line_head)
         \ :<C-u>call <SID>move_last_line()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_count_line_first)
-        \ :<C-u>call <SID>move_line_gg()<CR>
+        \ :<C-u>call <SID>move_count_line_first()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_count_line_last)
-        \ :<C-u>call <SID>move_line_G()<CR>
+        \ :<C-u>call <SID>move_count_line_last()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_move_count_line_last_last)
+        \ :<C-u>call <SID>move_count_line_last_last()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_column)
         \ :<C-u>call <SID>move_column()<CR>
 
-  nnoremap <buffer><silent> <Plug>(thumbnail_select)
-        \ :<C-u>call <SID>select()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_start_insert)
+        \ :<C-u>call <SID>start_insert(0)<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_start_visual)
+        \ :<C-u>call <SID>start_visual(1)<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_start_line_visual)
+        \ :<C-u>call <SID>start_visual(2)<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_start_block_visual)
+        \ :<C-u>call <SID>start_visual(3)<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_exit_visual)
+        \ :<C-u>call <SID>exit_visual()<CR>
+
+  nnoremap <buffer><silent> <Plug>(thumbnail_start_delete)
+        \ :<C-u>call <SID>start_visual(4)<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_delete)
         \ :<C-u>call <SID>close(0)<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_delete_to_end)
+        \ :<C-u>call <SID>delete_to_end()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_delete_backspace)
         \ :<C-u>call <SID>close(1)<CR>
+
+  nnoremap <buffer><silent> <Plug>(thumbnail_select)
+        \ :<C-u>call <SID>select()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_redraw)
         \ :<C-u>call <SID>update_current_thumbnail()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_toggle_help)
@@ -315,48 +330,6 @@ function! s:mapping()
         \ :<C-u>bdelete!<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_nop)
         \ <Nop>
-  inoremap <buffer><silent> <Plug>(thumbnail_nop)
-        \ <Nop>
-  nnoremap <buffer><silent> <Plug>(thumbnail_start_visual)
-        \ :<C-u>call <SID>start_visual(1)<CR>
-  nnoremap <buffer><silent> <Plug>(thumbnail_start_line_visual)
-        \ :<C-u>call <SID>start_visual(2)<CR>
-  nnoremap <buffer><silent> <Plug>(thumbnail_start_block_visual)
-        \ :<C-u>call <SID>start_visual(3)<CR>
-  nnoremap <buffer><silent> <Plug>(thumbnail_start_delete)
-        \ :<C-u>call <SID>start_visual(4)<CR>
-  nnoremap <buffer><silent> <Plug>(thumbnail_delete_to_end)
-        \ :<C-u>call <SID>delete_to_end()<CR>
-  nnoremap <buffer><silent> <Plug>(thumbnail_start_insert)
-        \ :<C-u>call <SID>start_insert(0)<CR>
-  inoremap <silent><buffer> <Plug>(thumbnail_start_insert)
-        \ <ESC>:<C-u>call <SID>start_insert(0)<CR>
-  inoremap <buffer><silent> <Plug>(thumbnail_exit_insert)
-        \ <ESC>:<C-u>call <SID>exit_insert()<CR>
-  inoremap <buffer><silent> <Plug>(thumbnail_select)
-        \ <ESC>:<C-u>call <SID>select()<CR>
-  nnoremap <buffer><silent> <Plug>(thumbnail_exit_visual)
-        \ :<C-u>call <SID>exit_visual()<CR>
-  inoremap <buffer><silent> <Plug>(thumbnail_delete_backward_word)
-        \ <C-w>
-  inoremap <buffer><silent> <Plug>(thumbnail_delete_backward_char)
-        \ <BS>
-  inoremap <buffer><silent><expr> <Plug>(thumbnail_delete_backward_line)
-        \ b:thumbnail.input =~# '^ *$' ? '' :
-        \ repeat("\<BS>", col('.') - len(substitute(b:thumbnail.input,
-        \ '^ *', '', '')))
-  inoremap <buffer><silent> <Plug>(thumbnail_move_cursor_left)
-        \ <Left>
-  inoremap <buffer><silent> <Plug>(thumbnail_move_cursor_right)
-        \ <Right>
-  nnoremap <buffer><silent> <Plug>(thumbnail_update_off)
-        \ :<C-u>call <SID>update_off()<CR>
-  inoremap <buffer><silent> <Plug>(thumbnail_update_off)
-        \ <ESC>:<C-u>call <SID>update_off()<CR>
-  nnoremap <buffer><silent> <Plug>(thumbnail_update_on)
-        \ :<C-u>call <SID>update_on()<CR>
-  inoremap <buffer><silent> <Plug>(thumbnail_update_on)
-        \ <ESC>:<C-u>call <SID>update_on()<CR>
 
   for i in ['left', 'right', 'down', 'up', 'prev', 'next']
     execute printf('imap <buffer><silent> <Plug>(thumbnail_move_%s) '
@@ -365,6 +338,37 @@ function! s:mapping()
           \.'<Plug>(thumbnail_update_on)'
           \.'<Plug>(thumbnail_start_insert)', i, i)
   endfor
+  inoremap <buffer><silent> <Plug>(thumbnail_move_cursor_left)
+        \ <Left>
+  inoremap <buffer><silent> <Plug>(thumbnail_move_cursor_right)
+        \ <Right>
+
+  inoremap <buffer><silent> <Plug>(thumbnail_delete_backward_word)
+        \ <C-w>
+  inoremap <buffer><silent> <Plug>(thumbnail_delete_backward_char)
+        \ <BS>
+  inoremap <buffer><silent><expr> <Plug>(thumbnail_delete_backward_line)
+        \ b:thumbnail.input =~# '^ *$' ? '' :
+        \ repeat("\<BS>", col('.') - len(substitute(b:thumbnail.input,
+        \ '^ *', '', '')))
+
+  inoremap <buffer><silent> <Plug>(thumbnail_select)
+        \ <ESC>:<C-u>call <SID>select()<CR>
+  inoremap <buffer><silent> <Plug>(thumbnail_exit_insert)
+        \ <ESC>:<C-u>call <SID>exit_insert()<CR>
+  inoremap <buffer><silent> <Plug>(thumbnail_nop)
+        \ <Nop>
+
+  inoremap <silent><buffer> <Plug>(thumbnail_start_insert)
+        \ <ESC>:<C-u>call <SID>start_insert(0)<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_update_off)
+        \ :<C-u>call <SID>update_off()<CR>
+  inoremap <buffer><silent> <Plug>(thumbnail_update_off)
+        \ <ESC>:<C-u>call <SID>update_off()<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_update_on)
+        \ :<C-u>call <SID>update_on()<CR>
+  inoremap <buffer><silent> <Plug>(thumbnail_update_on)
+        \ <ESC>:<C-u>call <SID>update_on()<CR>
 
   nmap <buffer> h <Plug>(thumbnail_move_left)
   nmap <buffer> l <Plug>(thumbnail_move_right)
@@ -389,10 +393,6 @@ function! s:mapping()
   nmap <buffer> g<Up> <Up>
   nmap <buffer> <S-Down> <Down>
   nmap <buffer> <S-Up> <Up>
-  nmap <buffer> <C-n> <Plug>(thumbnail_move_down)
-  nmap <buffer> <C-p> <Plug>(thumbnail_move_up)
-  nmap <buffer> <C-f> <Plug>(thumbnail_move_next)
-  nmap <buffer> <C-b> <Plug>(thumbnail_move_prev)
   nmap <buffer> + j
   nmap <buffer> - k
 
@@ -410,6 +410,10 @@ function! s:mapping()
   nmap <buffer> <S-Tab> b
   nmap <buffer> <S-Left> b
   nmap <buffer> <C-Left> b
+  nmap <buffer> <C-n> <Plug>(thumbnail_move_down)
+  nmap <buffer> <C-p> <Plug>(thumbnail_move_up)
+  nmap <buffer> <C-f> <Plug>(thumbnail_move_next)
+  nmap <buffer> <C-b> <Plug>(thumbnail_move_prev)
   nmap <buffer> 0 <Plug>(thumbnail_move_line_head)
   nmap <buffer> ^ 0
   nmap <buffer> g0 0
@@ -428,6 +432,26 @@ function! s:mapping()
   nmap <buffer> <C-End> <Plug>(thumbnail_move_count_line_last_last)
   nmap <buffer> <Bar> <Plug>(thumbnail_move_column)
 
+  nmap <buffer> i <Plug>(thumbnail_start_insert)
+  nmap <buffer> I i
+  nmap <buffer> a i
+  nmap <buffer> A i
+  nmap <buffer> / <Plug>(thumbnail_start_insert)
+  nmap <buffer> v <Plug>(thumbnail_start_visual)
+  nmap <buffer> V <Plug>(thumbnail_start_line_visual)
+  nmap <buffer> <C-v> <Plug>(thumbnail_start_block_visual)
+  nmap <buffer> <ESC> <Plug>(thumbnail_exit_visual)
+  nmap <buffer> d <Plug>(thumbnail_start_delete)
+  nmap <buffer> x <Plug>(thumbnail_delete)
+  nmap <buffer> <Del> x
+  nmap <buffer> D <Plug>(thumbnail_delete_to_end)
+  nmap <buffer> X <Plug>(thumbnail_delete_backspace)
+  nmap <buffer> <CR> <Plug>(thumbnail_select)
+  nmap <buffer> <SPACE> <CR>
+  nmap <buffer> <C-l> <Plug>(thumbnail_redraw)
+  nmap <buffer> ? <Plug>(thumbnail_toggle_help)
+  nmap <buffer> q <Plug>(thumbnail_exit)
+
   nnoremap <buffer><silent> <LeftMouse> <LeftMouse>
         \ :<C-u>call <SID>update_select(0)<CR>
   nnoremap <buffer><silent> <LeftDrag> <LeftMouse>
@@ -439,31 +463,11 @@ function! s:mapping()
   map <buffer> <ScrollWheelUp> w
   map <buffer> <ScrollWheelDown> b
 
-  nmap <buffer> v <Plug>(thumbnail_start_visual)
-  nmap <buffer> V <Plug>(thumbnail_start_line_visual)
-  nmap <buffer> <C-v> <Plug>(thumbnail_start_block_visual)
-  nmap <buffer> d <Plug>(thumbnail_start_delete)
-  nmap <buffer> D <Plug>(thumbnail_delete_to_end)
-  nmap <buffer> <ESC> <Plug>(thumbnail_exit_visual)
-  nmap <buffer> <CR> <Plug>(thumbnail_select)
-  nmap <buffer> <SPACE> <CR>
-  nmap <buffer> x <Plug>(thumbnail_delete)
-  nmap <buffer> <Del> x
-  nmap <buffer> X <Plug>(thumbnail_delete_backspace)
-  nmap <buffer> <C-l> <Plug>(thumbnail_redraw)
-  nmap <buffer> ? <Plug>(thumbnail_toggle_help)
-  nmap <buffer> q <Plug>(thumbnail_exit)
-
   let nop = 'cCoOpPrRsSuUz'
   for i in range(len(nop))
     execute 'nmap <buffer> ' nop[i] ' <Plug>(thumbnail_nop)'
   endfor
 
-  nmap <buffer> i <Plug>(thumbnail_start_insert)
-  nmap <buffer> I i
-  nmap <buffer> a i
-  nmap <buffer> A i
-  nmap <buffer> / <Plug>(thumbnail_start_insert)
   imap <buffer> <C-n> <Plug>(thumbnail_move_down)
   imap <buffer> <C-p> <Plug>(thumbnail_move_up)
   imap <buffer> <C-f> <Plug>(thumbnail_move_next)
@@ -476,8 +480,8 @@ function! s:mapping()
   imap <buffer> <BS> <Plug>(thumbnail_delete_backward_char)
   imap <buffer> <C-h> <Plug>(thumbnail_delete_backward_char)
   imap <buffer> <C-u> <Plug>(thumbnail_delete_backward_line)
-  imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
   imap <buffer> <CR> <Plug>(thumbnail_select)
+  imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
 
 endfunction
 
@@ -1146,8 +1150,8 @@ function! s:move_last()
   endtry
 endfunction
 
-function! s:move_line_G_last()
-  silent call s:move_line_G()
+function! s:move_count_line_last_last()
+  silent call s:move_count_line_last()
   silent call s:move_line_last()
 endfunction
 
@@ -1166,7 +1170,7 @@ function! s:move_last_line()
   endtry
 endfunction
 
-function! s:move_line_gg()
+function! s:move_count_line_first()
   try
     let b = b:thumbnail
     let new_i = v:count || b.v_count
@@ -1184,7 +1188,7 @@ function! s:move_line_gg()
   endtry
 endfunction
 
-function! s:move_line_G()
+function! s:move_count_line_last()
   try
     let b = b:thumbnail
     let new_i = v:count || b.v_count
