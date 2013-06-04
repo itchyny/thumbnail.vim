@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/04 12:37:36.
+" Last Change: 2013/06/04 13:00:40.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -1544,8 +1544,8 @@ function! s:close(direction)
         endif
         return
       endif
-      let i = b.select_i * b.num_width + b.select_j
-      if s:thumbnail_exists(b.select_i, b.select_j)
+      let i = b.select_i * b.num_width + b.select_j - a:direction
+      if s:thumbnail_exists(b.select_i, b.select_j - a:direction)
         let r = s:close_buffer(b.bufs[i].bufnr, 0, 0)
         if r == 2
           call s:select(i)
@@ -1601,7 +1601,7 @@ function! s:start_visual(mode)
     else
       if !b.visual_mode
         let b.visual_selects = []
-        call extend(b.visual_selects, [ b.select_i * b.num_width + b.select_j ])
+        call extend(b.visual_selects, [b.select_i * b.num_width + b.select_j])
       " Else: vV, v<C-v>, Vv, V<C-v>, <C-v>v, <C-v>V
       endif
       let b.visual_mode = a:mode
@@ -1745,7 +1745,9 @@ function! s:update_filter()
           if bufname(bufs[i].bufnr) !~? w | let f = 1 | endif
         catch
           try
-            if bufname(bufs[i].bufnr) !~? escape(w, '~\*[]?') | let f = 1 | endif
+            if bufname(bufs[i].bufnr) !~? escape(w, '~\*[]?') 
+              let f = 1 
+            endif
           catch
           endtry
         endtry
