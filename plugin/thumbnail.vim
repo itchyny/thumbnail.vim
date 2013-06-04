@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/05 00:00:04.
+" Last Change: 2013/06/05 00:15:50.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -1901,7 +1901,10 @@ function! s:complete(arglead, cmdline, cursorpos)
   endtry
 endfunction
 
-" The following codes were imported from vital.vim {{{
+command! -nargs=* -complete=customlist,s:complete
+      \ Thumbnail call s:new(<q-args>)
+
+" The following codes were imported from vital.vim
 " https://github.com/vim-jp/vital.vim (Public Domain)
 function! s:truncate(str, width)
   " Original function is from mattn.
@@ -2022,12 +2025,6 @@ function! s:modulo(n, m)
   return a:n + (-(a:n + (0 < a:m ? d : -d)) / a:m + d) * a:m
 endfunction
 
-" }}}
-
-command! -nargs=* -complete=customlist,s:complete
-      \ Thumbnail call s:new(<q-args>)
-
 let &cpo = s:save_cpo
 unlet s:save_cpo
 
-" vim: foldmethod=marker
