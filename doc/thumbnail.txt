@@ -457,7 +457,7 @@ Problem 4:					*thumbnail-problem-4*
 		augroup END
 <
 		In the following configuration, you can use the keys <C-f> and
-		<C-b> to move the cursor in filtering mode.
+		<C-b> to move the input cursor in filtering mode.
 >
 		augroup ThumbnailKey
 			autocmd!
