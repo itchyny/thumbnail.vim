@@ -523,7 +523,7 @@ CHANGELOG					*thumbnail-changelog*
 	- Filtering mode
 	- Options (filetype include/exclude/specify)
 	- Help menu for key mappings
-	- Improve document (troubleshooting section)
+	- Troubleshooting section in the document
 	- Improve visual mode
 
 0.0	2013-03-19, ... , 03-24
