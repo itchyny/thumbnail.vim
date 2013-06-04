@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/04 07:48:30.
+" Last Change: 2013/06/04 12:37:36.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -19,18 +19,19 @@ function! s:gather_buffers()
     catch
       let l = 0
     endtry
+    let ft = getbufvar(i, '&filetype')
     try
-      let s = index(b:thumbnail_ft.specify, getbufvar(i, '&filetype')) >= 0
+      let s = index(b:thumbnail_ft.specify, ft) >= 0
     catch
       let s = 0
     endtry
     try
-      let e = index(b:thumbnail_ft.exclude, getbufvar(i, '&filetype')) >= 0
+      let e = index(b:thumbnail_ft.exclude, ft) >= 0
     catch
       let e = 0
     endtry
     try
-      let n = index(b:thumbnail_ft.include, getbufvar(i, '&filetype')) >= 0
+      let n = index(b:thumbnail_ft.include, ft) >= 0
     catch
       let n = 0
     endtry
