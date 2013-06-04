@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/04 20:09:47.
+" Last Change: 2013/06/05 00:00:04.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -47,9 +47,7 @@ function! s:redraw_buffer_with(s)
   silent % delete _
   if len(a:s)
     call setline(1, a:s[0])
-    if len(a:s) > 1
-      call append('.', a:s[1:])
-    endif
+    call append('.', a:s[1:])
   endif
 endfunction
 
@@ -898,8 +896,7 @@ function! s:set_cursor()
     let index_offset = b.select_i * b.num_width 
     let len_b_bufs = len(b.bufs)
     let conceal_offset = b.marker.conceal ? 4 : 0
-    for j in range(b.select_j)
-      let index = index_offset + j
+    for index in range(index_offset, index_offset + b.select_j - 1)
       if index < len_b_bufs && has_key(b.bufs[index], 'firstlinelength')
         let offset += b.bufs[index].firstlinelength + b.offset_left + 4
       else
@@ -1227,15 +1224,13 @@ endfunction
 
 function! s:thumbnail_exists(i, j)
   try
-    if !exists('b:thumbnail') " must not be revived
-      return
-    endif
     let b = b:thumbnail
     let k = a:i * b.num_width + a:j
     return 0 <= k && k < len(b.bufs) &&
           \ 0 <= a:i && a:i < b.num_height &&
           \ 0 <= a:j && a:j < b.num_width
   catch
+    " must not be revived
   endtry
 endfunction
 
@@ -1356,7 +1351,6 @@ function! s:cursor_moved()
           \ || has_key(b, 'dragging') && b.dragging
       return
     endif
-    " if c > len(getline(l)) - 4 || c == b.offset_left + 3
     if getline('.')[:c - 2] =~? '^ *$'
       " Case: :[range], d:[range]
       let new_i = min([l - 1, b.num_height - 1])
