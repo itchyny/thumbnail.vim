@@ -51,7 +51,8 @@ You can specify some options to modify the appearance of the thumbnail buffer.
 
 						*thumbnail-options-here*
 		-here
-		Open the thumbnail buffer in the current buffer.
+		Open the thumbnail buffer at the same window of the current
+		buffer.
 
 						*thumbnail-options-newtab*
 		-newtab
@@ -136,8 +137,10 @@ Normal mode key mappings.
 		Delete thumbnails till the end of the current line.
 
 <Plug>(thumbnail_delete)			*<Plug>(thumbnail_delete)*
-<Plug>(thumbnail_delete_backspace)		*<Plug>(thumbnail_delete_backspace)*
 		Delete the selected buffer.
+
+<Plug>(thumbnail_delete_backspace)		*<Plug>(thumbnail_delete_backspace)*
+		Delete the thumbnail before the cursor.
 
 <Plug>(thumbnail_redraw)			*<Plug>(thumbnail_redraw)*
 		Redraw the thumbnail buffer.
@@ -519,7 +522,7 @@ Problem 10:					*thumbnail-problem-10*
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
 
-0.1	2013-05-25, ... , 06-03
+0.1	2013-05-25, ... , 06-04
 	- Filtering mode
 	- Options (filetype include/exclude/specify)
 	- Help menu for key mappings
