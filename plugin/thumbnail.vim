@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/05 23:45:18.
+" Last Change: 2013/06/06 00:05:56.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -151,7 +151,7 @@ function! s:setcontents(b)
     let c = s:get_contents(buf.bufnr, a:b.thumbnail_width, a:b.thumbnail_height)
     call extend(buf, {
           \ 'contents': c,
-          \ 'firstlinelength': len(c) > 0 ? len(c[0]) : a:b.thumbnail_width - 4
+          \ 'firstlinelength': len(c) ? len(c[0]) : a:b.thumbnail_width - 4
           \ })
   endfor
 endfunction
@@ -181,10 +181,9 @@ function! s:get_contents(nr, width, height)
   endif
   call insert(lines, s:truncate_smart(name == '' ? '[No Name]' : name,
         \ a:width - 4, (a:width - 4) * 3 / 5, ' .. '))
-  return map(lines,
-        \ 's:truncate(substitute(substitute(v:val, "\t", "' .
+  return map(lines, 's:truncate(substitute(substitute(v:val, "\t", "' .
         \ repeat(' ', getbufvar(a:nr, '&tabstop')) .
-        \ '", "g"), "\x0d", "^M", "g") . "' . '", ' .  (a:width - 4) . ')')
+        \ '", "g"), "\x0d", "^M", "g"), ' .  (a:width - 4) . ')')
 endfunction
 
 function! s:arrangement(b)
@@ -213,11 +212,9 @@ function! s:arrangement(b)
     let b.num_height -= 1
   endwhile
   let b.offset_top = max([
-        \ (b.height - b.num_height * b.thumbnail_height) / (b.num_height + 1)
-        \ , 0])
+    \ (b.height - b.num_height * b.thumbnail_height) / (b.num_height + 1), 0])
   let b.offset_left = max([
-        \ (b.width - b.num_width * b.thumbnail_width) / (b.num_width + 1)
-        \ , 0])
+    \ (b.width - b.num_width * b.thumbnail_width) / (b.num_width + 1), 0])
   let top_bottom = b.height
         \ - (b.offset_top + b.thumbnail_height) * b.num_height
   let b.margin_top = max([(top_bottom - b.offset_top) / 2, 0])
