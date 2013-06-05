@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/05 00:50:15.
+" Last Change: 2013/06/05 23:45:18.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -125,14 +125,20 @@ function! s:autocmds()
           \ |   call s:set_cursor()
           \ | endif
     autocmd BufEnter <buffer>
-          \   call s:revive_thumbnail()
-          \ | if exists('b:thumbnail') && !b:thumbnail.visual_mode
-          \ |   call s:thumbnail_init(0)
-          \ | endif
+          \   try
+          \ |   call s:revive_thumbnail()
+          \ |   if exists('b:thumbnail') && !b:thumbnail.visual_mode
+          \ |     call s:thumbnail_init(0)
+          \ |   endif
+          \ | catch
+          \ | endtry
     autocmd WinEnter,WinLeave,VimResized <buffer>
-          \   if exists('b:thumbnail') && !b:thumbnail.selection
-          \ |   call s:update()
-          \ | endif
+          \   try
+          \ |   if exists('b:thumbnail') && !b:thumbnail.selection
+          \ |     call s:update()
+          \ |   endif
+          \ | catch
+          \ | endtry
     autocmd CursorMoved <buffer>
           \ call s:cursor_moved()
     autocmd CursorMovedI <buffer>
