@@ -3,13 +3,13 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/06 05:58:25.
+" Last Change: 2013/06/06 12:59:18.
 " =============================================================================
 
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! s:gather_buffers()
+function! s:gather()
   let bufs = []
   for i in range(1, bufnr('$'))
     let f = (len(bufname(i)) == 0 && (!bufexists(i) || !bufloaded(i)
@@ -43,7 +43,7 @@ function! s:gather_buffers()
   return bufs
 endfunction
 
-function! s:redraw_buffer_with(s)
+function! s:redraw(s)
   silent % delete _
   if len(a:s)
     call setline(1, a:s[0])
@@ -96,13 +96,13 @@ function! s:new(args)
   let b:thumbnail_ft = thumbnail_ft
   let b = {}
   let b.input = ''
-  let b.bufs = s:gather_buffers()
+  let b.bufs = s:gather()
   if len(b.bufs) == 0
     if isnewbuffer | silent bdelete! | endif
     return
   endif
   call s:arrangement(b)
-  call s:setcontents(b)
+  call s:contents(b)
   let b.marker = s:marker(b)
   call s:mapping()
   let b:thumbnail = s:unsave(b)
@@ -119,13 +119,13 @@ function! s:autocmds()
   augroup ThumbnailBuffer
     autocmd BufLeave,WinLeave <buffer>
           \   if exists('b:thumbnail')
-          \ |   call s:set_cursor()
+          \ |   call s:cursor()
           \ | endif
     autocmd BufEnter <buffer>
           \   try
-          \ |   call s:revive_thumbnail()
+          \ |   call s:revive()
           \ |   if exists('b:thumbnail') && !b:thumbnail.visual_mode
-          \ |     call s:thumbnail_init(0)
+          \ |     call s:init(0)
           \ |   endif
           \ | catch
           \ | endtry
@@ -143,9 +143,9 @@ function! s:autocmds()
   augroup END
 endfunction
 
-function! s:setcontents(b)
+function! s:contents(b)
   for buf in a:b.bufs
-    let c = s:get_contents(buf.bufnr, a:b.thumbnail_width, a:b.thumbnail_height)
+    let c = s:get(buf.bufnr, a:b.thumbnail_width, a:b.thumbnail_height)
     call extend(buf, {
           \ 'contents': c,
           \ 'firstlinelength': len(c) ? len(c[0]) : a:b.thumbnail_width - 4
@@ -153,7 +153,7 @@ function! s:setcontents(b)
   endfor
 endfunction
 
-function! s:get_contents(nr, width, height)
+function! s:get(nr, width, height)
   let bufname =  bufname(a:nr)
   if bufloaded(a:nr) && bufexists(a:nr)
     let lines = getbufline(a:nr, 1, a:height - 1)
@@ -532,12 +532,12 @@ let s:nmapping_order =
       \     , [ 'i_exit_insert', 'Exit the insert mode' ]
       \     , [ 'i_select', 'Open the selected buffer' ] ] ] ]
 
-function! s:compare_length(a, b)
+function! s:compare(a, b)
   return len(a:a) == 1 ? -1 : len(a:b) == 1 ? 1 :
         \ len(a:a) == len(a:b) ? (a:a =~ '^[a-z]\+$' ? -1 : 1) :
         \ a:a !~# '\S-' ? -1 : a:b !=# '\S-' ? 1 : len(a:a) > len(a:b) ? 1 : -1
 endfunction
-function! s:help_mapping(b, s)
+function! s:help(b, s)
   redir => redir
   silent! nmap
   redir END
@@ -629,7 +629,7 @@ function! s:help_mapping(b, s)
       else
       endif
     endfor
-    let nmap_dict_rev[key] = sort(new_value, 's:compare_length')
+    let nmap_dict_rev[key] = sort(new_value, 's:compare')
   endfor
   let keylist = []
   for i in range(len(s:nmapping_order))
@@ -772,10 +772,10 @@ function! s:unsave(b, ...)
   return a:b
 endfunction
 
-function! s:thumbnail_init(isnewbuffer)
+function! s:init(isnewbuffer)
   let b = {}
   let b.input = ''
-  let b.bufs = s:gather_buffers()
+  let b.bufs = s:gather()
   if len(b.bufs) == 0
     if a:isnewbuffer
       silent bdelete!
@@ -783,7 +783,7 @@ function! s:thumbnail_init(isnewbuffer)
     return b
   endif
   call s:arrangement(b)
-  call s:setcontents(b)
+  call s:contents(b)
   let b.marker = s:marker(b)
   call s:mapping()
   if len(b.bufs) > 0
@@ -818,13 +818,13 @@ function! s:update(...)
         \ || after_deletion && len(a:000)
     let b = {}
     let b.input = ''
-    let b.bufs = s:gather_buffers()
+    let b.bufs = s:gather()
     if len(b.bufs) == 0
       silent bdelete!
       return
     endif
     call s:arrangement(b)
-    call s:setcontents(b)
+    call s:contents(b)
     let b.marker = s:marker(b)
     call s:mapping()
     let b:thumbnail = s:unsave(b)
@@ -869,13 +869,13 @@ function! s:update(...)
   endfor
   call extend(s, repeat([line_white], b.margin_bottom))
   if b.help_mode
-    call s:help_mapping(b, s)
+    call s:help(b, s)
   endif
-  call s:redraw_buffer_with(s)
+  call s:redraw(s)
   if !b.help_mode || b.help_offset >= b.insert_pos
     call setline(b.insert_pos, b.input)
   endif
-  call s:set_cursor()
+  call s:cursor()
   setlocal nomodifiable buftype=nofile noswapfile readonly nonumber
         \ bufhidden=hide nobuflisted
         \ nofoldenable foldcolumn=0 nolist nowrap concealcursor=nvic
@@ -891,7 +891,7 @@ function! s:update(...)
   endif
 endfunction
 
-function! s:set_cursor()
+function! s:cursor()
   try
     let b = b:thumbnail
     let offset = 0
@@ -932,7 +932,7 @@ function! s:update_visible_thumbnail(bufnr)
     let newbuf = bufwinnr(str2nr(a:bufnr))
     let currentbuf = bufwinnr(bufnr('%'))
     execute winnr 'wincmd w'
-    call s:thumbnail_init(0)
+    call s:init(0)
     if winnr != newbuf && newbuf != -1
       call cursor(1, 1)
       execute newbuf 'wincmd w'
@@ -946,9 +946,9 @@ endfunction
 
 function! s:update_current_thumbnail()
   try
-    call s:thumbnail_init(1)
+    call s:init(1)
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -965,7 +965,7 @@ function! s:move_left()
     endif
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -983,7 +983,7 @@ function! s:move_right()
     endif
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -998,7 +998,7 @@ function! s:move_up()
     endif
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -1018,7 +1018,7 @@ function! s:move_down(...)
     endif
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -1037,7 +1037,7 @@ function! s:move_next()
     endif
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -1056,7 +1056,7 @@ function! s:move_prev()
     endif
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -1072,7 +1072,7 @@ function! s:move_line_head()
     endif
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -1094,7 +1094,7 @@ function! s:move_line_last()
     endif
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -1114,7 +1114,7 @@ function! s:move_line_middle()
     endif
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -1129,7 +1129,7 @@ function! s:move_head()
     endif
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -1145,7 +1145,7 @@ function! s:move_last()
     endif
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -1165,7 +1165,7 @@ function! s:move_last_line()
     endif
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -1183,7 +1183,7 @@ function! s:move_count_line_first()
     endif
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -1201,7 +1201,7 @@ function! s:move_count_line_last()
     endif
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -1219,7 +1219,7 @@ function! s:move_column()
     endif
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -1423,7 +1423,7 @@ function! s:select(...)
     if !exists('b:thumbnail')
       let prev_first_line = substitute(getline(line('.'))[col('.') - 1:],
             \ '|\].*', '', '')
-      call s:revive_thumbnail()
+      call s:revive()
       if exists('b:thumbnail')
         call s:update()
         let new_first_line = substitute(getline(line('.'))[col('.') - 1:],
@@ -1559,7 +1559,7 @@ function! s:close(direction)
     if exists('b:thumbnail')
       let b:thumbnail.direction = a:direction ? -1 : 1
       if b.visual_mode != 4
-        silent call s:thumbnail_init(1)
+        silent call s:init(1)
       endif
     endif
   catch
@@ -1572,7 +1572,7 @@ function! s:toggle_help()
     let b:thumbnail.help_mode = !b:thumbnail.help_mode
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     let b:thumbnail.help_mode = !b:thumbnail.help_mode
     call s:update()
   endtry
@@ -1614,7 +1614,7 @@ function! s:start_visual(mode)
       endif
     endif
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -1651,7 +1651,7 @@ function! s:delete_to_end()
     call s:exit_visual()
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -1727,7 +1727,7 @@ function! s:start_insert(col)
       startinsert!
     endif
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
@@ -1773,7 +1773,7 @@ function! s:update_filter()
     let c = max([col('.'), len(padding) + 1])
     if len(white) > 0
       call s:arrangement(b)
-      call s:setcontents(b)
+      call s:contents(b)
       let b.marker = s:marker(b)
       let b:thumbnail = s:unsave(b, 1)
       call s:update()
@@ -1801,7 +1801,7 @@ function! s:update_filter()
       endfor
       let mes = 'No buffer'
       call add(s, repeat(' ', (winwidth(0) - len(mes)) / 2) . mes)
-      call s:redraw_buffer_with(s)
+      call s:redraw(s)
       call setline(pos, input)
       let b.insert_pos = pos
       call s:start_insert(c)
@@ -1817,21 +1817,21 @@ function! s:exit_insert()
     setlocal nomodifiable readonly
     call s:update()
   catch
-    call s:revive_thumbnail()
+    call s:revive()
     call s:update()
   endtry
 endfunction
 
-function! s:revive_thumbnail()
+function! s:revive()
   let b = {}
   let b.input = ''
-  let b.bufs = s:gather_buffers()
+  let b.bufs = s:gather()
   if len(b.bufs) == 0
     silent bdelete!
     return b
   endif
   call s:arrangement(b)
-  call s:setcontents(b)
+  call s:contents(b)
   let b.marker = s:marker(b)
   call s:mapping()
   if len(b.bufs) > 0
