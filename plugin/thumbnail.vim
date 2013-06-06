@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/06 00:05:56.
+" Last Change: 2013/06/06 05:58:25.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -56,10 +56,7 @@ function! s:new(args)
   let isnewbuffer = bufname('%') != '' || &modified
   let command = 'tabnew'
   let below = ''
-  let thumbnail_ft = {
-        \ 'include': [],
-        \ 'exclude': [],
-        \ 'specify': [] }
+  let thumbnail_ft = { 'include': [], 'exclude': [], 'specify': [] }
   for arg in args
     if arg == '-horizontal'
       let command = 'new'
@@ -898,7 +895,7 @@ function! s:set_cursor()
   try
     let b = b:thumbnail
     let offset = 0
-    let index_offset = b.select_i * b.num_width 
+    let index_offset = b.select_i * b.num_width
     let len_b_bufs = len(b.bufs)
     let conceal_offset = b.marker.conceal ? 4 : 0
     for index in range(index_offset, index_offset + b.select_j - 1)
@@ -1690,7 +1687,7 @@ function! s:update_visual_selects()
         let b.visual_selects = [n]
         for i in range(n_i, b.select_i, 2 * (n_i < b.select_i) - 1)
           for j in range(b.num_width)
-            let new_elem = i * b.num_width + j 
+            let new_elem = i * b.num_width + j
             if s:thumbnail_exists(i, j) && n != new_elem
               call extend(b.visual_selects, [ new_elem ])
             endif
@@ -1703,7 +1700,7 @@ function! s:update_visual_selects()
         let b.visual_selects = [n]
         for i in range(n_i, b.select_i, 2 * (n_i < b.select_i) - 1)
           for j in range(n_j, b.select_j, 2 * (n_j < b.select_j) - 1)
-            let new_elem = i * b.num_width + j 
+            let new_elem = i * b.num_width + j
             if s:thumbnail_exists(i, j) && n != new_elem
               call extend(b.visual_selects, [ new_elem ])
             endif
@@ -1750,8 +1747,8 @@ function! s:update_filter()
           if bufname(bufs[i].bufnr) !~? w | let f = 1 | endif
         catch
           try
-            if bufname(bufs[i].bufnr) !~? escape(w, '~\*[]?') 
-              let f = 1 
+            if bufname(bufs[i].bufnr) !~? escape(w, '~\*[]?')
+              let f = 1
             endif
           catch
           endtry

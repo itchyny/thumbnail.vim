@@ -378,7 +378,8 @@ Problem 1:					*thumbnail-problem-1*
 
 		If you are to install this plugin using Vundle:
 
-			1. Add the following configuration to your .vimrc.
+			1. Add the following configuration to your
+			.vimrc(_vimrc).
 >
 			Bundle 'itchyny/thumbnail.vim'
 <
@@ -386,7 +387,8 @@ Problem 1:					*thumbnail-problem-1*
 
 		If you are to install this plugin using NeoBundle:
 
-			1. Add the following configuration to your .vimrc.
+			1. Add the following configuration to your
+			.vimrc(_vimrc).
 >
 			NeoBundle 'itchyny/thumbnail.vim'
 <
@@ -403,7 +405,7 @@ Problem 2:					*thumbnail-problem-2*
 
 		If you have installed this plugin using Vundle:
 
-			1. Execute `:BundleInstall!`. Or try git pull in the 
+			1. Execute `:BundleInstall!`. Or try git pull in the
 			directory.
 
 		If you have installed this plugin using NeoBundle:
@@ -421,19 +423,19 @@ Problem 3:					*thumbnail-problem-3*
 		If you have installed this plugin using Vundle:
 
 			1. Remove the :Bundle 'itchynythumbnail.vim'
-			configuration from your .vimrc.
+			configuration from your .vimrc(_vimrc).
 			2. Update with `:BundleClean`.
 
 		If you have installed this plugin using NeoBundle:
 
 			1. Remove the :NeoBundle 'itchynythumbnail.vim'
-			configuration from your .vimrc.
+			configuration from your .vimrc(_vimrc).
 			2. Update with `:NeoBundleClean`.
 
 Problem 4:					*thumbnail-problem-4*
 	How to change key-mapping settings for thumbnail buffers.
 
-		Add the following configuration to you .vimrc.
+		Add the following configuration to you .vimrc(_vimrc).
 >
 		augroup ThumbnailKey
 			autocmd!
