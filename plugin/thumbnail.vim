@@ -3,11 +3,13 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/08 02:54:14.
+" Last Change: 2013/06/08 07:59:06.
 " =============================================================================
 
 let s:save_cpo = &cpo
 set cpo&vim
+
+let s:white_width = repeat(' ', winwidth(0))
 
 function! s:gather()
   let bufs = []
@@ -179,7 +181,7 @@ function! s:get(nr, width, height)
   call insert(lines, s:truncate_smart(name == '' ? '[No Name]' : name,
         \ a:width - 4, (a:width - 4) * 3 / 5, ' .. '))
   return map(lines, 's:truncate(substitute(v:val,"\t","' .
-        \ repeat(' ', getbufvar(a:nr, '&tabstop')) .
+        \ s:white_width[:getbufvar(a:nr, '&tabstop') - 1] .
         \ '","g"),' . (a:width - 4) . ')')
 endfunction
 
@@ -189,6 +191,7 @@ function! s:arrangement(b)
   if l == 0 | return | endif
   let b.height = winheight(0)
   let b.width = winwidth(0)
+  let s:white_width = repeat(' ', b.width)
   let b.num_height = 1
   let b.num_width = l
   let b.thumbnail_height =
@@ -648,6 +651,7 @@ function! s:help(b, s)
   let len = max([max(map(copy(keylist[0]), 'len(v:val)')), 21])
   let m = [s:truncate(s:nmapping_order[0][0], len + len(indent))]
   let prev_len = len + len(indent)
+  let prev_len_white = s:white_width[:prev_len - 1]
   let prev_len_white = repeat(' ', prev_len)
   call extend(m, map(keylist[0], 'indent . s:truncate(v:val, len)'))
   let len = 0
@@ -674,7 +678,7 @@ function! s:help(b, s)
     if j >= len(m)
       call add(m, prev_len_white)
     endif
-    let m[j] = m[j] . separator . repeat(' ', len + len(indent))
+    let m[j] = m[j] . separator . s:white_width[:len + len(indent) - 1]
   endfor
   let prev_len = len(m[0])
   let j = 0
@@ -683,13 +687,15 @@ function! s:help(b, s)
   let len = max([max([len, max(map(copy(keylist[4]), 'len(v:val)'))]), 21])
   for k in keylist[4]
     let j = j + 1
-    if j >= len(m)
-      call add(m, repeat(' ', prev_len))
+    if j >= len(m) && prev_len > 1
+      call add(m, s:white_width[:prev_len - 1])
     endif
     let m[j] = m[j] . separator . indent . s:truncate(k, len)
   endfor
-  let sp = repeat(' ', (a:b.width - len(m[0])) / 2)
-  call map(m, 'sp . v:val')
+  if a:b.width - len(m[0]) > 1
+    let sp = s:white_width[:(a:b.width - len(m[0])) / 2 - 1]
+    call map(m, 'sp . v:val')
+  endif
   call insert(m, '')
   call insert(m, '')
   call insert(m, '', -1)
@@ -832,16 +838,17 @@ function! s:update(...)
   setlocal modifiable noreadonly
   let b.selection = 0
   let s = []
-  let thumbnail_white = repeat(' ', b.thumbnail_width - 4)
-  let offset_white = repeat(' ', b.offset_left)
-  let line_white = repeat(' ', (b.offset_left + b.thumbnail_width)
-        \ * b.num_width)
-  let right_white = repeat(' ', winwidth(0) - len(line_white) - 4)
+  let thumbnail_white = s:white_width[:b.thumbnail_width - 4 - 1]
+  let offset_white = s:white_width[:b.offset_left - 1]
+  let line_white = s:white_width[:(b.offset_left + b.thumbnail_width)
+        \ * b.num_width - 1]
+  let right_white = s:white_width[:winwidth(0) - len(line_white) - 4 - 1]
         \ . b.marker.last
   let line_white .= right_white
+  let line_white_repeat = repeat([line_white], winheight(0))
   call extend(s, repeat([line_white], b.margin_top))
   for i in range(b.num_height)
-    call extend(s, repeat([line_white], b.offset_top))
+    call extend(s, line_white_repeat[:b.offset_top - 1])
     for k in range(b.thumbnail_height)
       let ss = ''
       for j in range(b.num_width)
@@ -1764,9 +1771,9 @@ function! s:update_filter()
     let b.input = ''
     let b.bufs = white
     let input = substitute(input, '^ *', '', '')
-    let padding = repeat(' ',
-          \ (winwidth(0) - max([s:wcswidth(input), winwidth(0) / 8]))
-          \ / 2)
+    let padding = s:white_width[:
+          \ (winwidth(0) - max([s:wcswidth(input), winwidth(0) / 8])) 
+          \ / 2 - 1]
     let input = padding . input
     let b.input = input
     let b.prev_bufs = bufs
@@ -1800,7 +1807,7 @@ function! s:update_filter()
         call add(s, '')
       endfor
       let mes = 'No buffer'
-      call add(s, repeat(' ', (winwidth(0) - len(mes)) / 2) . mes)
+      call add(s, s:white_width[:(winwidth(0) - len(mes)) / 2 - 1] . mes)
       call s:redraw(s)
       call setline(pos, input)
       let b.insert_pos = pos
