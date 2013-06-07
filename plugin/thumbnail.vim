@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/06 12:59:18.
+" Last Change: 2013/06/08 02:54:14.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -178,9 +178,9 @@ function! s:get(nr, width, height)
   endif
   call insert(lines, s:truncate_smart(name == '' ? '[No Name]' : name,
         \ a:width - 4, (a:width - 4) * 3 / 5, ' .. '))
-  return map(lines, 's:truncate(substitute(substitute(v:val, "\t", "' .
+  return map(lines, 's:truncate(substitute(v:val,"\t","' .
         \ repeat(' ', getbufvar(a:nr, '&tabstop')) .
-        \ '", "g"), "\x0d", "^M", "g"), ' .  (a:width - 4) . ')')
+        \ '","g"),' . (a:width - 4) . ')')
 endfunction
 
 function! s:arrangement(b)
@@ -1912,7 +1912,7 @@ function! s:truncate(str, width)
   " Original function is from mattn.
   " http://github.com/mattn/googlereader-vim/tree/master
 
-  if a:str =~# '^[\x00-\x7f]*$'
+  if a:str =~# '^[\x20-\x7e]*$'
     return len(a:str) < a:width ?
           \ printf('%-'.a:width.'s', a:str) : strpart(a:str, 0, a:width)
   endif
@@ -1974,15 +1974,16 @@ function! s:strwidthpart_reverse(str, width)
   return ret
 endfunction
 
-if v:version >= 703
+if exists('*strdisplaywidth')
   " Use builtin function.
   function! s:wcswidth(str)
-    return strwidth(a:str)
+    return strdisplaywidth(a:str)
   endfunction
 else
   function! s:wcswidth(str)
     if a:str =~# '^[\x00-\x7f]*$'
-      return strlen(a:str)
+      return 2 * strlen(a:str)
+            \ - strlen(substitute(a:str, '[\x00-\x08\x0b-\x1f\x7f]', '', 'g'))
     end
 
     let mx_first = '^\(.\)'
@@ -2002,6 +2003,12 @@ else
   " UTF-8 only.
   function! s:_wcwidth(ucs)
     let ucs = a:ucs
+    if ucs > 0x7f && ucs <= 0xff
+      return 4
+    endif
+    if ucs <= 0x08 || 0x0b <= ucs && ucs <= 0x1f || ucs == 0x7f
+      return 2
+    endif
     if (ucs >= 0x1100
           \  && (ucs <= 0x115f
           \  || ucs == 0x2329
