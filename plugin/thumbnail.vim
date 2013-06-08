@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/08 12:51:37.
+" Last Change: 2013/06/08 12:53:12.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -894,7 +894,7 @@ function! s:update(...)
   if len(a:000) == 0 && after_deletion
     redraw
     sleep 50m
-    call s:update(1) " Dirty hack to redraw before d{motion}.
+    call s:update(1) " Redraw twice for d{motion}.
   endif
 endfunction
 
