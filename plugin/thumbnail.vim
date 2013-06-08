@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/08 10:22:38.
+" Last Change: 2013/06/08 12:51:37.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -665,24 +665,24 @@ function! s:help(b, s)
     if j >= len(m)
       call add(m, prev_len_white)
     endif
-    let m[j] = m[j] . separator .
+    let m[j] .= separator .
           \ s:truncate(s:nmapping_order[i][0], len + len(indent))
     for k in keylist[i]
       let j = j + 1
       if j >= len(m)
         call add(m, prev_len_white)
       endif
-      let m[j] = m[j] . separator . indent . s:truncate(k, len)
+      let m[j] .= separator . indent . s:truncate(k, len)
     endfor
     let j = j + 1
     if j >= len(m)
       call add(m, prev_len_white)
     endif
-    let m[j] = m[j] . separator . s:white_width[:len + len(indent) - 1]
+    let m[j] .= separator . s:white_width[:len + len(indent) - 1]
   endfor
   let prev_len = len(m[0])
   let j = 0
-  let m[j] = m[j] . separator .
+  let m[j] .= separator .
         \ s:truncate(s:nmapping_order[4][0], len + len(indent))
   let len = max([max([len, max(map(copy(keylist[4]), 'len(v:val)'))]), 21])
   for k in keylist[4]
@@ -690,7 +690,7 @@ function! s:help(b, s)
     if j >= len(m) && prev_len > 1
       call add(m, s:white_width[:prev_len - 1])
     endif
-    let m[j] = m[j] . separator . indent . s:truncate(k, len)
+    let m[j] .= separator . indent . s:truncate(k, len)
   endfor
   if a:b.width - len(m[0]) > 1
     let sp = s:white_width[:(a:b.width - len(m[0])) / 2 - 1]
