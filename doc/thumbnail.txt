@@ -400,18 +400,18 @@ Problem 2:					*thumbnail-problem-2*
 		If you have installed this plugin manually:
 
 			1. Access https://github.com/itchyny/thumbnail.vim .
-			2. Download the scripts.
+			2. Download the latest scripts.
 			3. Place the scripts as written in Problem 1.
 
 		If you have installed this plugin using Vundle:
 
 			1. Execute `:BundleInstall!`. Or try git pull in the
-			directory.
+			directory of this plugin.
 
 		If you have installed this plugin using NeoBundle:
 
 			1. Execute `:NeoBundleInstall!`. Or try git pull in
-			the directory.
+			the directory of this plugin.
 
 Problem 3:					*thumbnail-problem-3*
 	How to uninstall this plugin.
