@@ -3,7 +3,7 @@
 " Version: 0.1
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/08 08:18:04.
+" Last Change: 2013/06/08 10:22:38.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -678,7 +678,7 @@ function! s:help(b, s)
     if j >= len(m)
       call add(m, prev_len_white)
     endif
-    let m[j] = m[j] . separator . s:white_width[:prev_len - 1]
+    let m[j] = m[j] . separator . s:white_width[:len + len(indent) - 1]
   endfor
   let prev_len = len(m[0])
   let j = 0
