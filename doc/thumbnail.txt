@@ -1,6 +1,6 @@
 *thumbnail.txt*	A thumbnail buffer selector for Vim
 
-Version: 0.1
+Version: 0.2
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
