@@ -489,7 +489,7 @@ Problem 6:					*thumbnail-problem-6*
 Problem 7:					*thumbnail-problem-7*
 	This plugin does not gather some buffers.
 
-		This plugin gathers buffers which is:
+		This plugin gathers a buffer which is:
 			+ a new buffer and is modified
 			+ |buflisted|.
 		In order to include a buffer which is not |buflisted|, use the
