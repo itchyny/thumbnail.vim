@@ -489,7 +489,7 @@ Problem 6:					*thumbnail-problem-6*
 Problem 7:					*thumbnail-problem-7*
 	This plugin does not gather some buffers.
 
-		This plugin gather buffers which is:
+		This plugin gathers buffers which is:
 			+ a new buffer and is modified
 			+ |buflisted|.
 		In order to include a buffer which is not |buflisted|, use the
@@ -501,8 +501,8 @@ Problem 7:					*thumbnail-problem-7*
 		See |thumbnail-options-include| for further details.
 
 Problem 8:					*thumbnail-problem-8*
-	This plugin deal with a text file as a binary file.
-	This plugin deal with a binary file as a text file, resulting in a
+	This plugin deals with a text file as a binary file.
+	This plugin deals with a binary file as a text file, resulting in a
 	slowdown of redrawing.
 
 		That is a bug of this plugin.
