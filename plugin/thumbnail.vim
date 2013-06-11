@@ -3,7 +3,7 @@
 " Version: 0.2
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/10 19:50:26.
+" Last Change: 2013/06/11 10:27:42.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -537,7 +537,7 @@ let s:nmapping_order =
 function! s:compare(a, b)
   return len(a:a) == 1 ? -1 : len(a:b) == 1 ? 1 :
         \ len(a:a) == len(a:b) ? (a:a =~ '^[a-z]\+$' ? -1 : 1) :
-        \ a:a !~# '\S-' ? -1 : a:b !=# '\S-' ? 1 : len(a:a) > len(a:b) ? 1 : -1
+        \ a:a !~# '\S-' ? -1 : a:b !~# '\S-' ? 1 : len(a:a) > len(a:b) ? 1 : -1
 endfunction
 function! s:help(b, s)
   redir => redir
