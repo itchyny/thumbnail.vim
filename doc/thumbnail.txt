@@ -1,10 +1,10 @@
 *thumbnail.txt*	A thumbnail buffer selector for Vim
 
-Version: 0.2
+Version: 0.3
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
-Last Change: 2013/06/14 07:08:55.
+Last Change: 2013/06/14 07:15:02.
 
 CONTENTS					*thumbnail-contents*
 
@@ -529,8 +529,10 @@ Problem 10:					*thumbnail-problem-10*
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
 
+0.3	2013-06-14
+
 0.2	2013-06-11
-	- fix -here
+	- Fix -here option
 
 0.1	2013-05-25, ... , 06-08
 	- Filtering mode
