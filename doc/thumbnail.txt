@@ -4,7 +4,7 @@ Version: 0.2
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
-Last Change: 2013/06/11 13:23:33.
+Last Change: 2013/06/13 16:54:45.
 
 CONTENTS					*thumbnail-contents*
 
@@ -529,8 +529,8 @@ Problem 10:					*thumbnail-problem-10*
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
 
-0.2	2013-06-11
-	-
+0.2	2013-06-11, ...
+	- fix -here
 
 0.1	2013-05-25, ... , 06-08
 	- Filtering mode
