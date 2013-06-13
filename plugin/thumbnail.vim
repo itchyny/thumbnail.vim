@@ -3,7 +3,7 @@
 " Version: 0.2
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/11 10:27:42.
+" Last Change: 2013/06/13 16:50:42.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -67,7 +67,7 @@ function! s:new(args)
       let command = 'vnew'
       let isnewbuffer = 1
     elseif arg == '-here' && !&modified
-      let command = 'new | wincmd p | quit'
+      let command = 'new | wincmd p | quit | wincmd p'
     elseif arg == '-newtab'
       let command = 'tabnew'
       let isnewbuffer = 1
