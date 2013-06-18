@@ -3,7 +3,7 @@
 " Version: 0.3
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/06/14 07:15:07.
+" Last Change: 2013/06/18 09:10:25.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -1748,13 +1748,13 @@ function! s:update_filter()
     for i in range(len(bufs))
       let f = 0
       for w in words
+        let name = bufname(bufs[i].bufnr)
+        let name = name == '' ? '[No Name]' : name
         try
-          if bufname(bufs[i].bufnr) !~? w | let f = 1 | endif
+          if name !~? w | let f = 1 | endif
         catch
           try
-            if bufname(bufs[i].bufnr) !~? escape(w, '~\*[]?')
-              let f = 1
-            endif
+            if name !~? escape(w, '~\*[]?') | let f = 1 | endif
           catch
           endtry
         endtry

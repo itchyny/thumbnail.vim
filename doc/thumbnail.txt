@@ -4,7 +4,7 @@ Version: 0.3
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
-Last Change: 2013/06/14 07:15:02.
+Last Change: 2013/06/18 09:12:47.
 
 CONTENTS					*thumbnail-contents*
 
@@ -529,7 +529,8 @@ Problem 10:					*thumbnail-problem-10*
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
 
-0.3	2013-06-14
+0.3	2013-06-18
+	- Filtering for [No Name] buffers
 
 0.2	2013-06-11
 	- Fix -here option
