@@ -4,7 +4,7 @@ Version: 0.3
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
-Last Change: 2013/06/18 09:12:47.
+Last Change: 2013/06/27 08:25:02.
 
 CONTENTS					*thumbnail-contents*
 
@@ -423,13 +423,13 @@ Problem 3:					*thumbnail-problem-3*
 
 		If you have installed this plugin using Vundle:
 
-			1. Remove the :Bundle 'itchynythumbnail.vim'
+			1. Remove the :Bundle 'itchyny/thumbnail.vim'
 			configuration from your .vimrc(_vimrc).
 			2. Update with `:BundleClean`.
 
 		If you have installed this plugin using NeoBundle:
 
-			1. Remove the :NeoBundle 'itchynythumbnail.vim'
+			1. Remove the :NeoBundle 'itchyny/thumbnail.vim'
 			configuration from your .vimrc(_vimrc).
 			2. Update with `:NeoBundleClean`.
 
