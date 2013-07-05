@@ -3,7 +3,7 @@
 " Version: 0.3
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/07/06 08:16:21.
+" Last Change: 2013/07/06 08:29:11.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -1878,32 +1878,31 @@ function! s:complete(arglead, cmdline, cursorpos)
           \ ]
     if a:arglead != ''
       return sort(filter(options, 'stridx(v:val, a:arglead) != -1'))
-    else
-      let d = {}
-      for opt in options
-        let d[opt] = 0
-      endfor
-      for opt in options
-        if d[opt] == 0
-          for ncf in noconflict
-            let flg = 0
-            for n in ncf
-              let flg = flg || stridx(a:cmdline, n) >= 0
-              if flg
-                break
-              endif
-            endfor
+    endif
+    let d = {}
+    for opt in options
+      let d[opt] = 0
+    endfor
+    for opt in options
+      if d[opt] == 0
+        for ncf in noconflict
+          let flg = 0
+          for n in ncf
+            let flg = flg || stridx(a:cmdline, n) >= 0
             if flg
-              for n in ncf
-                let d[n] = 1
-              endfor
+              break
             endif
           endfor
-        endif
-      endfor
-      return sort(filter(options,
-            \ 'd[v:val] == 0 && stridx(a:cmdline, v:val) == -1'))
-    endif
+          if flg
+            for n in ncf
+              let d[n] = 1
+            endfor
+          endif
+        endfor
+      endif
+    endfor
+    return sort(filter(options,
+          \ 'd[v:val] == 0 && stridx(a:cmdline, v:val) == -1'))
   catch
     return []
   endtry
