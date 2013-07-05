@@ -3,7 +3,7 @@
 " Version: 0.3
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/07/06 08:29:11.
+" Last Change: 2013/07/06 08:30:13.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -1877,7 +1877,7 @@ function! s:complete(arglead, cmdline, cursorpos)
           \ [ '-newtab', '-below' ],
           \ ]
     if a:arglead != ''
-      return sort(filter(options, 'stridx(v:val, a:arglead) != -1'))
+      let options = sort(filter(options, 'stridx(v:val, a:arglead) != -1'))
     endif
     let d = {}
     for opt in options
