@@ -4,7 +4,7 @@ Version: 0.3
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
-Last Change: 2013/06/27 08:25:02.
+Last Change: 2013/07/06 07:53:09.
 
 CONTENTS					*thumbnail-contents*
 
@@ -39,11 +39,11 @@ You can specify some options to modify the appearance of the thumbnail buffer.
 
 						*thumbnail-options-horizontal*
 		-horizontal
-		Open the thumbnail buffer in a horizontally opened buffer.
+		Open the thumbnail buffer horizontally.
 
 						*thumbnail-options-vertical*
 		-vertical
-		Open the thumbnail buffer in a vertically opened buffer.
+		Open the thumbnail buffer vertically.
 
 						*thumbnail-options-below*
 		-below

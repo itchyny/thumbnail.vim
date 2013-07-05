@@ -3,7 +3,7 @@
 " Version: 0.3
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/07/05 11:51:38.
+" Last Change: 2013/07/06 01:02:12.
 " =============================================================================
 
 let s:save_cpo = &cpo
