@@ -3,7 +3,7 @@
 " Version: 0.3
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/07/09 14:33:47.
+" Last Change: 2013/07/09 14:38:03.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -1880,7 +1880,7 @@ let s:noconflict = [
 
 function! s:complete(arglead, cmdline, cursorpos)
   try
-    let options = s:options
+    let options = copy(s:options)
     if a:arglead != ''
       let options = sort(filter(copy(s:options), 'stridx(v:val, a:arglead) != -1'))
       if len(options) == 0
@@ -1891,7 +1891,7 @@ function! s:complete(arglead, cmdline, cursorpos)
             let arglead = substitute(a:arglead, '\(.\)', '.*\1', 'g') . '.*'
             let options = sort(filter(copy(s:options), 'v:val =~? arglead'))
           catch
-            let options = s:options
+            let options = copy(s:options)
           endtry
         endif
       endif
