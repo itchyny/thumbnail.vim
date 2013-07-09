@@ -3,7 +3,7 @@
 " Version: 0.3
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/07/06 17:03:49.
+" Last Change: 2013/07/09 14:33:47.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -1867,18 +1867,34 @@ function! s:update_on()
   endtry
 endfunction
 
+command! -nargs=* -complete=customlist,s:complete
+      \ Thumbnail call s:new(<q-args>)
+
+let s:options = [ '-horizontal', '-vertical', '-here', '-newtab', '-below'
+      \ , '-include=', '-exclude=', '-specify=' ]
+let s:noconflict = [
+      \ [ '-horizontal', '-vertical', '-here', '-newtab' ],
+      \ [ '-here', '-below' ],
+      \ [ '-newtab', '-below' ],
+      \ ]
+
 function! s:complete(arglead, cmdline, cursorpos)
   try
-    let options = [ '-horizontal', '-vertical', '-here', '-newtab', '-below'
-          \ , '-include=', '-exclude=', '-specify=' ]
-    let noconflict = [
-          \ [ '-horizontal', '-vertical', '-here', '-newtab' ],
-          \ [ '-here', '-below' ],
-          \ [ '-newtab', '-below' ],
-          \ ]
+    let options = s:options
     if a:arglead != ''
-      let arglead = substitute(a:arglead, '^-\+', '', '')
-      let options = sort(filter(options, 'stridx(v:val, arglead) != -1'))
+      let options = sort(filter(copy(s:options), 'stridx(v:val, a:arglead) != -1'))
+      if len(options) == 0
+        let arglead = substitute(a:arglead, '^-\+', '', '')
+        let options = sort(filter(copy(s:options), 'stridx(v:val, arglead) != -1'))
+        if len(options) == 0
+          try
+            let arglead = substitute(a:arglead, '\(.\)', '.*\1', 'g') . '.*'
+            let options = sort(filter(copy(s:options), 'v:val =~? arglead'))
+          catch
+            let options = s:options
+          endtry
+        endif
+      endif
     endif
     let d = {}
     for opt in options
@@ -1886,7 +1902,7 @@ function! s:complete(arglead, cmdline, cursorpos)
     endfor
     for opt in options
       if d[opt] == 0
-        for ncf in noconflict
+        for ncf in s:noconflict
           let flg = 0
           for n in ncf
             let flg = flg || stridx(a:cmdline, n) >= 0
@@ -1908,9 +1924,6 @@ function! s:complete(arglead, cmdline, cursorpos)
     return []
   endtry
 endfunction
-
-command! -nargs=* -complete=customlist,s:complete
-      \ Thumbnail call s:new(<q-args>)
 
 " The following codes were imported from vital.vim
 " https://github.com/vim-jp/vital.vim (Public Domain)
