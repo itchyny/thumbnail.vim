@@ -529,9 +529,10 @@ Problem 10:					*thumbnail-problem-10*
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
 
-0.3	2013-06-18, 07-06
+0.3	2013-06-18, 07-06, 07-08
 	- Filtering for [No Name] buffers
 	- Improve argument completion
+	- Improve option completion
 
 0.2	2013-06-11
 	- Fix -here option
