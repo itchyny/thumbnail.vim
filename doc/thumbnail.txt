@@ -4,7 +4,7 @@ Version: 0.3
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
-Last Change: 2013/07/06 08:17:47.
+Last Change: 2013/07/16 08:21:14.
 
 CONTENTS					*thumbnail-contents*
 
@@ -529,10 +529,11 @@ Problem 10:					*thumbnail-problem-10*
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
 
-0.3	2013-06-18, 07-06, 07-08
+0.3	2013-06-18, 07-06, 07-08, 07-16
 	- Filtering for [No Name] buffers
 	- Improve argument completion
 	- Improve option completion
+	- Improve behavior of vnew
 
 0.2	2013-06-11
 	- Fix -here option
