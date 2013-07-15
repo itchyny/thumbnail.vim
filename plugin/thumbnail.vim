@@ -3,7 +3,7 @@
 " Version: 0.3
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/07/09 14:52:28.
+" Last Change: 2013/07/16 07:40:57.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -879,6 +879,7 @@ function! s:update(...)
   endif
   if b.height != winheight(0) || b.width != winwidth(0)
         \ || after_deletion && len(a:000)
+    set wrap
     let b = {}
     let b.input = ''
     let b.bufs = s:gather()
@@ -943,7 +944,7 @@ function! s:update(...)
   setlocal nomodifiable buftype=nofile noswapfile readonly
         \ bufhidden=hide nobuflisted nofoldenable foldcolumn=0
         \ nolist nowrap concealcursor=nvic completefunc= omnifunc=
-        \  nocursorcolumn nocursorline nonumber
+        \ nocursorcolumn nocursorline nonumber
   if &l:filetype !=# 'thumbnail'
     let b:thumbnail_conceal = b.marker.conceal
     setlocal filetype=thumbnail
