@@ -3,7 +3,7 @@
 " Version: 0.3
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/07/16 13:53:18.
+" Last Change: 2013/07/17 01:52:20.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -60,11 +60,104 @@ function! s:complete(arglead, cmdline, cursorpos)
         endfor
       endif
     endfor
-    return sort(filter(options,
-          \ 'd[v:val] == 0 && stridx(a:cmdline, v:val) == -1'))
+    return sort(filter(options, 'd[v:val] == 0 && stridx(a:cmdline, v:val) == -1'))
   catch
     return []
   endtry
+endfunction
+
+function! s:new(args)
+  let [isnewbuffer, command, thumbnail_ft] = s:parse(a:args)
+  try | silent execute command | catch | return | endtry
+  let b:thumbnail_ft = thumbnail_ft
+  let b = {}
+  let b.input = ''
+  let b.bufs = s:gather()
+  if len(b.bufs) == 0
+    if isnewbuffer | silent bdelete! | endif
+    return
+  endif
+  call s:arrangement(b)
+  call s:contents(b)
+  let b.marker = s:marker(b)
+  call s:mapping()
+  let b:thumbnail = s:unsave(b)
+  call s:update()
+  call s:au()
+endfunction
+
+function! s:parse(args)
+  let args = split(a:args, '\s\+')
+  let isnewbuffer = bufname('%') != '' || &modified
+  let command = 'tabnew'
+  let below = ''
+  let thumbnail_ft = { 'include': [], 'exclude': [], 'specify': [] }
+  for arg in args
+    if arg == '-horizontal'
+      let command = 'new'
+      let isnewbuffer = 1
+    elseif arg == '-vertical'
+      let command = 'vnew'
+      let isnewbuffer = 1
+    elseif arg == '-here' && !&modified
+      let command = 'new | wincmd p | quit | wincmd p'
+    elseif arg == '-newtab'
+      let command = 'tabnew'
+      let isnewbuffer = 1
+    elseif arg == '-below'
+      let below = 'below '
+    elseif arg =~? '-include=.\+'
+      let thumbnail_ft.include = extend(thumbnail_ft.include,
+            \ split(substitute(arg, '-include=', '', ''), ','))
+      let thumbnail_ft.exclude = filter(thumbnail_ft.exclude,
+            \ 'index(thumbnail_ft.include, v:val) < 0')
+    elseif arg =~? '-exclude=.\+'
+      let thumbnail_ft.exclude = extend(thumbnail_ft.exclude,
+            \ split(substitute(arg, '-exclude=', '', ''), ','))
+      let thumbnail_ft.include = filter(thumbnail_ft.include,
+            \ 'index(thumbnail_ft.exclude, v:val) < 0')
+    elseif arg =~? '-specify=.\+'
+      let thumbnail_ft.specify = extend(thumbnail_ft.specify,
+            \ split(substitute(arg, '-specify=', '', ''), ','))
+      let thumbnail_ft.include = []
+      let thumbnail_ft.exclude = []
+    endif
+  endfor
+  let command = 'if isnewbuffer | ' . below . command . ' | endif'
+  return [isnewbuffer, command, thumbnail_ft]
+endfunction
+
+function! s:au()
+  augroup ThumbnailAutoUpdate
+    autocmd!
+    autocmd BufEnter,CursorHold,CursorHoldI,BufWritePost,VimResized *
+          \ call s:update_visible_thumbnail(expand('<abuf>'))
+  augroup END
+  augroup ThumbnailBuffer
+    autocmd BufLeave,WinLeave <buffer>
+          \   if exists('b:thumbnail')
+          \ |   call s:cursor()
+          \ | endif
+    autocmd BufEnter <buffer>
+          \   try
+          \ |   call s:revive()
+          \ |   if exists('b:thumbnail') && !b:thumbnail.visual_mode
+          \ |     call s:init(0)
+          \ |   endif
+          \ | catch
+          \ | endtry
+    autocmd WinEnter,WinLeave,VimResized <buffer>
+          \   try
+          \ |   if exists('b:thumbnail') && !b:thumbnail.selection
+          \ |     call s:update()
+          \ |   endif
+          \ | catch
+          \ | endtry
+    autocmd CursorMoved <buffer>
+          \ call s:cursor_moved()
+    autocmd CursorMovedI <buffer>
+          \ call s:update_filter()
+  augroup END
 endfunction
 
 let s:white = repeat(' ', winwidth(0))
@@ -106,98 +199,6 @@ endfunction
 function! s:redraw(s)
   silent % delete _
   call setline(1, a:s)
-endfunction
-
-function! s:new(args)
-  let args = split(a:args, '\s\+')
-  let isnewbuffer = bufname('%') != '' || &modified
-  let command = 'tabnew'
-  let below = ''
-  let thumbnail_ft = { 'include': [], 'exclude': [], 'specify': [] }
-  for arg in args
-    if arg == '-horizontal'
-      let command = 'new'
-      let isnewbuffer = 1
-    elseif arg == '-vertical'
-      let command = 'vnew'
-      let isnewbuffer = 1
-    elseif arg == '-here' && !&modified
-      let command = 'new | wincmd p | quit | wincmd p'
-    elseif arg == '-newtab'
-      let command = 'tabnew'
-      let isnewbuffer = 1
-    elseif arg == '-below'
-      let below = 'below '
-    elseif arg =~? '-include=.\+'
-      let thumbnail_ft.include = extend(thumbnail_ft.include,
-            \ split(substitute(arg, '-include=', '', ''), ','))
-      let thumbnail_ft.exclude = filter(thumbnail_ft.exclude,
-            \ 'index(thumbnail_ft.include, v:val) < 0')
-    elseif arg =~? '-exclude=.\+'
-      let thumbnail_ft.exclude = extend(thumbnail_ft.exclude,
-            \ split(substitute(arg, '-exclude=', '', ''), ','))
-      let thumbnail_ft.include = filter(thumbnail_ft.include,
-            \ 'index(thumbnail_ft.exclude, v:val) < 0')
-    elseif arg =~? '-specify=.\+'
-      let thumbnail_ft.specify = extend(thumbnail_ft.specify,
-            \ split(substitute(arg, '-specify=', '', ''), ','))
-      let thumbnail_ft.include = []
-      let thumbnail_ft.exclude = []
-    endif
-  endfor
-  try
-    silent execute 'if isnewbuffer | ' . below . command . ' | endif'
-  catch
-    return
-  endtry
-  let b:thumbnail_ft = thumbnail_ft
-  let b = {}
-  let b.input = ''
-  let b.bufs = s:gather()
-  if len(b.bufs) == 0
-    if isnewbuffer | silent bdelete! | endif
-    return
-  endif
-  call s:arrangement(b)
-  call s:contents(b)
-  let b.marker = s:marker(b)
-  call s:mapping()
-  let b:thumbnail = s:unsave(b)
-  call s:update()
-  call s:autocmds()
-endfunction
-
-function! s:autocmds()
-  augroup ThumbnailAutoUpdate
-    autocmd!
-    autocmd BufEnter,CursorHold,CursorHoldI,BufWritePost,VimResized *
-          \ call s:update_visible_thumbnail(expand('<abuf>'))
-  augroup END
-  augroup ThumbnailBuffer
-    autocmd BufLeave,WinLeave <buffer>
-          \   if exists('b:thumbnail')
-          \ |   call s:cursor()
-          \ | endif
-    autocmd BufEnter <buffer>
-          \   try
-          \ |   call s:revive()
-          \ |   if exists('b:thumbnail') && !b:thumbnail.visual_mode
-          \ |     call s:init(0)
-          \ |   endif
-          \ | catch
-          \ | endtry
-    autocmd WinEnter,WinLeave,VimResized <buffer>
-          \   try
-          \ |   if exists('b:thumbnail') && !b:thumbnail.selection
-          \ |     call s:update()
-          \ |   endif
-          \ | catch
-          \ | endtry
-    autocmd CursorMoved <buffer>
-          \ call s:cursor_moved()
-    autocmd CursorMovedI <buffer>
-          \ call s:update_filter()
-  augroup END
 endfunction
 
 function! s:contents(b)
