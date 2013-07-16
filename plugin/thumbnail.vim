@@ -3,7 +3,7 @@
 " Version: 0.3
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/07/16 08:19:43.
+" Last Change: 2013/07/16 13:53:18.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -105,10 +105,7 @@ endfunction
 
 function! s:redraw(s)
   silent % delete _
-  if len(a:s)
-    call setline(1, a:s[0])
-    call append('.', a:s[1:])
-  endif
+  call setline(1, a:s)
 endfunction
 
 function! s:new(args)
