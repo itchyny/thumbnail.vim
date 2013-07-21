@@ -4,7 +4,7 @@ Version: 0.3
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
-Last Change: 2013/07/16 08:21:14.
+Last Change: 2013/07/19 16:42:41.
 
 CONTENTS					*thumbnail-contents*
 
@@ -47,13 +47,14 @@ You can specify some options to modify the appearance of the thumbnail buffer.
 
 						*thumbnail-options-below*
 		-below
-		Open the split window with below command prefix. This option
-		is effective with -horizontal and -vertical.
+		Open the split window with below command prefix.
 
 						*thumbnail-options-here*
-		-here
+		-here[!]
 		Open the thumbnail buffer at the same window of the current
-		buffer.
+		buffer. If some changes exist in the current buffer, this
+		option is ignored. An '!' is added to discard any changes in
+		the current buffer.
 
 						*thumbnail-options-newtab*
 		-newtab
@@ -529,11 +530,12 @@ Problem 10:					*thumbnail-problem-10*
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
 
-0.3	2013-06-18, 07-06, 07-08, 07-16
+0.3	2013-06-18, 07-06, 07-08, 07-16, 07-19
 	- Filtering for [No Name] buffers
 	- Improve argument completion
 	- Improve option completion
 	- Improve behavior of vnew
+	- Improve option parser and add '-here!'.
 
 0.2	2013-06-11
 	- Fix -here option

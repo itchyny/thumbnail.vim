@@ -3,7 +3,7 @@
 " Version: 0.3
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/07/17 01:52:20.
+" Last Change: 2013/07/21 13:38:13.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -93,32 +93,37 @@ function! s:parse(args)
   let below = ''
   let thumbnail_ft = { 'include': [], 'exclude': [], 'specify': [] }
   for arg in args
-    if arg == '-horizontal'
+    if arg =~? '^-*horizontal$'
       let command = 'new'
       let isnewbuffer = 1
-    elseif arg == '-vertical'
+    elseif arg =~? '^-*vertical$'
       let command = 'vnew'
       let isnewbuffer = 1
-    elseif arg == '-here' && !&modified
-      let command = 'new | wincmd p | quit | wincmd p'
-    elseif arg == '-newtab'
+    elseif arg =~? '^-*here$'
+      let command = 'try | enew | catch | tabnew | endtry'
+    elseif arg =~? '^-*here!$'
+      let command = 'enew!'
+    elseif arg =~? '^-*newtab$'
       let command = 'tabnew'
       let isnewbuffer = 1
-    elseif arg == '-below'
+    elseif arg =~? '^-*below$'
+      if command == 'tabnew'
+        let command = 'new'
+      endif
       let below = 'below '
-    elseif arg =~? '-include=.\+'
+    elseif arg =~? '^-*include=.\+$'
       let thumbnail_ft.include = extend(thumbnail_ft.include,
-            \ split(substitute(arg, '-include=', '', ''), ','))
+            \ split(substitute(arg, '-*include=', '', ''), ','))
       let thumbnail_ft.exclude = filter(thumbnail_ft.exclude,
             \ 'index(thumbnail_ft.include, v:val) < 0')
-    elseif arg =~? '-exclude=.\+'
+    elseif arg =~? '^-*exclude=.\+$'
       let thumbnail_ft.exclude = extend(thumbnail_ft.exclude,
-            \ split(substitute(arg, '-exclude=', '', ''), ','))
+            \ split(substitute(arg, '-*exclude=', '', ''), ','))
       let thumbnail_ft.include = filter(thumbnail_ft.include,
             \ 'index(thumbnail_ft.exclude, v:val) < 0')
-    elseif arg =~? '-specify=.\+'
+    elseif arg =~? '^-*specify=.\+$'
       let thumbnail_ft.specify = extend(thumbnail_ft.specify,
-            \ split(substitute(arg, '-specify=', '', ''), ','))
+            \ split(substitute(arg, '-*specify=', '', ''), ','))
       let thumbnail_ft.include = []
       let thumbnail_ft.exclude = []
     endif
@@ -897,7 +902,7 @@ function! s:update(...)
   let offset_white = s:white[:b.offset_left - 1]
   let line_white = s:white[:(b.offset_left + b.thumbnail_width)
         \ * b.num_width - 1]
-  let right_white = s:white[:winwidth(0) - len(line_white) - 4 - 1]
+  let right_white = s:white[:winwidth(0) - len(line_white) - 4 - 2]
         \ . b.marker.last
   let line_white .= right_white
   let line_white_repeat = repeat([line_white], winheight(0))
@@ -2053,4 +2058,3 @@ endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
-
