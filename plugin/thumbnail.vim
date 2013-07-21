@@ -3,7 +3,7 @@
 " Version: 0.3
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/07/21 13:38:13.
+" Last Change: 2013/07/21 20:16:10.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -366,6 +366,8 @@ function! s:mapping()
 
   nnoremap <buffer><silent> <Plug>(thumbnail_start_insert)
         \ :<C-u>call <SID>start_insert(0)<CR>
+  nnoremap <buffer><silent> <Plug>(thumbnail_start_insert_head)
+        \ :<C-u>call <SID>start_insert(1)<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_start_visual)
         \ :<C-u>call <SID>start_visual(1)<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_start_line_visual)
@@ -424,6 +426,8 @@ function! s:mapping()
 
   inoremap <silent><buffer> <Plug>(thumbnail_start_insert)
         \ <ESC>:<C-u>call <SID>start_insert(0)<CR>
+  inoremap <silent><buffer> <Plug>(thumbnail_start_insert_head)
+        \ <ESC>:<C-u>call <SID>start_insert(1)<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_update_off)
         \ :<C-u>call <SID>update_off()<CR>
   inoremap <buffer><silent> <Plug>(thumbnail_update_off)
@@ -496,7 +500,7 @@ function! s:mapping()
   nmap <buffer> <Bar> <Plug>(thumbnail_move_column)
 
   nmap <buffer> i <Plug>(thumbnail_start_insert)
-  nmap <buffer> I i
+  nmap <buffer> I <Plug>(thumbnail_start_insert_head)
   nmap <buffer> a i
   nmap <buffer> A i
   nmap <buffer> / <Plug>(thumbnail_start_insert)

@@ -4,7 +4,7 @@ Version: 0.3
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
-Last Change: 2013/07/19 16:42:41.
+Last Change: 2013/07/21 20:19:39.
 
 CONTENTS					*thumbnail-contents*
 
@@ -124,6 +124,7 @@ Normal mode key mappings.
 		line.
 
 <Plug>(thumbnail_start_insert)			*<Plug>(thumbnail_start_insert)*
+<Plug>(thumbnail_start_insert_head)			*<Plug>(thumbnail_start_insert_head)*
 		Start the filtering mode
 
 <Plug>(thumbnail_start_visual)			*<Plug>(thumbnail_start_visual)*
@@ -217,7 +218,7 @@ gg		|<Plug>(thumbnail_move_count_line_first)|
 G		|<Plug>(thumbnail_move_count_line_last)|
 |		|<Plug>(thumbnail_move_column)|
 i		|<Plug>(thumbnail_start_insert)|
-I		same as i
+I		|<Plug>(thumbnail_start_insert_head)|
 a		same as i
 A		same as i
 /		|<Plug>(thumbnail_start_insert)|
@@ -530,12 +531,13 @@ Problem 10:					*thumbnail-problem-10*
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
 
-0.3	2013-06-18, 07-06, 07-08, 07-16, 07-19
+0.3	2013-06-18, 07-06, 07-08, 07-16, 07-19, 07-21
 	- Filtering for [No Name] buffers
 	- Improve argument completion
 	- Improve option completion
 	- Improve behavior of vnew
-	- Improve option parser and add '-here!'.
+	- Improve option parser and add '-here!'
+	- Change behavior of nmap I
 
 0.2	2013-06-11
 	- Fix -here option
