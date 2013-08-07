@@ -3,7 +3,7 @@
 " Version: 0.4
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/08/02 15:31:04.
+" Last Change: 2013/08/07 15:42:01.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -571,6 +571,7 @@ let s:nmapping_order =
       \     , [ 'move_column', 'Move to the column [count]' ] ] ]
       \ , [ 'CHANGING MODE'
       \   , [ [ 'start_insert', 'Start insert mode' ]
+      \     , [ 'start_insert_head', 'Start insert mode at the head' ]
       \     , [ 'start_visual', 'Start visual mode' ]
       \     , [ 'start_line_visual', 'Start line visual mode' ]
       \     , [ 'start_block_visual', 'Start block visual mode' ]
