@@ -3,7 +3,7 @@
 " Version: 0.4
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/08/07 15:42:01.
+" Last Change: 2013/08/20 16:07:44.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -950,8 +950,11 @@ function! s:update(...)
   call s:cursor()
   setlocal nomodifiable buftype=nofile noswapfile readonly
         \ bufhidden=hide nobuflisted nofoldenable foldcolumn=0
-        \ nolist wrap nowrap concealcursor=nvic completefunc= omnifunc=
+        \ nolist wrap nowrap completefunc= omnifunc=
         \ nocursorcolumn nocursorline nonumber
+  if exists('&concealcursor')
+    setlocal concealcursor=nvic
+  endif
   if &l:filetype !=# 'thumbnail'
     let b:thumbnail_conceal = b.marker.conceal
     setlocal filetype=thumbnail
