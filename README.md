@@ -20,8 +20,9 @@ MIT License
 ## Installation
 ### Manually
 1. Put plugin/thumbnail.vim to $VIM/plugin/.
-2. Put syntax/thumbnail.vim to $VIM/syntax/.
-3. Put doc/thumbnail.txt to $VIM/doc/.
+2. Put autoload/thumbnail.vim to $VIM/autoload/.
+3. Put syntax/thumbnail.vim to $VIM/syntax/.
+4. Put doc/thumbnail.txt to $VIM/doc/.
 
 ### Vundle (https://github.com/gmarik/vundle)
 1. Add the following configuration to your .vimrc.
