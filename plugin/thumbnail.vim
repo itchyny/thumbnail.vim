@@ -3,8 +3,12 @@
 " Version: 0.4
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/08/20 16:07:44.
+" Last Change: 2013/08/23 14:30:22.
 " =============================================================================
+
+if exists('g:loaded_thumbnail') && g:loaded_thumbnail
+  finish
+endif
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -2063,6 +2067,8 @@ function! s:modulo(n, m)
   let d = a:n * a:m < 0 ? 1 : 0
   return a:n + (-(a:n + (0 < a:m ? d : -d)) / a:m + d) * a:m
 endfunction
+
+let g:loaded_thumbnail = 1
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
