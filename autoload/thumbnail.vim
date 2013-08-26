@@ -3,7 +3,7 @@
 " Version: 0.4
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/08/26 11:44:33.
+" Last Change: 2013/08/26 12:00:41.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -806,8 +806,8 @@ function! s:init(isnewbuffer)
   endif
 endfunction
 
-function! ThumbnailComplete(...)
-  return []
+function! ThumbnailComplete(findstart, base)
+  return a:findstart ? -1 : []
 endfunction
 
 function! s:update(...)
