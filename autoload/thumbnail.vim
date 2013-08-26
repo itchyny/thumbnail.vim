@@ -3,7 +3,7 @@
 " Version: 0.4
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/08/23 19:52:08.
+" Last Change: 2013/08/26 11:44:33.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -806,6 +806,10 @@ function! s:init(isnewbuffer)
   endif
 endfunction
 
+function! ThumbnailComplete(...)
+  return []
+endfunction
+
 function! s:update(...)
   if !exists('b:thumbnail') || len(b:thumbnail.bufs) == 0
         \ || has_key(b:thumbnail, 'no_update')
@@ -893,7 +897,7 @@ function! s:update(...)
   call s:cursor()
   setlocal nomodifiable buftype=nofile noswapfile readonly
         \ bufhidden=hide nobuflisted nofoldenable foldcolumn=0
-        \ nolist wrap nowrap completefunc= omnifunc=
+        \ nolist wrap nowrap completefunc=ThumbnailComplete omnifunc=
         \ nocursorcolumn nocursorline nonumber
   if exists('&concealcursor')
     setlocal concealcursor=nvic
