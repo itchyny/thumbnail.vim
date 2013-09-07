@@ -3,7 +3,7 @@
 " Version: 0.4
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/08/31 02:02:00.
+" Last Change: 2013/09/06 10:57:04.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -11,7 +11,9 @@ set cpo&vim
 
 function! thumbnail#new(args)
   let [isnewbuffer, command, thumbnail_ft] = s:parse(a:args)
-  try | silent execute command | catch | return | endtry
+  try | silent! execute command | catch | return | endtry
+  silent! noautocmd edit `='[thumbnail]'`
+  setl nobuflisted
   let b:thumbnail_ft = thumbnail_ft
   let b = {}
   let b.input = ''
