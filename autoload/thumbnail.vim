@@ -1,9 +1,9 @@
 " =============================================================================
 " Filename: autoload/thumbnail.vim
-" Version: 0.4
+" Version: 0.5
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/09/06 10:57:04.
+" Last Change: 2013/09/18 17:54:25.
 " =============================================================================
 
 let s:save_cpo = &cpo
