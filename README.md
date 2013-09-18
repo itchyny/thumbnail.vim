@@ -3,7 +3,7 @@
 
     :Thumbnail
 
-![thumbnail.vim](https://raw.github.com/itchyny/thumbnail.vim/master/image/image.png)
+![thumbnail.vim](https://raw.github.com/wiki/itchyny/thumbnail.vim/image/image.png)
 
 ## Concept
 The basic concept is graphical vim.
