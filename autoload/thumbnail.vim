@@ -3,7 +3,7 @@
 " Version: 0.5
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/09/18 17:54:25.
+" Last Change: 2013/10/03 14:33:37.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -19,7 +19,8 @@ function! thumbnail#new(args)
   let b.input = ''
   let b.bufs = s:gather()
   if len(b.bufs) == 0
-    if isnewbuffer | silent bdelete! | endif
+    if isnewbuffer | bdelete! | endif
+    enew
     return
   endif
   call s:arrangement(b)
