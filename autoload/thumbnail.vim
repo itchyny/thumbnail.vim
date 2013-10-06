@@ -3,7 +3,7 @@
 " Version: 0.5
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/10/06 05:00:17.
+" Last Change: 2013/10/06 09:08:52.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -12,7 +12,7 @@ set cpo&vim
 function! thumbnail#new(args)
   let [isnewbuffer, command, thumbnail_ft] = s:parse(a:args)
   try | silent! execute command | catch | return | endtry
-  silent! edit `='[thumbnail]'`
+  silent! edit `=s:buffername('thumbnail')`
   setl nobuflisted
   let b:thumbnail_ft = thumbnail_ft
   let b = {}
@@ -130,6 +130,19 @@ function! thumbnail#complete(arglead, cmdline, cursorpos)
   catch
     return s:options
   endtry
+endfunction
+
+function! s:buffername(name)
+  let buflist = []
+  for i in range(tabpagenr('$'))
+   call extend(buflist, tabpagebuflist(i + 1))
+  endfor
+  let matcher = 'bufname(v:val) =~# ("\\[" . a:name . "\\( \\d\\+\\)\\?\\]") && index(buflist, v:val) >= 0'
+  let substituter = 'substitute(bufname(v:val), ".*\\(\\d\\+\\).*", "\\1", "") + 0'
+  let bufs = map(filter(range(1, bufnr('$')), matcher), substituter)
+  let index = 0
+  while index(bufs, index) >= 0 | let index += 1 | endwhile
+  return '[' . a:name . (len(bufs) && index ? ' ' . index : '') . ']'
 endfunction
 
 function! s:au()
