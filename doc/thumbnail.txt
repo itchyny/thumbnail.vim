@@ -4,7 +4,7 @@ Version: 0.5
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
-Last Change: 2013/09/18 17:54:19.
+Last Change: 2013/10/11 04:56:36.
 
 CONTENTS					*thumbnail-contents*
 
@@ -531,6 +531,12 @@ Problem 10:					*thumbnail-problem-10*
 
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
+
+0.5	2013-10-06, 10-11
+	- Improve the syntax
+	- Remove noautocmd
+	- Improve the buffer's name
+	- Improve the buffer initialization
 
 0.4	2013-08-20, 08-23
 	- Check existence of &concealcursor.

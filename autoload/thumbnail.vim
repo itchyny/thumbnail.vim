@@ -3,7 +3,7 @@
 " Version: 0.5
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/10/06 09:08:52.
+" Last Change: 2013/10/11 04:53:58.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -11,9 +11,7 @@ set cpo&vim
 
 function! thumbnail#new(args)
   let [isnewbuffer, command, thumbnail_ft] = s:parse(a:args)
-  try | silent! execute command | catch | return | endtry
-  silent! edit `=s:buffername('thumbnail')`
-  setl nobuflisted
+  try | silent execute command | catch | return | endtry
   let b:thumbnail_ft = thumbnail_ft
   let b = {}
   let b.input = ''
@@ -35,8 +33,10 @@ endfunction
 function! s:parse(args)
   let args = split(a:args, '\s\+')
   let isnewbuffer = bufname('%') != '' || &modified
+  let name = " `=s:buffername('thumbnail')`"
   let command = 'tabnew'
   let below = ''
+  let addname = 1
   let thumbnail_ft = { 'include': [], 'exclude': [], 'specify': [] }
   for arg in args
     if arg =~? '^-*horizontal$'
@@ -46,9 +46,10 @@ function! s:parse(args)
       let command = 'vnew'
       let isnewbuffer = 1
     elseif arg =~? '^-*here$'
-      let command = 'try | enew | catch | tabnew | endtry'
+      let command = 'try | edit' . name . ' | catch | tabnew' . name . ' | endtry'
+      let addname = 0
     elseif arg =~? '^-*here!$'
-      let command = 'enew!'
+      let command = 'edit!'
     elseif arg =~? '^-*newtab$'
       let command = 'tabnew'
       let isnewbuffer = 1
@@ -74,7 +75,9 @@ function! s:parse(args)
       let thumbnail_ft.exclude = []
     endif
   endfor
-  let command = 'if isnewbuffer | ' . below . command . ' | endif'
+  let cmd1 = below . command . (addname ? name : '')
+  let cmd2 = 'edit' . name
+  let command = 'if isnewbuffer | ' . cmd1 . ' | else | ' . cmd2 . '| endif'
   return [isnewbuffer, command, thumbnail_ft]
 endfunction
 
@@ -181,6 +184,7 @@ endfunction
 let s:white = repeat(' ', winwidth(0))
 
 function! s:gather()
+  setl nobuflisted
   let bufs = []
   for i in range(1, bufnr('$'))
     let f = (len(bufname(i)) == 0 && (!bufexists(i) || !bufloaded(i)
