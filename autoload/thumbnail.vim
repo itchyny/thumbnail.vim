@@ -3,7 +3,7 @@
 " Version: 0.5
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/10/11 04:53:58.
+" Last Change: 2013/10/21 08:40:52.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -151,7 +151,7 @@ endfunction
 function! s:au()
   augroup ThumbnailAutoUpdate
     autocmd!
-    autocmd BufEnter,CursorHold,CursorHoldI,BufWritePost,VimResized *
+    autocmd BufEnter,CursorHold,CursorHoldI,BufWritePost,VimResized,ColorScheme *
           \ call s:update_visible_thumbnail(expand('<abuf>'))
   augroup END
   augroup ThumbnailBuffer
@@ -159,7 +159,9 @@ function! s:au()
           \   if exists('b:thumbnail')
           \ |   call s:cursor()
           \ | endif
-    autocmd BufEnter <buffer>
+    autocmd ColorScheme <buffer>
+          \ silent! call s:set_filetype()
+    autocmd BufEnter,ColorScheme <buffer>
           \   try
           \ |   call s:revive()
           \ |   if exists('b:thumbnail') && !b:thumbnail.visual_mode
@@ -1028,6 +1030,7 @@ function! s:update_visible_thumbnail(bufnr)
     let newbuf = bufwinnr(str2nr(a:bufnr))
     let currentbuf = bufwinnr(bufnr('%'))
     execute winnr 'wincmd w'
+    silent! call s:set_filetype()
     call s:init(0)
     if winnr != newbuf && newbuf != -1
       call cursor(1, 1)
@@ -1038,6 +1041,11 @@ function! s:update_visible_thumbnail(bufnr)
     endif
   catch
   endtry
+endfunction
+
+function! s:set_filetype()
+  setlocal filetype=
+  setlocal filetype=thumbnail
 endfunction
 
 function! s:update_current_thumbnail()
