@@ -4,7 +4,7 @@ Version: 0.5
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
-Last Change: 2013/10/21 08:43:23.
+Last Change: 2013/10/23 16:16:24.
 
 CONTENTS					*thumbnail-contents*
 
@@ -536,7 +536,6 @@ CHANGELOG					*thumbnail-changelog*
 	- Improve the syntax
 	- Remove noautocmd
 	- Improve the buffer's name
-	- Improve buffer initialization
 	- Improve buffer initialization
 	- Update colors on ColorScheme event
 
