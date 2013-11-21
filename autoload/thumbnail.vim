@@ -3,7 +3,7 @@
 " Version: 0.5
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/10/21 08:40:52.
+" Last Change: 2013/11/21 18:16:46.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -227,9 +227,11 @@ endfunction
 
 function! s:contents(b)
   for buf in a:b.bufs
-    let c = s:get(buf.bufnr, a:b.thumbnail_width, a:b.thumbnail_height)
+    let cnt = s:get(buf.bufnr, a:b.thumbnail_width, a:b.thumbnail_height)
+    let c = cnt.contents
     call extend(buf, {
-          \ 'contents': c,
+          \ 'name': cnt.name,
+          \ 'contents': cnt.contents,
           \ 'firstlinelength': len(c) ? len(c[0]) : a:b.thumbnail_width - 4
           \ })
   endfor
@@ -260,9 +262,10 @@ function! s:get(nr, width, height)
   endif
   call insert(lines, s:truncate_smart(name == '' ? '[No Name]' : name,
         \ a:width - 4, (a:width - 4) * 3 / 5, ' .. '))
-  return map(lines, 's:truncate(substitute(v:val,"\t","' .
+  return { 'contents': map(lines, 's:truncate(substitute(v:val,"\t","' .
         \ s:white[:getbufvar(a:nr, '&tabstop') - 1] .
-        \ '","g"),' . (a:width - 4) . ')')
+        \ '","g"),' . (a:width - 4) . ')'),
+        \ 'name': name }
 endfunction
 
 function! s:arrangement(b)
@@ -935,6 +938,7 @@ function! s:update(...)
   let line_white .= right_white
   let line_white_repeat = repeat([line_white], winheight(0))
   call extend(s, repeat([line_white], b.margin_top))
+  let b.status = ''
   for i in range(b.num_height)
     call extend(s, line_white_repeat[:b.offset_top - 1])
     for k in range(b.thumbnail_height)
@@ -950,6 +954,7 @@ function! s:update(...)
         if b.select_i == i && b.select_j == j
           let l = b.marker.left_select
           let r = b.marker.right_select
+          let b.status = b.bufs[m].name
         elseif b.visual_mode && index(b.visual_selects, m) != -1
           let l = b.marker.left_visual_select
           let r = b.marker.right_visual_select
@@ -1869,7 +1874,7 @@ function! s:update_filter()
     let b.bufs = white
     let input = substitute(input, '^ *', '', '')
     let padding = s:white[:
-          \ (winwidth(0) - max([s:wcswidth(input), winwidth(0) / 8])) 
+          \ (winwidth(0) - max([s:wcswidth(input), winwidth(0) / 8]))
           \ / 2 - 1]
     let input = padding . input
     let b.input = input
