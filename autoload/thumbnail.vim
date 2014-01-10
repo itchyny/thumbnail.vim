@@ -3,7 +3,7 @@
 " Version: 0.5
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/11/21 18:16:46.
+" Last Change: 2014/01/10 17:55:20.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -979,7 +979,7 @@ function! s:update(...)
   setlocal nomodifiable buftype=nofile noswapfile readonly
         \ bufhidden=hide nobuflisted nofoldenable foldcolumn=0
         \ nolist wrap nowrap completefunc=ThumbnailComplete omnifunc=
-        \ nocursorcolumn nocursorline nonumber
+        \ nocursorcolumn nocursorline nonumber nomodeline
   if exists('&concealcursor')
     setlocal concealcursor=nvic
   endif
