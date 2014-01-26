@@ -3,7 +3,7 @@
 " Version: 0.5
 " Author: itchyny
 " License: MIT License
-" Last Change: 2014/01/10 17:55:20.
+" Last Change: 2014/01/26 23:00:21.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -549,8 +549,8 @@ function! s:mapping()
         \ :<C-u>call <SID>drag_select(0)<CR>
   nnoremap <buffer><silent> <2-LeftMouse> <LeftMouse>
         \ :<C-u>call <SID>mouse_select()<CR>
-  map <buffer> <ScrollWheelUp> w
-  map <buffer> <ScrollWheelDown> b
+  map <buffer> <ScrollWheelUp> <Plug>(thumbnail_move_prev)
+  map <buffer> <ScrollWheelDown> <Plug>(thumbnail_move_next)
 
   let nop = 'cCoOpPrRsSuUz'
   for i in range(len(nop))
