@@ -15,7 +15,7 @@ This plugin is also inspired by Launchpad of Mac and unite.vim.
 itchyny (https://github.com/itchyny)
 
 ## License
-MIT License
+This software is released under the MIT License, see LICENSE.
 
 ## Installation
 ### Manually
