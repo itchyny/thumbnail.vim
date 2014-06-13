@@ -24,12 +24,12 @@ This software is released under the MIT License, see LICENSE.
 3. Put syntax/thumbnail.vim to $VIM/syntax/.
 4. Put doc/thumbnail.txt to $VIM/doc/.
 
-### Vundle (https://github.com/gmarik/vundle)
+### Vundle (https://github.com/gmarik/Vundle.vim)
 1. Add the following configuration to your .vimrc.
 
-        Bundle 'itchyny/thumbnail.vim'
+        Plugin 'itchyny/thumbnail.vim'
 
-2. Install with `:BundleInstall`.
+2. Install with `:PluginInstall`.
 
 ### NeoBundle (https://github.com/Shougo/neobundle.vim)
 1. Add the following configuration to your .vimrc.
