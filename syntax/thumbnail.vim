@@ -3,7 +3,7 @@
 " Version: 0.5
 " Author: itchyny
 " License: MIT License
-" Last Change: 2013/10/05 19:44:01.
+" Last Change: 2014/06/28 23:33:23.
 " =============================================================================
 
 if version < 700
@@ -143,6 +143,8 @@ highlight default link ThumbnailVisualMarker Ignore
 highlight default link ThumbnailMarker Ignore
 
 setlocal nocursorcolumn nocursorline
+
+unlet! s:gui_color s:term s:fg_color s:bg_color
 
 let b:current_syntax = 'thumbnail'
 
