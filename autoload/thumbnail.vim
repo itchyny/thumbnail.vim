@@ -3,7 +3,7 @@
 " Version: 0.5
 " Author: itchyny
 " License: MIT License
-" Last Change: 2014/01/26 23:00:21.
+" Last Change: 2014/07/24 00:45:59.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -723,7 +723,6 @@ function! s:help(b, s)
   endfor
   let keylist = []
   for i in range(len(s:nmapping_order))
-    let title = s:nmapping_order[i][0]
     call add(keylist, [])
     for j in range(1, len(s:nmapping_order[i]) - 1)
       for [name, description] in s:nmapping_order[i][j]
@@ -1509,7 +1508,6 @@ function! s:open_buffer_tabs(nrs)
   let bufnr = bufnr('%')
   let c = 0
   let bufs = []
-  let tabcount = tabpagenr('$')
   for i in range(tabpagenr('$'))
     call extend(bufs, tabpagebuflist(i + 1))
   endfor
