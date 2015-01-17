@@ -3,7 +3,7 @@
 " Version: 0.5
 " Author: itchyny
 " License: MIT License
-" Last Change: 2014/07/24 00:45:59.
+" Last Change: 2014/12/07 19:57:28.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -353,6 +353,9 @@ function! s:mapping()
     return
   endif
 
+  let save_cpo = &cpo
+  set cpo&vim
+
   nnoremap <buffer><silent> <Plug>(thumbnail_move_left)
         \ :<C-u>call <SID>move_left()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_move_right)
@@ -571,6 +574,8 @@ function! s:mapping()
   imap <buffer> <C-u> <Plug>(thumbnail_delete_backward_line)
   imap <buffer> <CR> <Plug>(thumbnail_select)
   imap <buffer> <ESC> <Plug>(thumbnail_exit_insert)
+
+  let &cpo = save_cpo
 
 endfunction
 
