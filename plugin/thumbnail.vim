@@ -1,9 +1,8 @@
 " =============================================================================
 " Filename: plugin/thumbnail.vim
-" Version: 0.5
 " Author: itchyny
 " License: MIT License
-" Last Change: 2014/12/14 14:19:25.
+" Last Change: 2015/01/17 13:40:47.
 " =============================================================================
 
 if exists('g:loaded_thumbnail') || v:version < 700
