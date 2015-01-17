@@ -2,7 +2,7 @@
 " Filename: syntax/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2015/01/17 13:40:43.
+" Last Change: 2015/01/17 19:56:58.
 " =============================================================================
 
 if version < 700
@@ -21,9 +21,6 @@ if has('conceal') && (!exists('b:thumbnail_conceal') || b:thumbnail_conceal)
   syntax match ThumbnailSelectMarker '\[|\||\]' contained conceal
   syntax match ThumbnailVisualMarker '\[\^\|\^\]' contained conceal
   syntax match ThumbnailMarker '\[\\\|\\\]' conceal
-  if exists('&conceallevel')
-    setlocal conceallevel=3
-  endif
   let b:thumbnail_conceal = 1
 else
   syntax match ThumbnailSelectMarker '\[|\||\]' contained
@@ -141,8 +138,6 @@ endif
 highlight default link ThumbnailSelectMarker Ignore
 highlight default link ThumbnailVisualMarker Ignore
 highlight default link ThumbnailMarker Ignore
-
-setlocal nocursorcolumn nocursorline
 
 unlet! s:gui_color s:term s:fg_color s:bg_color
 

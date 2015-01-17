@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2015/01/17 13:40:51.
+" Last Change: 2015/01/17 19:57:04.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -983,6 +983,9 @@ function! s:update(...)
         \ bufhidden=hide nobuflisted nofoldenable foldcolumn=0
         \ nolist wrap nowrap completefunc=ThumbnailComplete omnifunc=
         \ nocursorcolumn nocursorline nonumber nomodeline
+  if exists('&conceallevel')
+    setlocal conceallevel=3
+  endif
   if exists('&concealcursor')
     setlocal concealcursor=nvic
   endif
