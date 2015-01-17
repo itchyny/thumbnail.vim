@@ -3,7 +3,7 @@
 " Version: 0.5
 " Author: itchyny
 " License: MIT License
-" Last Change: 2014/12/07 19:51:34.
+" Last Change: 2015/01/17 13:38:55.
 " =============================================================================
 
 if version < 700
@@ -139,8 +139,6 @@ else
   exec 'highlight ThumbnailSelect term=none gui=none guibg=' . s:gen_color(s:fg_color, s:bg_color, 1, 2)
 endif
 
-" highlight ThumbnailSelect term=none cterm=none ctermbg=236 gui=none guibg=#2c2c2c
-" highlight ThumbnailVisual term=none cterm=none ctermbg=234 gui=none guibg=#1c1c1c
 highlight default link ThumbnailSelectMarker Ignore
 highlight default link ThumbnailVisualMarker Ignore
 highlight default link ThumbnailMarker Ignore
