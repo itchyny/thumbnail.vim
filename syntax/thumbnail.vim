@@ -3,7 +3,7 @@
 " Version: 0.5
 " Author: itchyny
 " License: MIT License
-" Last Change: 2014/06/28 23:33:23.
+" Last Change: 2014/12/07 19:51:34.
 " =============================================================================
 
 if version < 700
@@ -11,6 +11,9 @@ if version < 700
 elseif exists('b:current_syntax')
   finish
 endif
+
+let s:save_cpo = &cpo
+set cpo&vim
 
 syntax match ThumbnailSelect '\[|.\{-}|\]' contains=ThumbnailSelectMarker
 syntax match ThumbnailVisual '\[\^.\{-}\^\]' contains=ThumbnailVisualMarker
@@ -148,3 +151,5 @@ unlet! s:gui_color s:term s:fg_color s:bg_color
 
 let b:current_syntax = 'thumbnail'
 
+let &cpo = s:save_cpo
+unlet s:save_cpo
