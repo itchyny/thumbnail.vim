@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2015/01/17 19:57:04.
+" Last Change: 2015/01/24 15:18:27.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -988,6 +988,9 @@ function! s:update(...)
   endif
   if exists('&concealcursor')
     setlocal concealcursor=nvic
+  endif
+  if exists('&colorcolumn')
+    setlocal colorcolumn=
   endif
   if &l:filetype !=# 'thumbnail'
     let b:thumbnail_conceal = b.marker.conceal
