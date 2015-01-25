@@ -4,7 +4,7 @@ Version: 0.6
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
-Last Change: 2015/01/18 00:02:31.
+Last Change: 2015/01/25 09:12:48.
 
 CONTENTS					*thumbnail-contents*
 
@@ -531,6 +531,9 @@ Problem 10:					*thumbnail-problem-10*
 
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
+
+0.7	2014-01-25
+	- Clear colorcolumn
 
 0.6	2014-01-17, 01-18
 	- Save cpo and restore
