@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2015/01/24 15:18:27.
+" Last Change: 2015/01/25 09:15:43.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -31,7 +31,7 @@ endfunction
 
 function! s:parse(args)
   let args = split(a:args, '\s\+')
-  let isnewbuffer = bufname('%') != '' || &modified
+  let isnewbuffer = bufname('%') !=# '' || &modified
   let name = " `=s:buffername('thumbnail')`"
   let command = 'tabnew'
   let below = ''
@@ -53,7 +53,7 @@ function! s:parse(args)
       let command = 'tabnew'
       let isnewbuffer = 1
     elseif arg =~? '^-*below$'
-      if command == 'tabnew'
+      if command ==# 'tabnew'
         let command = 'new'
       endif
       let below = 'below '
@@ -91,7 +91,7 @@ let s:noconflict = [
 function! thumbnail#complete(arglead, cmdline, cursorpos)
   try
     let options = copy(s:options)
-    if a:arglead != ''
+    if a:arglead !=# ''
       let options = sort(filter(copy(s:options), 'stridx(v:val, a:arglead) != -1'))
       if len(options) == 0
         let arglead = substitute(a:arglead, '^-\+', '', '')
@@ -240,7 +240,7 @@ function! s:get(nr, width, height)
   let bufname =  bufname(a:nr)
   if bufloaded(a:nr) && bufexists(a:nr)
     let lines = getbufline(a:nr, 1, a:height - 1)
-  elseif bufname != '' && filereadable(bufname)
+  elseif bufname !=# '' && filereadable(bufname)
     let lines = readfile(bufname, '', a:height - 1)
   else
     let lines = []
@@ -259,7 +259,7 @@ function! s:get(nr, width, height)
     let lines = repeat([''], a:height / 2 - 2)
     call extend(lines, [repeat(' ', (a:width - 4) / 2 - 7) . '[Binary file]'])
   endif
-  call insert(lines, s:truncate_smart(name == '' ? '[No Name]' : name,
+  call insert(lines, s:truncate_smart(name ==# '' ? '[No Name]' : name,
         \ a:width - 4, (a:width - 4) * 3 / 5, ' .. '))
   return { 'contents': map(lines, 's:truncate(substitute(v:val,"\t","' .
         \ s:white[:getbufvar(a:nr, '&tabstop') - 1] .
@@ -628,7 +628,7 @@ let s:nmapping_order =
 
 function! s:compare(a, b)
   return len(a:a) == 1 ? -1 : len(a:b) == 1 ? 1 :
-        \ len(a:a) == len(a:b) ? (a:a =~ '^[a-z]\+$' ? -1 : 1) :
+        \ len(a:a) == len(a:b) ? (a:a =~# '^[a-z]\+$' ? -1 : 1) :
         \ a:a !~# '\S-' ? -1 : a:b !~# '\S-' ? 1 : len(a:a) > len(a:b) ? 1 : -1
 endfunction
 function! s:help(b, s)
@@ -636,14 +636,14 @@ function! s:help(b, s)
   silent! nmap
   redir END
   let nmappings = filter(map(filter(filter(split(copy(redir), '\n'),
-        \ 'v:val =~# "thumbnail"'), 'v:val !~ "nop"'),
+        \ 'v:val =~# "thumbnail"'), 'v:val !~# "nop"'),
         \ 'substitute(v:val, "\\(@<Plug>(thumbnail_\\|^n *\\|)$\\)", "", "g")'),
-        \ 'v:val !~ "^<Plug>(thumbnail"')
+        \ 'v:val !~# "^<Plug>(thumbnail"')
   let nmappings_alias = filter(map(filter(filter(split(copy(redir), '\n'),
         \ 'v:val =~# "^n\\s*\\S\\+\\s*@\\S\\+$"'),
-        \ 'v:val !~ "nop" && v:val != "thumbnail"'),
+        \ 'v:val !~# "nop" && v:val !=# "thumbnail"'),
         \ 'substitute(substitute(v:val, "\\(@<Plug>(thumbnail_\\|^n *\\)", "",'
-        \.'"g"), "@\\(\\S\\+\\)$", "\\1", "")'), 'v:val !~ "^<Plug>(thumbnail"')
+        \.'"g"), "@\\(\\S\\+\\)$", "\\1", "")'), 'v:val !~# "^<Plug>(thumbnail"')
   let nmap_dict = {}
   let nmap_dict_rev = {}
   let nmap_dict_alias = {}
@@ -673,14 +673,14 @@ function! s:help(b, s)
   silent! imap
   redir END
   let imappings = filter(map(filter(filter(split(iredir, '\n'),
-        \ 'v:val =~# "thumbnail"'), 'v:val !~ "nop"'),
+        \ 'v:val =~# "thumbnail"'), 'v:val !~# "nop"'),
         \ 'substitute(v:val, "\\(@<Plug>(thumbnail_\\|^i *\\|.$\\)", "", "g")'),
-        \ 'v:val !~ "^<Plug>(thumbnail"')
+        \ 'v:val !~# "^<Plug>(thumbnail"')
   let imappings_alias = filter(map(filter(filter(split(copy(iredir), '\n'),
         \ 'v:val =~# "^i\\s*\\S\\+\\s*@\\S\\+$"'),
-        \ 'v:val !~ "nop" && v:val !~ "thumbnail"'),
+        \ 'v:val !~# "nop" && v:val !~# "thumbnail"'),
         \ 'substitute(substitute(v:val, "\\(@<Plug>(thumbnail_\\|^i *\\)", "",'
-        \.'"g"), "@\\(\\S\\+\\)$", "\\1", "")'), 'v:val !~ "^<Plug>(thumbnail"')
+        \.'"g"), "@\\(\\S\\+\\)$", "\\1", "")'), 'v:val !~# "^<Plug>(thumbnail"')
   let imap_dict = {}
   let imap_dict_alias = {}
   for n in imappings
@@ -717,7 +717,7 @@ function! s:help(b, s)
     let new_value = []
     for v in value
       if index(new_value, v) == -1 &&
-            \ (v ==# tolower(v) && v != '/' || len(v) > 1
+            \ (v ==# tolower(v) && v !=# '/' || len(v) > 1
             \ || index(value, tolower(v)) == -1)
         call add(new_value, v)
       else
@@ -1578,7 +1578,7 @@ function! s:close_buffer(nr, multiple, type)
         return a:type
       endif
       let name = bufname(a:nr)
-      let message = printf('The buffer ' . (name == '' ? '[No Name]' : name)
+      let message = printf('The buffer ' . (name ==# '' ? '[No Name]' : name)
             \ . ' is modified. Force to delete the buffer? [yes/no/edit%s] ',
             \ (a:multiple ? '/Yes for all/No for all' : ''))
       let yesno = input(message)
@@ -1586,7 +1586,7 @@ function! s:close_buffer(nr, multiple, type)
             \ (a:multiple ? '\|Y\%[es for all]\|N\%[o for all]' : ''))
       while yesno !~# matcher
         redraw
-        if yesno == ''
+        if yesno ==# ''
           echo 'Canceled.'
           return
           break
@@ -1861,7 +1861,7 @@ function! s:update_filter()
       let f = 0
       for w in words
         let name = bufname(bufs[i].bufnr)
-        let name = name == '' ? '[No Name]' : name
+        let name = name ==# '' ? '[No Name]' : name
         try
           if name !~? w | let f = 1 | endif
         catch
