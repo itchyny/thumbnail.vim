@@ -4,7 +4,7 @@ Version: 0.7
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
-Last Change: 2015/02/02 08:06:08.
+Last Change: 2015/02/02 08:06:59.
 
 CONTENTS					*thumbnail-contents*
 
@@ -534,7 +534,7 @@ CHANGELOG					*thumbnail-changelog*
 
 0.7	2014-01-25
 	- Clear colorcolumn
-	- Clear colorcolumn
+	- replace ==/!~ with ==#/!~#
 
 0.6	2014-01-17, 01-18
 	- Save cpo and restore
