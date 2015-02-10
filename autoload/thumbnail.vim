@@ -2,13 +2,13 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2015/01/25 09:15:43.
+" Last Change: 2015/02/02 08:08:39.
 " =============================================================================
 
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! thumbnail#new(args)
+function! thumbnail#new(args) abort
   let [isnewbuffer, command, thumbnail_ft] = s:parse(a:args)
   try | silent execute command | catch | return | endtry
   let b:thumbnail_ft = thumbnail_ft
@@ -29,7 +29,7 @@ function! thumbnail#new(args)
   call s:au()
 endfunction
 
-function! s:parse(args)
+function! s:parse(args) abort
   let args = split(a:args, '\s\+')
   let isnewbuffer = bufname('%') !=# '' || &modified
   let name = " `=s:buffername('thumbnail')`"
@@ -88,7 +88,7 @@ let s:noconflict = [
       \ [ '-newtab', '-below' ],
       \ ]
 
-function! thumbnail#complete(arglead, cmdline, cursorpos)
+function! thumbnail#complete(arglead, cmdline, cursorpos) abort
   try
     let options = copy(s:options)
     if a:arglead !=# ''
@@ -134,7 +134,7 @@ function! thumbnail#complete(arglead, cmdline, cursorpos)
   endtry
 endfunction
 
-function! s:buffername(name)
+function! s:buffername(name) abort
   let buflist = []
   for i in range(tabpagenr('$'))
    call extend(buflist, tabpagebuflist(i + 1))
@@ -147,7 +147,7 @@ function! s:buffername(name)
   return '[' . a:name . (len(bufs) && index ? ' ' . index : '') . ']'
 endfunction
 
-function! s:au()
+function! s:au() abort
   augroup ThumbnailAutoUpdate
     autocmd!
     autocmd BufEnter,CursorHold,CursorHoldI,BufWritePost,VimResized,ColorScheme *
@@ -184,7 +184,7 @@ endfunction
 
 let s:white = repeat(' ', winwidth(0))
 
-function! s:gather()
+function! s:gather() abort
   setl nobuflisted
   let bufs = []
   for i in range(1, bufnr('$'))
@@ -219,12 +219,12 @@ function! s:gather()
   return bufs
 endfunction
 
-function! s:redraw(s)
+function! s:redraw(s) abort
   silent % delete _
   call setline(1, a:s)
 endfunction
 
-function! s:contents(b)
+function! s:contents(b) abort
   for buf in a:b.bufs
     let cnt = s:get(buf.bufnr, a:b.thumbnail_width, a:b.thumbnail_height)
     let c = cnt.contents
@@ -236,7 +236,7 @@ function! s:contents(b)
   endfor
 endfunction
 
-function! s:get(nr, width, height)
+function! s:get(nr, width, height) abort
   let bufname =  bufname(a:nr)
   if bufloaded(a:nr) && bufexists(a:nr)
     let lines = getbufline(a:nr, 1, a:height - 1)
@@ -267,7 +267,7 @@ function! s:get(nr, width, height)
         \ 'name': name }
 endfunction
 
-function! s:arrangement(b)
+function! s:arrangement(b) abort
   let b = a:b
   let l = len(b.bufs)
   if l == 0 | return | endif
@@ -319,7 +319,7 @@ function! s:arrangement(b)
   return b
 endfunction
 
-function! s:marker(b)
+function! s:marker(b) abort
   let b = {}
   if exists('b:thumbnail_conceal') && b:thumbnail_conceal ||
         \ !exists('b:thumbnail_conceal') && has('conceal')
@@ -346,7 +346,7 @@ function! s:marker(b)
   return b
 endfunction
 
-function! s:mapping()
+function! s:mapping() abort
 
   if &l:filetype ==# 'thumbnail'
     return
@@ -626,12 +626,12 @@ let s:nmapping_order =
       \     , [ 'i_exit_insert', 'Exit the insert mode' ]
       \     , [ 'i_select', 'Open the selected buffer' ] ] ] ]
 
-function! s:compare(a, b)
+function! s:compare(a, b) abort
   return len(a:a) == 1 ? -1 : len(a:b) == 1 ? 1 :
         \ len(a:a) == len(a:b) ? (a:a =~# '^[a-z]\+$' ? -1 : 1) :
         \ a:a !~# '\S-' ? -1 : a:b !~# '\S-' ? 1 : len(a:a) > len(a:b) ? 1 : -1
 endfunction
-function! s:help(b, s)
+function! s:help(b, s) abort
   redir => redir
   silent! nmap
   redir END
@@ -799,7 +799,7 @@ function! s:help(b, s)
   endfor
 endfunction
 
-function! s:unsave(b, ...)
+function! s:unsave(b, ...) abort
   if !exists('b:thumbnail')
     return a:b
   endif
@@ -868,7 +868,7 @@ function! s:unsave(b, ...)
   return a:b
 endfunction
 
-function! s:init(isnewbuffer)
+function! s:init(isnewbuffer) abort
   let b = {}
   let b.input = ''
   let b.bufs = s:gather()
@@ -888,11 +888,11 @@ function! s:init(isnewbuffer)
   endif
 endfunction
 
-function! ThumbnailComplete(findstart, base)
+function! ThumbnailComplete(findstart, base) abort
   return a:findstart ? -1 : []
 endfunction
 
-function! s:update(...)
+function! s:update(...) abort
   if !exists('b:thumbnail') || len(b:thumbnail.bufs) == 0
         \ || has_key(b:thumbnail, 'no_update')
     return
@@ -1003,7 +1003,7 @@ function! s:update(...)
   endif
 endfunction
 
-function! s:cursor()
+function! s:cursor() abort
   try
     let b = b:thumbnail
     let offset = 0
@@ -1026,7 +1026,7 @@ function! s:cursor()
   endtry
 endfunction
 
-function! s:update_visible_thumbnail(bufnr)
+function! s:update_visible_thumbnail(bufnr) abort
   try
     let nr = -1
     let newnr = str2nr(a:bufnr)
@@ -1057,12 +1057,12 @@ function! s:update_visible_thumbnail(bufnr)
   endtry
 endfunction
 
-function! s:set_filetype()
+function! s:set_filetype() abort
   setlocal filetype=
   setlocal filetype=thumbnail
 endfunction
 
-function! s:update_current_thumbnail()
+function! s:update_current_thumbnail() abort
   try
     call s:init(1)
   catch
@@ -1071,7 +1071,7 @@ function! s:update_current_thumbnail()
   endtry
 endfunction
 
-function! s:move_left()
+function! s:move_left() abort
   try
     let b = b:thumbnail
     let new_j = max([b.select_j - max([v:count, b.v_count, 1]), 0])
@@ -1088,7 +1088,7 @@ function! s:move_left()
   endtry
 endfunction
 
-function! s:move_right()
+function! s:move_right() abort
   try
     let b = b:thumbnail
     let new_j = min([b.select_j + max([v:count, b.v_count, 1]),
@@ -1106,7 +1106,7 @@ function! s:move_right()
   endtry
 endfunction
 
-function! s:move_up()
+function! s:move_up() abort
   try
     let b = b:thumbnail
     let new_i = max([b.select_i - max([v:count, b.v_count, 1]), 0])
@@ -1121,7 +1121,7 @@ function! s:move_up()
   endtry
 endfunction
 
-function! s:move_down(...)
+function! s:move_down(...) abort
   try
     let b = b:thumbnail
     let d = get(a:000, 0)
@@ -1141,7 +1141,7 @@ function! s:move_down(...)
   endtry
 endfunction
 
-function! s:move_next()
+function! s:move_next() abort
   try
     let b = b:thumbnail
     let index = b.select_i * b.num_width + b.select_j
@@ -1160,7 +1160,7 @@ function! s:move_next()
   endtry
 endfunction
 
-function! s:move_prev()
+function! s:move_prev() abort
   try
     let b = b:thumbnail
     let index = b.select_i * b.num_width + b.select_j
@@ -1179,7 +1179,7 @@ function! s:move_prev()
   endtry
 endfunction
 
-function! s:move_line_head()
+function! s:move_line_head() abort
   try
     let b = b:thumbnail
     if s:thumbnail_exists(b.select_i, 0)
@@ -1195,7 +1195,7 @@ function! s:move_line_head()
   endtry
 endfunction
 
-function! s:move_line_last()
+function! s:move_line_last() abort
   try
     let b = b:thumbnail
     if s:thumbnail_exists(b.select_i, b.num_width - 1)
@@ -1217,7 +1217,7 @@ function! s:move_line_last()
   endtry
 endfunction
 
-function! s:move_line_middle()
+function! s:move_line_middle() abort
   try
     let b = b:thumbnail
     if s:thumbnail_exists(b.select_i, b.num_width / 2)
@@ -1237,7 +1237,7 @@ function! s:move_line_middle()
   endtry
 endfunction
 
-function! s:move_head()
+function! s:move_head() abort
   try
     let b = b:thumbnail
     if s:thumbnail_exists(0, 0)
@@ -1252,7 +1252,7 @@ function! s:move_head()
   endtry
 endfunction
 
-function! s:move_last()
+function! s:move_last() abort
   try
     let b = b:thumbnail
     if s:thumbnail_exists(b.num_height - 1,
@@ -1268,12 +1268,12 @@ function! s:move_last()
   endtry
 endfunction
 
-function! s:move_count_line_last_last()
+function! s:move_count_line_last_last() abort
   silent call s:move_count_line_last()
   silent call s:move_line_last()
 endfunction
 
-function! s:move_last_line()
+function! s:move_last_line() abort
   try
     let b = b:thumbnail
     if s:thumbnail_exists(b.num_height - 1, 0)
@@ -1288,7 +1288,7 @@ function! s:move_last_line()
   endtry
 endfunction
 
-function! s:move_count_line_first()
+function! s:move_count_line_first() abort
   try
     let b = b:thumbnail
     let new_i = v:count || b.v_count
@@ -1306,7 +1306,7 @@ function! s:move_count_line_first()
   endtry
 endfunction
 
-function! s:move_count_line_last()
+function! s:move_count_line_last() abort
   try
     let b = b:thumbnail
     let new_i = v:count || b.v_count
@@ -1324,7 +1324,7 @@ function! s:move_count_line_last()
   endtry
 endfunction
 
-function! s:move_column()
+function! s:move_column() abort
   try
     let b = b:thumbnail
     let new_j = min([max([v:count, b.v_count, 1]) - 1,
@@ -1342,7 +1342,7 @@ function! s:move_column()
   endtry
 endfunction
 
-function! s:thumbnail_exists(i, j)
+function! s:thumbnail_exists(i, j) abort
   try
     let b = b:thumbnail
     let k = a:i * b.num_width + a:j
@@ -1354,7 +1354,7 @@ function! s:thumbnail_exists(i, j)
   endtry
 endfunction
 
-function! s:nearest_ij()
+function! s:nearest_ij() abort
   try
     let b = b:thumbnail
     let i = (line('.') - b.offset_top / 2 - 1)
@@ -1396,7 +1396,7 @@ function! s:nearest_ij()
   endtry
 endfunction
 
-function! s:update_select(savepos)
+function! s:update_select(savepos) abort
   try
     let b = b:thumbnail
     let ij = s:nearest_ij()
@@ -1420,7 +1420,7 @@ function! s:update_select(savepos)
   return -1
 endfunction
 
-function! s:drag_select(while)
+function! s:drag_select(while) abort
   try
     let b = b:thumbnail
     let ij = s:nearest_ij()
@@ -1455,14 +1455,14 @@ function! s:drag_select(while)
   return -1
 endfunction
 
-function! s:mouse_select()
+function! s:mouse_select() abort
   let r = s:update_select(0)
   if r == 0
     silent call s:select()
   endif
 endfunction
 
-function! s:cursor_moved()
+function! s:cursor_moved() abort
   try
     let b = b:thumbnail
     let [n, l, c, o] = getpos('.')
@@ -1490,7 +1490,7 @@ function! s:cursor_moved()
   endtry
 endfunction
 
-function! s:open_buffer(nr)
+function! s:open_buffer(nr) abort
   let bufnr = bufnr('%')
   if bufloaded(a:nr)
     if bufwinnr(a:nr) != -1
@@ -1514,7 +1514,7 @@ function! s:open_buffer(nr)
   endif
 endfunction
 
-function! s:open_buffer_tabs(nrs)
+function! s:open_buffer_tabs(nrs) abort
   let bufnr = bufnr('%')
   let c = 0
   let bufs = []
@@ -1535,7 +1535,7 @@ function! s:open_buffer_tabs(nrs)
   endif
 endfunction
 
-function! s:select(...)
+function! s:select(...) abort
   try
     if !exists('b:thumbnail')
       let prev_first_line = substitute(getline(line('.'))[col('.') - 1:],
@@ -1568,7 +1568,7 @@ function! s:select(...)
   endtry
 endfunction
 
-function! s:close_buffer(nr, multiple, type)
+function! s:close_buffer(nr, multiple, type) abort
   try
     if getbufvar(a:nr, '&modified')
       if a:type == 3
@@ -1617,7 +1617,7 @@ function! s:close_buffer(nr, multiple, type)
   endtry
 endfunction
 
-function! s:close(direction)
+function! s:close(direction) abort
   try
     if !exists('b:thumbnail')
       return 0
@@ -1684,7 +1684,7 @@ function! s:close(direction)
   endtry
 endfunction
 
-function! s:toggle_help()
+function! s:toggle_help() abort
   try
     let b:thumbnail.help_mode = !b:thumbnail.help_mode
     call s:update()
@@ -1695,7 +1695,7 @@ function! s:toggle_help()
   endtry
 endfunction
 
-function! s:start_visual(mode)
+function! s:start_visual(mode) abort
   try
     let b = b:thumbnail
     if b.visual_mode && a:mode == 4
@@ -1736,7 +1736,7 @@ function! s:start_visual(mode)
   endtry
 endfunction
 
-function! s:delete_to_end()
+function! s:delete_to_end() abort
   try
     let b = b:thumbnail
     if b.visual_mode && b.visual_mode != 4
@@ -1773,7 +1773,7 @@ function! s:delete_to_end()
   endtry
 endfunction
 
-function! s:exit_visual()
+function! s:exit_visual() abort
   try
     let b = b:thumbnail
     let b.visual_mode = 0
@@ -1784,7 +1784,7 @@ function! s:exit_visual()
   endtry
 endfunction
 
-function! s:update_visual_selects()
+function! s:update_visual_selects() abort
   try
     let b = b:thumbnail
     if b.visual_mode
@@ -1829,7 +1829,7 @@ function! s:update_visual_selects()
   endtry
 endfunction
 
-function! s:start_insert(col)
+function! s:start_insert(col) abort
   try
     let b = b:thumbnail
     let b.insert_mode = 1
@@ -1849,7 +1849,7 @@ function! s:start_insert(col)
   endtry
 endfunction
 
-function! s:update_filter()
+function! s:update_filter() abort
   try
     let b = b:thumbnail
     let pos = b.insert_pos
@@ -1927,7 +1927,7 @@ function! s:update_filter()
   endtry
 endfunction
 
-function! s:exit_insert()
+function! s:exit_insert() abort
   try
     let b = b:thumbnail
     let b.insert_mode = 0
@@ -1939,7 +1939,7 @@ function! s:exit_insert()
   endtry
 endfunction
 
-function! s:revive()
+function! s:revive() abort
   let b = {}
   let b.input = ''
   let b.bufs = s:gather()
@@ -1964,14 +1964,14 @@ function! s:revive()
   endif
 endfunction
 
-function! s:update_off()
+function! s:update_off() abort
   try
     let b:thumbnail.no_update = 1
   catch
   endtry
 endfunction
 
-function! s:update_on()
+function! s:update_on() abort
   try
     unlet b:thumbnail.no_update
   catch
@@ -1980,7 +1980,7 @@ endfunction
 
 " The following codes were imported from vital.vim
 " https://github.com/vim-jp/vital.vim (Public Domain)
-function! s:truncate(str, width)
+function! s:truncate(str, width) abort
   " Original function is from mattn.
   " http://github.com/mattn/googlereader-vim/tree/master
 
@@ -2003,7 +2003,7 @@ function! s:truncate(str, width)
   return ret
 endfunction
 
-function! s:truncate_smart(str, max, footer_width, separator)
+function! s:truncate_smart(str, max, footer_width, separator) abort
   let width = s:wcswidth(a:str)
   if width <= a:max
     let ret = a:str
@@ -2016,7 +2016,7 @@ function! s:truncate_smart(str, max, footer_width, separator)
   return s:truncate(ret, a:max)
 endfunction
 
-function! s:strwidthpart(str, width)
+function! s:strwidthpart(str, width) abort
   if a:width <= 0
     return ''
   endif
@@ -2031,7 +2031,7 @@ function! s:strwidthpart(str, width)
   return ret
 endfunction
 
-function! s:strwidthpart_reverse(str, width)
+function! s:strwidthpart_reverse(str, width) abort
   if a:width <= 0
     return ''
   endif
@@ -2048,11 +2048,11 @@ endfunction
 
 if exists('*strdisplaywidth')
   " Use builtin function.
-  function! s:wcswidth(str)
+  function! s:wcswidth(str) abort
     return strdisplaywidth(a:str)
   endfunction
 else
-  function! s:wcswidth(str)
+  function! s:wcswidth(str) abort
     if a:str =~# '^[\x00-\x7f]*$'
       return 2 * strlen(a:str)
             \ - strlen(substitute(a:str, '[\x00-\x08\x0b-\x1f\x7f]', '', 'g'))
@@ -2073,7 +2073,7 @@ else
   endfunction
 
   " UTF-8 only.
-  function! s:_wcwidth(ucs)
+  function! s:_wcwidth(ucs) abort
     let ucs = a:ucs
     if ucs > 0x7f && ucs <= 0xff
       return 4
@@ -2101,7 +2101,7 @@ else
   endfunction
 endif
 
-function! s:modulo(n, m)
+function! s:modulo(n, m) abort
   let d = a:n * a:m < 0 ? 1 : 0
   return a:n + (-(a:n + (0 < a:m ? d : -d)) / a:m + d) * a:m
 endfunction

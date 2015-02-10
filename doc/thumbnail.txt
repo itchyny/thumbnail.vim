@@ -4,7 +4,7 @@ Version: 0.7
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
-Last Change: 2015/02/02 08:06:59.
+Last Change: 2015/02/10 13:49:22.
 
 CONTENTS					*thumbnail-contents*
 
@@ -532,9 +532,10 @@ Problem 10:					*thumbnail-problem-10*
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
 
-0.7	2014-01-25
+0.7	2014-01-25, 02-02, 02-10
 	- Clear colorcolumn
-	- replace ==/!~ with ==#/!~#
+	- Replace ==/!~ with ==#/!~#
+	- Use abort argument for :function
 
 0.6	2014-01-17, 01-18
 	- Save cpo and restore
