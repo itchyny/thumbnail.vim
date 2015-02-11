@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2015/02/10 13:54:02.
+" Last Change: 2015/02/11 12:02:55.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -531,7 +531,11 @@ function! s:mapping() abort
   nmap <buffer> v <Plug>(thumbnail_start_visual)
   nmap <buffer> V <Plug>(thumbnail_start_line_visual)
   nmap <buffer> <C-v> <Plug>(thumbnail_start_block_visual)
-  nmap <buffer> <ESC> <Plug>(thumbnail_exit_visual)
+  if v:version > 703
+    nmap <buffer><nowait> <ESC> <Plug>(thumbnail_exit_visual)
+  else
+    nmap <buffer> <ESC> <Plug>(thumbnail_exit_visual)
+  endif
   nmap <buffer> d <Plug>(thumbnail_start_delete)
   nmap <buffer> x <Plug>(thumbnail_delete)
   nmap <buffer> <Del> x
