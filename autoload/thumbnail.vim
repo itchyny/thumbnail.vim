@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2015/02/11 12:02:55.
+" Last Change: 2015/03/10 00:36:29.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -968,6 +968,9 @@ function! s:update(...) abort
         else
           let l = b.marker.left
           let r = b.marker.right
+        endif
+        if has('conceal')
+          let contents = substitute(contents, '\[\zs\ze[|^\\]\|[|^\\]\zs\ze\]', '\t', 'g')
         endif
         let ss .= offset_white . l . contents . r
       endfor

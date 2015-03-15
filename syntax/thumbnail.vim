@@ -2,7 +2,7 @@
 " Filename: syntax/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2015/01/25 09:15:53.
+" Last Change: 2015/03/10 00:34:09.
 " =============================================================================
 
 if version < 700
@@ -14,8 +14,8 @@ endif
 let s:save_cpo = &cpo
 set cpo&vim
 
-syntax match ThumbnailSelect '\[|.\{-}|\]' contains=ThumbnailSelectMarker
-syntax match ThumbnailVisual '\[\^.\{-}\^\]' contains=ThumbnailVisualMarker
+syntax match ThumbnailSelect '\[|.\{-}|\]' contains=ThumbnailSelectMarker,ThumbnailTab
+syntax match ThumbnailVisual '\[\^.\{-}\^\]' contains=ThumbnailVisualMarker,ThumbnailTab
 
 if has('conceal') && (!exists('b:thumbnail_conceal') || b:thumbnail_conceal)
   syntax match ThumbnailSelectMarker '\[|\||\]' contained conceal
@@ -26,6 +26,11 @@ else
   syntax match ThumbnailSelectMarker '\[|\||\]' contained
   syntax match ThumbnailVisualMarker '\[\^\|\^\]' contained
   syntax match ThumbnailMarker '\[\\\|\\\]'
+endif
+if has('conceal')
+  syntax match ThumbnailTab '\t' conceal
+else
+  syntax match ThumbnailTab '\t'
 endif
 
 let s:gui_color = {
@@ -138,6 +143,7 @@ endif
 highlight default link ThumbnailSelectMarker Ignore
 highlight default link ThumbnailVisualMarker Ignore
 highlight default link ThumbnailMarker Ignore
+highlight default link ThumbnailTab Ignore
 
 unlet! s:gui_color s:term s:fg_color s:bg_color
 
