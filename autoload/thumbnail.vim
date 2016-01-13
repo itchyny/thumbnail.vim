@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2015/03/10 00:36:29.
+" Last Change: 2016/01/14 08:55:11.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -1427,7 +1427,6 @@ function! s:update_select(savepos) abort
   catch
     return -1
   endtry
-  return -1
 endfunction
 
 function! s:drag_select(while) abort
@@ -1462,7 +1461,6 @@ function! s:drag_select(while) abort
   catch
     return -1
   endtry
-  return -1
 endfunction
 
 function! s:mouse_select() abort
@@ -1599,7 +1597,6 @@ function! s:close_buffer(nr, multiple, type) abort
         if yesno ==# ''
           echo 'Canceled.'
           return
-          break
         endif
         echohl WarningMsg | echomsg 'Invalid input.' | echohl None
         let yesno = input(message)
