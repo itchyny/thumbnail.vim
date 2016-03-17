@@ -2,7 +2,7 @@
 " Filename: syntax/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2015/03/10 00:34:09.
+" Last Change: 2016/03/16 01:14:13.
 " =============================================================================
 
 if version < 700
@@ -111,8 +111,8 @@ if s:term ==# 'cterm'
     endif
   endfunction
   function! s:gen_color(fg, bg, weightfg, weightbg)
-    let fg = a:fg < 0 ? (&bg ==# 'light' ?  232 : 255) : a:fg
-    let bg = a:bg < 0 ? (&bg ==# 'light' ?  255 : 232) : a:bg
+    let fg = a:fg < 0 || a:fg ==# '' ? (&bg ==# 'light' ?  232 : 255) : a:fg
+    let bg = a:bg < 0 || a:bg ==# '' ? (&bg ==# 'light' ?  255 : 232) : a:bg
     let fg_rgb = s:rgb(fg)
     let bg_rgb = s:rgb(bg)
     if fg > 231 && bg > 231
