@@ -1,10 +1,10 @@
 *thumbnail.txt*	A thumbnail buffer selector for Vim
 
-Version: 0.7
+Version: 0.8
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
-Last Change: 2015/03/15 12:41:57.
+Last Change: 2016/09/06 08:59:39.
 
 CONTENTS					*thumbnail-contents*
 
@@ -531,6 +531,10 @@ Problem 10:					*thumbnail-problem-10*
 
 ==============================================================================
 CHANGELOG					*thumbnail-changelog*
+
+0.8	2016-01-14, 02-16, 03-17
+	- Refactoring
+	- Fix s:gen_color
 
 0.7	2014-01-25, 02-02, 02-10, 02-11, 2015-03-15
 	- Clear colorcolumn
