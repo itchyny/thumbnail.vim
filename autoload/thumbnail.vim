@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/01/14 08:55:11.
+" Last Change: 2016/09/07 05:18:28.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -259,9 +259,9 @@ function! s:get(nr, width, height) abort
     let lines = repeat([''], a:height / 2 - 2)
     call extend(lines, [repeat(' ', (a:width - 4) / 2 - 7) . '[Binary file]'])
   endif
-  call insert(lines, s:truncate_smart(name ==# '' ? '[No Name]' : name,
+  call insert(lines, thumbnail#string#truncate_smart(name ==# '' ? '[No Name]' : name,
         \ a:width - 4, (a:width - 4) * 3 / 5, ' .. '))
-  return { 'contents': map(lines, 's:truncate(substitute(v:val,"\t","' .
+  return { 'contents': map(lines, 'thumbnail#string#truncate(substitute(v:val,"\t","' .
         \ s:white[:getbufvar(a:nr, '&tabstop') - 1] .
         \ '","g"),' . (a:width - 4) . ')'),
         \ 'name': name }
@@ -743,11 +743,11 @@ function! s:help(b, s) abort
   endfor
   let indent = '  '
   let len = max([max(map(copy(keylist[0]), 'len(v:val)')), 21])
-  let m = [s:truncate(s:nmapping_order[0][0], len + len(indent))]
+  let m = [thumbnail#string#truncate(s:nmapping_order[0][0], len + len(indent))]
   let prev_len = len + len(indent)
   let prev_len_white = s:white[:prev_len - 1]
   let prev_len_white = repeat(' ', prev_len)
-  call extend(m, map(keylist[0], 'indent . s:truncate(v:val, len)'))
+  call extend(m, map(keylist[0], 'indent . thumbnail#string#truncate(v:val, len)'))
   let len = 0
   for i in range(1, 3)
     let len = max([max([len, max(map(copy(keylist[i]), 'len(v:val)'))]), 21])
@@ -759,14 +759,13 @@ function! s:help(b, s) abort
     if j >= len(m)
       call add(m, prev_len_white)
     endif
-    let m[j] .= separator .
-          \ s:truncate(s:nmapping_order[i][0], len + len(indent))
+    let m[j] .= separator . thumbnail#string#truncate(s:nmapping_order[i][0], len + len(indent))
     for k in keylist[i]
       let j = j + 1
       if j >= len(m)
         call add(m, prev_len_white)
       endif
-      let m[j] .= separator . indent . s:truncate(k, len)
+      let m[j] .= separator . indent . thumbnail#string#truncate(k, len)
     endfor
     let j = j + 1
     if j >= len(m)
@@ -776,15 +775,14 @@ function! s:help(b, s) abort
   endfor
   let prev_len = len(m[0])
   let j = 0
-  let m[j] .= separator .
-        \ s:truncate(s:nmapping_order[4][0], len + len(indent))
+  let m[j] .= separator . thumbnail#string#truncate(s:nmapping_order[4][0], len + len(indent))
   let len = max([max([len, max(map(copy(keylist[4]), 'len(v:val)'))]), 21])
   for k in keylist[4]
     let j = j + 1
     if j >= len(m) && prev_len > 1
       call add(m, s:white[:prev_len - 1])
     endif
-    let m[j] .= separator . indent . s:truncate(k, len)
+    let m[j] .= separator . indent . thumbnail#string#truncate(k, len)
   endfor
   if a:b.width - len(m[0]) > 1
     let sp = s:white[:(a:b.width - len(m[0])) / 2 - 1]
@@ -799,7 +797,7 @@ function! s:help(b, s) abort
     if len(a:s) <= i + (len(a:s) - len(m)) / 2
       break
     endif
-    let a:s[i + (len(a:s) - len(m)) / 2] = s:truncate(m[i], a:b.width)
+    let a:s[i + (len(a:s) - len(m)) / 2] = thumbnail#string#truncate(m[i], a:b.width)
   endfor
 endfunction
 
@@ -1889,7 +1887,7 @@ function! s:update_filter() abort
     let b.bufs = white
     let input = substitute(input, '^ *', '', '')
     let padding = s:white[:
-          \ (winwidth(0) - max([s:wcswidth(input), winwidth(0) / 8]))
+          \ (winwidth(0) - max([thumbnail#string#strdisplaywidth(input), winwidth(0) / 8]))
           \ / 2 - 1]
     let input = padding . input
     let b.input = input
@@ -1984,129 +1982,6 @@ function! s:update_on() abort
   catch
   endtry
 endfunction
-
-" The following codes were imported from vital.vim
-" https://github.com/vim-jp/vital.vim (Public Domain)
-function! s:truncate(str, width) abort
-  " Original function is from mattn.
-  " http://github.com/mattn/googlereader-vim/tree/master
-
-  if a:str =~# '^[\x20-\x7e]*$'
-    return len(a:str) < a:width ?
-          \ printf('%-'.a:width.'s', a:str) : strpart(a:str, 0, a:width)
-  endif
-
-  let ret = a:str
-  let width = s:wcswidth(a:str)
-  if width > a:width
-    let ret = s:strwidthpart(ret, a:width)
-    let width = s:wcswidth(ret)
-  endif
-
-  if width < a:width
-    let ret .= repeat(' ', a:width - width)
-  endif
-
-  return ret
-endfunction
-
-function! s:truncate_smart(str, max, footer_width, separator) abort
-  let width = s:wcswidth(a:str)
-  if width <= a:max
-    let ret = a:str
-  else
-    let header_width = a:max - s:wcswidth(a:separator) - a:footer_width
-    let ret = s:strwidthpart(a:str, header_width) . a:separator
-          \ . s:strwidthpart_reverse(a:str, a:footer_width)
-  endif
-
-  return s:truncate(ret, a:max)
-endfunction
-
-function! s:strwidthpart(str, width) abort
-  if a:width <= 0
-    return ''
-  endif
-  let ret = a:str
-  let width = s:wcswidth(a:str)
-  while width > a:width
-    let char = matchstr(ret, '.$')
-    let ret = ret[: -1 - len(char)]
-    let width -= s:wcswidth(char)
-  endwhile
-
-  return ret
-endfunction
-
-function! s:strwidthpart_reverse(str, width) abort
-  if a:width <= 0
-    return ''
-  endif
-  let ret = a:str
-  let width = s:wcswidth(a:str)
-  while width > a:width
-    let char = matchstr(ret, '^.')
-    let ret = ret[len(char) :]
-    let width -= s:wcswidth(char)
-  endwhile
-
-  return ret
-endfunction
-
-if exists('*strdisplaywidth')
-  " Use builtin function.
-  function! s:wcswidth(str) abort
-    return strdisplaywidth(a:str)
-  endfunction
-else
-  function! s:wcswidth(str) abort
-    if a:str =~# '^[\x00-\x7f]*$'
-      return 2 * strlen(a:str)
-            \ - strlen(substitute(a:str, '[\x00-\x08\x0b-\x1f\x7f]', '', 'g'))
-    end
-
-    let mx_first = '^\(.\)'
-    let str = a:str
-    let width = 0
-    while 1
-      let ucs = char2nr(substitute(str, mx_first, '\1', ''))
-      if ucs == 0
-        break
-      endif
-      let width += s:_wcwidth(ucs)
-      let str = substitute(str, mx_first, '', '')
-    endwhile
-    return width
-  endfunction
-
-  " UTF-8 only.
-  function! s:_wcwidth(ucs) abort
-    let ucs = a:ucs
-    if ucs > 0x7f && ucs <= 0xff
-      return 4
-    endif
-    if ucs <= 0x08 || 0x0b <= ucs && ucs <= 0x1f || ucs == 0x7f
-      return 2
-    endif
-    if (ucs >= 0x1100
-          \  && (ucs <= 0x115f
-          \  || ucs == 0x2329
-          \  || ucs == 0x232a
-          \  || (ucs >= 0x2e80 && ucs <= 0xa4cf
-          \      && ucs != 0x303f)
-          \  || (ucs >= 0xac00 && ucs <= 0xd7a3)
-          \  || (ucs >= 0xf900 && ucs <= 0xfaff)
-          \  || (ucs >= 0xfe30 && ucs <= 0xfe6f)
-          \  || (ucs >= 0xff00 && ucs <= 0xff60)
-          \  || (ucs >= 0xffe0 && ucs <= 0xffe6)
-          \  || (ucs >= 0x20000 && ucs <= 0x2fffd)
-          \  || (ucs >= 0x30000 && ucs <= 0x3fffd)
-          \  ))
-      return 2
-    endif
-    return 1
-  endfunction
-endif
 
 function! s:modulo(n, m) abort
   let d = a:n * a:m < 0 ? 1 : 0
