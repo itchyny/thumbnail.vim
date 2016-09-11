@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/09/11 18:16:35.
+" Last Change: 2016/09/11 19:56:34.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -159,7 +159,7 @@ function! s:au() abort
           \ |   call s:cursor()
           \ | endif
     autocmd ColorScheme <buffer>
-          \ silent! call s:set_filetype()
+          \ call thumbnail#setlocal#filetype_force()
     autocmd BufEnter,ColorScheme <buffer>
           \   if exists('b:thumbnail') && !b:thumbnail.visual_mode
           \ |   call s:init(0)
@@ -924,7 +924,7 @@ function! s:update(...) abort
     call s:mapping()
     let b:thumbnail = s:unsave(b)
   endif
-  setlocal modifiable noreadonly
+  call thumbnail#setlocal#modifiable()
   let b.selection = 0
   let s = []
   let thumbnail_white = s:white[:b.thumbnail_width - 4 - 1]
@@ -977,26 +977,8 @@ function! s:update(...) abort
     call setline(b.insert_pos, b.input)
   endif
   call s:cursor()
-  setlocal nomodifiable buftype=nofile noswapfile readonly
-        \ bufhidden=hide nobuflisted nofoldenable foldcolumn=0
-        \ nolist wrap nowrap completefunc=ThumbnailComplete omnifunc=
-        \ nocursorcolumn nocursorline nonumber nomodeline
-  if exists('&conceallevel')
-    setlocal conceallevel=3
-  endif
-  if exists('&concealcursor')
-    setlocal concealcursor=nvic
-  endif
-  if exists('&colorcolumn')
-    setlocal colorcolumn=
-  endif
-  if exists('&relativenumber')
-    setlocal norelativenumber
-  endif
-  if &l:filetype !=# 'thumbnail'
-    let b:thumbnail_conceal = b.marker.conceal
-    setlocal filetype=thumbnail
-  endif
+  let b:thumbnail_conceal = b.marker.conceal
+  call thumbnail#setlocal#new()
   if len(a:000) == 0 && after_deletion
     redraw
     sleep 50m
@@ -1044,7 +1026,7 @@ function! s:update_visible_thumbnail(bufnr) abort
   let newbuf = bufwinnr(str2nr(a:bufnr))
   let currentbuf = bufwinnr(bufnr('%'))
   execute winnr 'wincmd w'
-  silent! call s:set_filetype()
+  call thumbnail#setlocal#filetype_force()
   call s:init(0)
   if winnr != newbuf && newbuf != -1
     call cursor(1, 1)
@@ -1053,11 +1035,6 @@ function! s:update_visible_thumbnail(bufnr) abort
     call cursor(1, 1)
     execute currentbuf 'wincmd w'
   endif
-endfunction
-
-function! s:set_filetype() abort
-  setlocal filetype=
-  setlocal filetype=thumbnail
 endfunction
 
 function! s:update_current_thumbnail() abort
@@ -1709,7 +1686,7 @@ function! s:start_insert(col) abort
   let b = b:thumbnail
   let b.insert_mode = 1
   let b.help_mode = 0
-  setlocal modifiable noreadonly
+  call thumbnail#setlocal#modifiable()
   call setline(b.insert_pos, b.input)
   if a:col
     call cursor(b.insert_pos, a:col)
@@ -1796,9 +1773,9 @@ function! s:update_filter() abort
 endfunction
 
 function! s:exit_insert() abort
+  call thumbnail#setlocal#nomodifiable()
   let b = b:thumbnail
   let b.insert_mode = 0
-  setlocal nomodifiable readonly
   call s:update()
 endfunction
 
