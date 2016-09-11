@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/09/11 19:56:34.
+" Last Change: 2016/09/12 01:07:51.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -25,8 +25,8 @@ function! thumbnail#new(args) abort
   let b.marker = s:marker(b)
   call s:mapping()
   let b:thumbnail = s:unsave(b)
+  call thumbnail#autocmd#new()
   call s:update()
-  call s:au()
 endfunction
 
 function! s:parse(args) abort
@@ -145,34 +145,6 @@ function! s:buffername(name) abort
   let index = 0
   while index(bufs, index) >= 0 | let index += 1 | endwhile
   return '[' . a:name . (len(bufs) && index ? ' ' . index : '') . ']'
-endfunction
-
-function! s:au() abort
-  augroup ThumbnailAutoUpdate
-    autocmd!
-    autocmd BufEnter,CursorHold,CursorHoldI,BufWritePost,VimResized,ColorScheme *
-          \ call s:update_visible_thumbnail(expand('<abuf>'))
-  augroup END
-  augroup ThumbnailBuffer
-    autocmd BufLeave,WinLeave <buffer>
-          \   if exists('b:thumbnail')
-          \ |   call s:cursor()
-          \ | endif
-    autocmd ColorScheme <buffer>
-          \ call thumbnail#setlocal#filetype_force()
-    autocmd BufEnter,ColorScheme <buffer>
-          \   if exists('b:thumbnail') && !b:thumbnail.visual_mode
-          \ |   call s:init(0)
-          \ | endif
-    autocmd WinEnter,WinLeave,VimResized <buffer>
-          \   if exists('b:thumbnail') && !b:thumbnail.selection
-          \ |   call s:update()
-          \ | endif
-    autocmd CursorMoved <buffer>
-          \ call s:cursor_moved()
-    autocmd CursorMovedI <buffer>
-          \ call s:update_filter()
-  augroup END
 endfunction
 
 let s:white = repeat(' ', winwidth(0))
@@ -863,6 +835,10 @@ function! s:unsave(b, ...) abort
   return a:b
 endfunction
 
+function! thumbnail#init() abort
+  call s:init(0)
+endfunction
+
 function! s:init(isnewbuffer) abort
   let b = {}
   let b.input = ''
@@ -885,6 +861,10 @@ endfunction
 
 function! ThumbnailComplete(findstart, base) abort
   return a:findstart ? -1 : []
+endfunction
+
+function! thumbnail#update() abort
+  call s:update()
 endfunction
 
 function! s:update(...) abort
@@ -986,6 +966,10 @@ function! s:update(...) abort
   endif
 endfunction
 
+function! thumbnail#cursor() abort
+  call s:cursor()
+endfunction
+
 function! s:cursor() abort
   try
     let b = b:thumbnail
@@ -1007,34 +991,6 @@ function! s:cursor() abort
     call cursor(b.cursor_x, b.cursor_y)
   catch
   endtry
-endfunction
-
-function! s:update_visible_thumbnail(bufnr) abort
-  let nr = -1
-  let newnr = str2nr(a:bufnr)
-  if bufname(newnr) ==# '[Command Line]'
-    return
-  endif
-  for buf in tabpagebuflist()
-    if type(getbufvar(buf, 'thumbnail')) == type({}) && buf != newnr
-      let nr = buf
-      break
-    endif
-  endfor
-  if nr == -1 | return | endif
-  let winnr = bufwinnr(nr)
-  let newbuf = bufwinnr(str2nr(a:bufnr))
-  let currentbuf = bufwinnr(bufnr('%'))
-  execute winnr 'wincmd w'
-  call thumbnail#setlocal#filetype_force()
-  call s:init(0)
-  if winnr != newbuf && newbuf != -1
-    call cursor(1, 1)
-    execute newbuf 'wincmd w'
-  elseif winnr != currentbuf && currentbuf != -1
-    call cursor(1, 1)
-    execute currentbuf 'wincmd w'
-  endif
 endfunction
 
 function! s:update_current_thumbnail() abort
@@ -1349,6 +1305,10 @@ function! s:mouse_select() abort
   if r == 0
     silent call s:select()
   endif
+endfunction
+
+function! thumbnail#cursor_moved() abort
+  call s:cursor_moved()
 endfunction
 
 function! s:cursor_moved() abort
@@ -1695,6 +1655,10 @@ function! s:start_insert(col) abort
     call cursor(b.insert_pos, 1)
     startinsert!
   endif
+endfunction
+
+function! thumbnail#update_filter() abort
+  call s:update_filter()
 endfunction
 
 function! s:update_filter() abort
