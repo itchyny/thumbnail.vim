@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/09/12 01:07:51.
+" Last Change: 2016/11/24 07:33:15.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -147,8 +147,6 @@ function! s:buffername(name) abort
   return '[' . a:name . (len(bufs) && index ? ' ' . index : '') . ']'
 endfunction
 
-let s:white = repeat(' ', winwidth(0))
-
 function! s:gather() abort
   setl nobuflisted
   let bufs = []
@@ -227,7 +225,7 @@ function! s:get(nr, width, height) abort
   call insert(lines, thumbnail#string#truncate_smart(name ==# '' ? '[No Name]' : name,
         \ a:width - 4, (a:width - 4) * 3 / 5, ' .. '))
   return { 'contents': map(lines, 'thumbnail#string#truncate(substitute(v:val,"\t","' .
-        \ s:white[:getbufvar(a:nr, '&tabstop') - 1] .
+        \ repeat(' ', getbufvar(a:nr, '&tabstop')) .
         \ '","g"),' . (a:width - 4) . ')'),
         \ 'name': name }
 endfunction
@@ -238,7 +236,6 @@ function! s:arrangement(b) abort
   if l == 0 | return | endif
   let b.height = winheight(0)
   let b.width = winwidth(0)
-  let s:white = repeat(' ', b.width)
   let b.num_height = 1
   let b.num_width = l
   let b.thumbnail_height =
@@ -710,7 +707,6 @@ function! s:help(b, s) abort
   let len = max([max(map(copy(keylist[0]), 'len(v:val)')), 21])
   let m = [thumbnail#string#truncate(s:nmapping_order[0][0], len + len(indent))]
   let prev_len = len + len(indent)
-  let prev_len_white = s:white[:prev_len - 1]
   let prev_len_white = repeat(' ', prev_len)
   call extend(m, map(keylist[0], 'indent . thumbnail#string#truncate(v:val, len)'))
   let len = 0
@@ -736,7 +732,7 @@ function! s:help(b, s) abort
     if j >= len(m)
       call add(m, prev_len_white)
     endif
-    let m[j] .= separator . s:white[:len + len(indent) - 1]
+    let m[j] .= separator . repeat(' ', len + len(indent))
   endfor
   let prev_len = len(m[0])
   let j = 0
@@ -745,12 +741,12 @@ function! s:help(b, s) abort
   for k in keylist[4]
     let j = j + 1
     if j >= len(m) && prev_len > 1
-      call add(m, s:white[:prev_len - 1])
+      call add(m, repeat(' ', prev_len))
     endif
     let m[j] .= separator . indent . thumbnail#string#truncate(k, len)
   endfor
   if a:b.width - len(m[0]) > 1
-    let sp = s:white[:(a:b.width - len(m[0])) / 2 - 1]
+    let sp = repeat(' ', (a:b.width - len(m[0])) / 2)
     call map(m, 'sp . v:val')
   endif
   call insert(m, '')
@@ -907,12 +903,10 @@ function! s:update(...) abort
   call thumbnail#setlocal#modifiable()
   let b.selection = 0
   let s = []
-  let thumbnail_white = s:white[:b.thumbnail_width - 4 - 1]
-  let offset_white = s:white[:b.offset_left - 1]
-  let line_white = s:white[:(b.offset_left + b.thumbnail_width)
-        \ * b.num_width - 1]
-  let right_white = s:white[:winwidth(0) - len(line_white) - 4 - 2]
-        \ . b.marker.last
+  let thumbnail_white = repeat(' ', b.thumbnail_width - 4)
+  let offset_white = repeat(' ', b.offset_left)
+  let line_white = repeat(' ', (b.offset_left + b.thumbnail_width) * b.num_width)
+  let right_white = repeat(' ', winwidth(0) - len(line_white) - 4) . b.marker.last
   let line_white .= right_white
   let line_white_repeat = repeat([line_white], winheight(0))
   call extend(s, repeat([line_white], b.margin_top))
@@ -1692,9 +1686,9 @@ function! s:update_filter() abort
   let b.input = ''
   let b.bufs = white
   let input = substitute(input, '^ *', '', '')
-  let padding = s:white[:
+  let padding = repeat(' ',
         \ (winwidth(0) - max([thumbnail#string#strdisplaywidth(input), winwidth(0) / 8]))
-        \ / 2 - 1]
+        \ / 2)
   let input = padding . input
   let b.input = input
   let b.prev_bufs = bufs
@@ -1728,7 +1722,7 @@ function! s:update_filter() abort
       call add(s, '')
     endfor
     let mes = 'No buffer'
-    call add(s, s:white[:(winwidth(0) - len(mes)) / 2 - 1] . mes)
+    call add(s, repeat(' ', (winwidth(0) - len(mes)) / 2) . mes)
     call s:redraw(s)
     call setline(pos, input)
     let b.insert_pos = pos
