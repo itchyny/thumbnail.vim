@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/11/24 07:33:15.
+" Last Change: 2016/11/24 23:02:59.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -189,7 +189,7 @@ endfunction
 
 function! s:contents(b) abort
   for buf in a:b.bufs
-    let cnt = s:get(buf.bufnr, a:b.thumbnail_width, a:b.thumbnail_height)
+    let cnt = thumbnail#content#get(buf.bufnr, a:b.thumbnail_width, a:b.thumbnail_height)
     let c = cnt.contents
     call extend(buf, {
           \ 'name': cnt.name,
@@ -197,37 +197,6 @@ function! s:contents(b) abort
           \ 'firstlinelength': len(c) ? len(c[0]) : a:b.thumbnail_width - 4
           \ })
   endfor
-endfunction
-
-function! s:get(nr, width, height) abort
-  let bufname =  bufname(a:nr)
-  if bufloaded(a:nr) && bufexists(a:nr)
-    let lines = getbufline(a:nr, 1, a:height - 1)
-  elseif bufname !=# '' && filereadable(bufname)
-    let lines = readfile(bufname, '', a:height - 1)
-  else
-    let lines = []
-  endif
-  let name = bufname
-  let abbrnames = []
-  call add(abbrnames, substitute(bufname, expand('~'), '~', ''))
-  let updir = substitute(expand('%:p:h'), '[^/]*$', '', '')
-  call add(abbrnames, substitute(bufname, escape(updir, '.$*'), '../', ''))
-  let upupdir = substitute(updir, '[^/]*/$', '', '')
-  call add(abbrnames, substitute(bufname, escape(upupdir, '.$*'), '../../', ''))
-  for abbrname in abbrnames
-    let name = len(name) > len(abbrname) ? abbrname : name
-  endfor
-  if match(lines, '[\x00-\x08]') >= 0
-    let lines = repeat([''], a:height / 2 - 2)
-    call extend(lines, [repeat(' ', (a:width - 4) / 2 - 7) . '[Binary file]'])
-  endif
-  call insert(lines, thumbnail#string#truncate_smart(name ==# '' ? '[No Name]' : name,
-        \ a:width - 4, (a:width - 4) * 3 / 5, ' .. '))
-  return { 'contents': map(lines, 'thumbnail#string#truncate(substitute(v:val,"\t","' .
-        \ repeat(' ', getbufvar(a:nr, '&tabstop')) .
-        \ '","g"),' . (a:width - 4) . ')'),
-        \ 'name': name }
 endfunction
 
 function! s:arrangement(b) abort
