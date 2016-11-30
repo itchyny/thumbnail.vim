@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/11/24 23:02:59.
+" Last Change: 2016/12/01 01:03:52.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -369,8 +369,8 @@ function! s:mapping() abort
   inoremap <buffer><silent> <Plug>(thumbnail_delete_backward_char)
         \ <BS>
   inoremap <buffer><silent><expr> <Plug>(thumbnail_delete_backward_line)
-        \ b:thumbnail.input =~# '^ *$' ? '' : repeat("\<BS>", col('.') -
-        \ len(substitute(b:thumbnail.input, '^ *', '', '')))
+        \ b:thumbnail.input =~# '^ *$' ? '' : repeat("\<BS>",
+        \ len(split(substitute(b:thumbnail.input, '^ *', '', ''), '\zs')))
 
   inoremap <buffer><silent> <Plug>(thumbnail_select)
         \ <ESC>:<C-u>call <SID>select()<CR>
