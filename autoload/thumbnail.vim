@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/12/06 21:29:22.
+" Last Change: 2016/12/06 21:39:44.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -706,7 +706,7 @@ function! s:init(isnewbuffer) abort
   endif
 endfunction
 
-function! ThumbnailComplete(findstart, base) abort
+function! thumbnail#complete(findstart, base) abort
   return a:findstart ? -1 : []
 endfunction
 
