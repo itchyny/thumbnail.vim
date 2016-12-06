@@ -4,7 +4,7 @@ Version: 0.8
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/thumbnail.vim
-Last Change: 2016/09/06 08:59:39.
+Last Change: 2016/12/06 21:50:34.
 
 CONTENTS					*thumbnail-contents*
 
@@ -151,9 +151,6 @@ Normal mode key mappings.
 <Plug>(thumbnail_redraw)			*<Plug>(thumbnail_redraw)*
 		Redraw the thumbnail buffer.
 
-<Plug>(thumbnail_toggle_help)			*<Plug>(thumbnail_toggle_help)*
-		Toggle the help menu of key mappings.
-
 <Plug>(thumbnail_exit)				*<Plug>(thumbnail_exit)*
 		Exit the thumbnail buffer.
 
@@ -234,7 +231,6 @@ X		|<Plug>(thumbnail_delete_backspace)|
 <CR>		|<Plug>(thumbnail_select)|
 <SPACE>		same as <CR>
 <C-l>		|<Plug>(thumbnail_redraw)|
-?		|<Plug>(thumbnail_toggle_help)|
 q		|<Plug>(thumbnail_exit)|
 c		|<Plug>(thumbnail_nop)|
 C		|<Plug>(thumbnail_nop)|

@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/12/06 21:39:44.
+" Last Change: 2016/12/07 22:29:47.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -122,7 +122,6 @@ function! s:arrangement(b) abort
   let b.v_count = 0
   let b.to_head = 0
   let b.to_end = 0
-  let b.help_mode = 0
   if b.offset_top + b.margin_top > 0
     let b.insert_pos = (b.offset_top + b.margin_top + 1) / 2
   else
@@ -227,8 +226,6 @@ function! s:mapping() abort
         \ :<C-u>call <SID>select()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_redraw)
         \ :<C-u>call <SID>update_current_thumbnail()<CR>
-  nnoremap <buffer><silent> <Plug>(thumbnail_toggle_help)
-        \ :<C-u>call <SID>toggle_help()<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_exit)
         \ :<C-u>bdelete!<CR>
   nnoremap <buffer><silent> <Plug>(thumbnail_nop)
@@ -357,7 +354,6 @@ function! s:mapping() abort
   nmap <buffer> <CR> <Plug>(thumbnail_select)
   nmap <buffer> <SPACE> <CR>
   nmap <buffer> <C-l> <Plug>(thumbnail_redraw)
-  nmap <buffer> ? <Plug>(thumbnail_toggle_help)
   nmap <buffer> q <Plug>(thumbnail_exit)
 
   nnoremap <buffer><silent> <LeftMouse> <LeftMouse>
@@ -395,232 +391,11 @@ function! s:mapping() abort
 
 endfunction
 
-let s:nmapping_order =
-      \ [ [ 'MOVING AROUND'
-      \   , [ [ 'move_left', 'Move left' ]
-      \     , [ 'move_right', 'Move right' ]
-      \     , [ 'move_down', 'Move down' ]
-      \     , [ 'move_up', 'Move up' ]
-      \     , [ 'move_next', 'Move next' ]
-      \     , [ 'move_prev', 'Move previous' ] ]
-      \   , [ [ 'move_line_head', 'Move to the head of line' ]
-      \     , [ 'move_line_middle', 'Move to the middle of line' ]
-      \     , [ 'move_line_last', 'Move to the last of line' ] ]
-      \   , [ [ 'move_head', 'Move to the head line' ]
-      \     , [ 'move_last', 'Move to the last line' ]
-      \     , [ 'move_last_line_head', 'Move to the head of the last line' ]
-      \     , [ 'move_count_line_first', 'Move to the first line' ]
-      \     , [ 'move_count_line_last', 'Move to the last line' ]
-      \     , [ 'move_column', 'Move to the column [count]' ] ] ]
-      \ , [ 'CHANGING MODE'
-      \   , [ [ 'start_insert', 'Start insert mode' ]
-      \     , [ 'start_insert_head', 'Start insert mode at the head' ]
-      \     , [ 'start_visual', 'Start visual mode' ]
-      \     , [ 'start_line_visual', 'Start line visual mode' ]
-      \     , [ 'start_block_visual', 'Start block visual mode' ]
-      \     , [ 'exit_visual', 'Exit visual/help mode' ] ] ]
-      \ , [ 'DELEATING'
-      \   , [ [ 'start_delete', 'Delete with {motion}' ]
-      \     , [ 'delete', 'Delete the selected buffer' ]
-      \     , [ 'delete_to_end', 'Delete till the end of the line' ]
-      \     , [ 'delete_backspace', 'Delete the left buffer' ] ] ]
-      \ , [ 'UTILITY'
-      \   , [ [ 'select', 'Open the selected buffer' ]
-      \     , [ 'redraw', 'Redraw the thumbnails' ]
-      \     , [ 'exit', 'Exit the thumbnail buffer' ] ] ]
-      \ , [ 'INSERT MODE MAPPING'
-      \   , [ [ 'i_move_left', 'Move left' ]
-      \     , [ 'i_move_right', 'Move right' ]
-      \     , [ 'i_move_down', 'Move down' ]
-      \     , [ 'i_move_up', 'Move up' ]
-      \     , [ 'i_move_next', 'Move next' ]
-      \     , [ 'i_move_prev', 'Move previous' ]
-      \     , [ 'i_move_cursor_left', 'Move the cursor left' ]
-      \     , [ 'i_move_cursor_right', 'Move the cursor right' ]
-      \     , [ 'i_delete_backward_word', 'Delete the backward word' ]
-      \     , [ 'i_delete_backward_char', 'Delete the backward char' ]
-      \     , [ 'i_delete_backward_line', 'Delete the backward inputs' ]
-      \     , [ 'i_exit_insert', 'Exit the insert mode' ]
-      \     , [ 'i_select', 'Open the selected buffer' ] ] ] ]
-
-function! s:compare(a, b) abort
-  return len(a:a) == 1 ? -1 : len(a:b) == 1 ? 1 :
-        \ len(a:a) == len(a:b) ? (a:a =~# '^[a-z]\+$' ? -1 : 1) :
-        \ a:a !~# '\S-' ? -1 : a:b !~# '\S-' ? 1 : len(a:a) > len(a:b) ? 1 : -1
-endfunction
-function! s:help(b, s) abort
-  redir => redir
-  silent! nmap
-  redir END
-  let nmappings = filter(map(filter(filter(split(copy(redir), '\n'),
-        \ 'v:val =~# "thumbnail"'), 'v:val !~# "nop"'),
-        \ 'substitute(v:val, "\\(@<Plug>(thumbnail_\\|^n *\\|)$\\)", "", "g")'),
-        \ 'v:val !~# "^<Plug>(thumbnail"')
-  let nmappings_alias = filter(map(filter(filter(split(copy(redir), '\n'),
-        \ 'v:val =~# "^n\\s*\\S\\+\\s*@\\S\\+$"'),
-        \ 'v:val !~# "nop" && v:val !=# "thumbnail"'),
-        \ 'substitute(substitute(v:val, "\\(@<Plug>(thumbnail_\\|^n *\\)", "",'
-        \.'"g"), "@\\(\\S\\+\\)$", "\\1", "")'), 'v:val !~# "^<Plug>(thumbnail"')
-  let nmap_dict = {}
-  let nmap_dict_rev = {}
-  let nmap_dict_alias = {}
-  for n in nmappings
-    try
-      let [key, name] = split(n, '\s\+')
-      let nmap_dict[key] = name
-      if has_key(nmap_dict_rev, name)
-        call add(nmap_dict_rev[name], key)
-      else
-        let nmap_dict_rev[name] = [key]
-      endif
-    catch
-    endtry
-  endfor
-  for n in nmappings_alias
-    try
-      let [key, name] = split(n, '\s\+')
-      if key =~# '^\(O[A-D]\|g\(.\|<\S\+>\)\|.*Wheel.*\)$'
-        continue
-      endif
-      let nmap_dict_alias[key] = name
-    catch
-    endtry
-  endfor
-  redir => iredir
-  silent! imap
-  redir END
-  let imappings = filter(map(filter(filter(split(iredir, '\n'),
-        \ 'v:val =~# "thumbnail"'), 'v:val !~# "nop"'),
-        \ 'substitute(v:val, "\\(@<Plug>(thumbnail_\\|^i *\\|.$\\)", "", "g")'),
-        \ 'v:val !~# "^<Plug>(thumbnail"')
-  let imappings_alias = filter(map(filter(filter(split(copy(iredir), '\n'),
-        \ 'v:val =~# "^i\\s*\\S\\+\\s*@\\S\\+$"'),
-        \ 'v:val !~# "nop" && v:val !~# "thumbnail"'),
-        \ 'substitute(substitute(v:val, "\\(@<Plug>(thumbnail_\\|^i *\\)", "",'
-        \.'"g"), "@\\(\\S\\+\\)$", "\\1", "")'), 'v:val !~# "^<Plug>(thumbnail"')
-  let imap_dict = {}
-  let imap_dict_alias = {}
-  for n in imappings
-    try
-      let [key, name] = split(n, '\s\+')
-      let name = 'i_' . name
-      if has_key(nmap_dict_rev, name)
-        call add(nmap_dict_rev[name], key)
-      else
-        let nmap_dict_rev[name] = [key]
-      endif
-      let imap_dict[key] = name
-    catch
-    endtry
-  endfor
-  for n in imappings_alias
-    try
-      let [key, name] = split(n, '\s\+')
-      let imap_dict_alias[key] = name
-    catch
-    endtry
-  endfor
-  for [key, name] in items(nmap_dict_alias)
-    if has_key(nmap_dict, name)
-      call add(nmap_dict_rev[nmap_dict[name]], key)
-    endif
-  endfor
-  for [key, name] in items(imap_dict_alias)
-    if has_key(imap_dict, name)
-      call add(nmap_dict_rev[imap_dict[name]], key)
-    endif
-  endfor
-  for [key, value] in items(nmap_dict_rev)
-    let new_value = []
-    for v in value
-      if index(new_value, v) == -1 &&
-            \ (v ==# tolower(v) && v !=# '/' || len(v) > 1
-            \ || index(value, tolower(v)) == -1)
-        call add(new_value, v)
-      else
-      endif
-    endfor
-    let nmap_dict_rev[key] = sort(new_value, 's:compare')
-  endfor
-  let keylist = []
-  for i in range(len(s:nmapping_order))
-    call add(keylist, [])
-    for j in range(1, len(s:nmapping_order[i]) - 1)
-      for [name, description] in s:nmapping_order[i][j]
-        if has_key(nmap_dict_rev, name)
-          let keystr = join(nmap_dict_rev[name], ' / ')
-          call add(keylist[i], keystr . ' : ' . description)
-        endif
-      endfor
-    endfor
-  endfor
-  let indent = '  '
-  let len = max([max(map(copy(keylist[0]), 'len(v:val)')), 21])
-  let m = [thumbnail#string#truncate(s:nmapping_order[0][0], len + len(indent))]
-  let prev_len = len + len(indent)
-  let prev_len_white = repeat(' ', prev_len)
-  call extend(m, map(keylist[0], 'indent . thumbnail#string#truncate(v:val, len)'))
-  let len = 0
-  for i in range(1, 3)
-    let len = max([max([len, max(map(copy(keylist[i]), 'len(v:val)'))]), 21])
-  endfor
-  let separator = ' | '
-  let j = -1
-  for i in range(1, 3)
-    let j = j + 1
-    if j >= len(m)
-      call add(m, prev_len_white)
-    endif
-    let m[j] .= separator . thumbnail#string#truncate(s:nmapping_order[i][0], len + len(indent))
-    for k in keylist[i]
-      let j = j + 1
-      if j >= len(m)
-        call add(m, prev_len_white)
-      endif
-      let m[j] .= separator . indent . thumbnail#string#truncate(k, len)
-    endfor
-    let j = j + 1
-    if j >= len(m)
-      call add(m, prev_len_white)
-    endif
-    let m[j] .= separator . repeat(' ', len + len(indent))
-  endfor
-  let prev_len = len(m[0])
-  let j = 0
-  let m[j] .= separator . thumbnail#string#truncate(s:nmapping_order[4][0], len + len(indent))
-  let len = max([max([len, max(map(copy(keylist[4]), 'len(v:val)'))]), 21])
-  for k in keylist[4]
-    let j = j + 1
-    if j >= len(m) && prev_len > 1
-      call add(m, repeat(' ', prev_len))
-    endif
-    let m[j] .= separator . indent . thumbnail#string#truncate(k, len)
-  endfor
-  if a:b.width - len(m[0]) > 1
-    let sp = repeat(' ', (a:b.width - len(m[0])) / 2)
-    call map(m, 'sp . v:val')
-  endif
-  call insert(m, '')
-  call insert(m, '')
-  call insert(m, '', -1)
-  call insert(m, '', -1)
-  let a:b.help_offset = (len(a:s) - len(m)) / 2
-  for i in range(len(m) - 1)
-    if len(a:s) <= i + (len(a:s) - len(m)) / 2
-      break
-    endif
-    let a:s[i + (len(a:s) - len(m)) / 2] = thumbnail#string#truncate(m[i], a:b.width)
-  endfor
-endfunction
-
 function! s:unsave(b, ...) abort
   if !exists('b:thumbnail')
     return a:b
   endif
   let prev_b = b:thumbnail
-  if has_key(prev_b, 'help_mode')
-    let a:b.help_mode = prev_b.help_mode
-  endif
   let index = prev_b.select_i * prev_b.num_width + prev_b.select_j
   let newbuf = a:b.bufs
   if len(prev_b.bufs) == len(newbuf) && index < len(newbuf)
@@ -794,13 +569,8 @@ function! s:update(...) abort
     endfor
   endfor
   call extend(s, repeat([line_white], b.margin_bottom))
-  if b.help_mode
-    call s:help(b, s)
-  endif
   call s:redraw(s)
-  if !b.help_mode || b.help_offset >= b.insert_pos
-    call setline(b.insert_pos, b.input)
-  endif
+  call setline(b.insert_pos, b.input)
   call s:cursor()
   let b:thumbnail_conceal = b.marker.conceal
   call thumbnail#setlocal#new()
@@ -1358,11 +1128,6 @@ function! s:close(direction) abort
   endtry
 endfunction
 
-function! s:toggle_help() abort
-  let b:thumbnail.help_mode = !b:thumbnail.help_mode
-  call s:update()
-endfunction
-
 function! s:start_visual(mode) abort
   let b = b:thumbnail
   if b.visual_mode && a:mode == 4
@@ -1435,7 +1200,6 @@ function! s:exit_visual() abort
   try
     let b = b:thumbnail
     let b.visual_mode = 0
-    let b.help_mode = 0
     let b.visual_selects = []
     call s:update()
   catch
@@ -1490,7 +1254,6 @@ endfunction
 function! s:start_insert(col) abort
   let b = b:thumbnail
   let b.insert_mode = 1
-  let b.help_mode = 0
   call thumbnail#setlocal#modifiable()
   call setline(b.insert_pos, b.input)
   if a:col
@@ -1566,7 +1329,6 @@ function! s:update_filter() abort
     let b.selection = 0
     let b.to_head = 0
     let b.to_end = 0
-    let b.help_mode = 0
     " No match
     let s = []
     for i in range(max([(winheight(0) - 2) / 2, 0]))
