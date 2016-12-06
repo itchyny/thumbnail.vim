@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/12/01 01:03:52.
+" Last Change: 2016/12/06 21:18:54.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -32,7 +32,7 @@ endfunction
 function! s:parse(args) abort
   let args = split(a:args, '\s\+')
   let isnewbuffer = bufname('%') !=# '' || &modified
-  let name = " `=s:buffername('thumbnail')`"
+  let name = " `='" . thumbnail#argument#buffername('thumbnail') . "'`"
   let command = 'tabnew'
   let below = ''
   let addname = 1
@@ -132,19 +132,6 @@ function! thumbnail#complete(arglead, cmdline, cursorpos) abort
   catch
     return s:options
   endtry
-endfunction
-
-function! s:buffername(name) abort
-  let buflist = []
-  for i in range(tabpagenr('$'))
-    call extend(buflist, tabpagebuflist(i + 1))
-  endfor
-  let matcher = 'bufname(v:val) =~# ("\\[" . a:name . "\\( \\d\\+\\)\\?\\]") && index(buflist, v:val) >= 0'
-  let substituter = 'substitute(bufname(v:val), ".*\\(\\d\\+\\).*", "\\1", "") + 0'
-  let bufs = map(filter(range(1, bufnr('$')), matcher), substituter)
-  let index = 0
-  while index(bufs, index) >= 0 | let index += 1 | endwhile
-  return '[' . a:name . (len(bufs) && index ? ' ' . index : '') . ']'
 endfunction
 
 function! s:gather() abort
