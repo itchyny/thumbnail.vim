@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail/argument.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/12/06 21:30:47.
+" Last Change: 2016/12/08 23:18:43.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -68,7 +68,7 @@ function! thumbnail#argument#parse(args) abort
   let command = 'tabnew'
   let below = ''
   let addname = 1
-  let thumbnail_ft = { 'include': [], 'exclude': [], 'specify': [] }
+  let ftconfig = { 'include': [], 'exclude': [], 'specify': [] }
   for arg in args
     if arg =~? '^-*horizontal$'
       let command = 'new'
@@ -90,26 +90,21 @@ function! thumbnail#argument#parse(args) abort
       endif
       let below = 'below '
     elseif arg =~? '^-*include=.\+$'
-      let thumbnail_ft.include = extend(thumbnail_ft.include,
-            \ split(substitute(arg, '-*include=', '', ''), ','))
-      let thumbnail_ft.exclude = filter(thumbnail_ft.exclude,
-            \ 'index(thumbnail_ft.include, v:val) < 0')
+      let ftconfig.include = extend(ftconfig.include, split(substitute(arg, '-*include=', '', ''), ','))
+      let ftconfig.exclude = filter(ftconfig.exclude, 'index(ftconfig.include, v:val) < 0')
     elseif arg =~? '^-*exclude=.\+$'
-      let thumbnail_ft.exclude = extend(thumbnail_ft.exclude,
-            \ split(substitute(arg, '-*exclude=', '', ''), ','))
-      let thumbnail_ft.include = filter(thumbnail_ft.include,
-            \ 'index(thumbnail_ft.exclude, v:val) < 0')
+      let ftconfig.exclude = extend(ftconfig.exclude, split(substitute(arg, '-*exclude=', '', ''), ','))
+      let ftconfig.include = filter(ftconfig.include, 'index(ftconfig.exclude, v:val) < 0')
     elseif arg =~? '^-*specify=.\+$'
-      let thumbnail_ft.specify = extend(thumbnail_ft.specify,
-            \ split(substitute(arg, '-*specify=', '', ''), ','))
-      let thumbnail_ft.include = []
-      let thumbnail_ft.exclude = []
+      let ftconfig.specify = extend(ftconfig.specify, split(substitute(arg, '-*specify=', '', ''), ','))
+      let ftconfig.include = []
+      let ftconfig.exclude = []
     endif
   endfor
   let cmd1 = below . command . (addname ? name : '')
   let cmd2 = 'edit' . name
   let command = 'if isnewbuffer | ' . cmd1 . ' | else | ' . cmd2 . '| endif'
-  return [isnewbuffer, command, thumbnail_ft]
+  return [isnewbuffer, command, ftconfig]
 endfunction
 
 function! thumbnail#argument#buffername(name) abort

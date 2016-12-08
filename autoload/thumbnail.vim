@@ -2,19 +2,19 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/12/07 22:29:47.
+" Last Change: 2016/12/08 22:21:10.
 " =============================================================================
 
 let s:save_cpo = &cpo
 set cpo&vim
 
 function! thumbnail#new(args) abort
-  let [isnewbuffer, command, thumbnail_ft] = thumbnail#argument#parse(a:args)
+  let [isnewbuffer, command, ftconfig] = thumbnail#argument#parse(a:args)
   try | silent execute command | catch | return | endtry
-  let b:thumbnail_ft = thumbnail_ft
   let b = {}
   let b.input = ''
-  let b.bufs = s:gather()
+  let b.ftconfig = ftconfig
+  let b.bufs = s:gather(b.ftconfig)
   if len(b.bufs) == 0
     if isnewbuffer | bdelete! | endif
     enew
@@ -29,30 +29,30 @@ function! thumbnail#new(args) abort
   call s:update()
 endfunction
 
-function! s:gather() abort
+function! s:gather(ftconfig) abort
   setl nobuflisted
   let bufs = []
   for i in range(1, bufnr('$'))
     let f = (len(bufname(i)) == 0 && (!bufexists(i) || !bufloaded(i)
           \ || !getbufvar(i, '&modified'))) || !buflisted(i)
     try
-      let l = len(b:thumbnail_ft.specify) > 0
+      let l = len(a:ftconfig.specify) > 0
     catch
       let l = 0
     endtry
     let ft = getbufvar(i, '&filetype')
     try
-      let s = index(b:thumbnail_ft.specify, ft) >= 0
+      let s = index(a:ftconfig.specify, ft) >= 0
     catch
       let s = 0
     endtry
     try
-      let e = index(b:thumbnail_ft.exclude, ft) >= 0
+      let e = index(a:ftconfig.exclude, ft) >= 0
     catch
       let e = 0
     endtry
     try
-      let n = index(b:thumbnail_ft.include, ft) >= 0
+      let n = index(a:ftconfig.include, ft) >= 0
     catch
       let n = 0
     endtry
@@ -464,7 +464,8 @@ endfunction
 function! s:init(isnewbuffer) abort
   let b = {}
   let b.input = ''
-  let b.bufs = s:gather()
+  let b.ftconfig = b:thumbnail.ftconfig
+  let b.bufs = s:gather(b.ftconfig)
   if len(b.bufs) == 0
     if a:isnewbuffer
       silent bdelete!
@@ -515,7 +516,8 @@ function! s:update(...) abort
         \ || after_deletion && len(a:000)
     let b = {}
     let b.input = ''
-    let b.bufs = s:gather()
+    let b.ftconfig = b:thumbnail.ftconfig
+    let b.bufs = s:gather(b.ftconfig)
     if len(b.bufs) == 0
       silent bdelete!
       return
@@ -1298,6 +1300,7 @@ function! s:update_filter() abort
   let b = {}
   let b.bufs = []
   let b.input = ''
+  let b.ftconfig = b:thumbnail.ftconfig
   let b.bufs = white
   let input = substitute(input, '^ *', '', '')
   let padding = repeat(' ',
