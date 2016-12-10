@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/12/10 19:34:49.
+" Last Change: 2016/12/10 21:56:09.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -24,7 +24,7 @@ function! thumbnail#new(args) abort
   call s:contents(b)
   let b.marker = s:marker(b)
   call s:mapping()
-  let b:thumbnail = s:unsave(b)
+  let b:thumbnail = b
   call thumbnail#autocmd#new()
   call s:update()
 endfunction
@@ -390,68 +390,6 @@ function! s:mapping() abort
 
 endfunction
 
-function! s:unsave(b, ...) abort
-  if !exists('b:thumbnail')
-    return a:b
-  endif
-  let prev_b = b:thumbnail
-  let newbuf = a:b.bufs
-  if len(prev_b.bufs) == len(newbuf) && prev_b.index < len(newbuf)
-    let flg = 1
-    for i in range(len(prev_b.bufs))
-      if prev_b.bufs[i].bufnr != newbuf[i].bufnr
-        let flg = 0
-        break
-      endif
-    endfor
-    if flg
-      let a:b.index = prev_b.index
-      return a:b
-    endif
-  endif
-  if get(a:000, 1)
-    let newbuf_nrs = map(copy(newbuf), 'v:val["bufnr"]')
-    let prev_b_bufs_nrs = map(copy(prev_b.bufs), 'v:val["bufnr"]')
-    let a:b.bufs = []
-    for i in range(len(prev_b.bufs))
-      let j = index(newbuf_nrs, prev_b.bufs[i].bufnr)
-      if j != -1
-        call add(a:b.bufs, newbuf[j])
-      endif
-    endfor
-    unlet newbuf_nrs
-    for i in range(len(newbuf))
-      if index(prev_b_bufs_nrs, newbuf[i].bufnr) == -1
-        call add(a:b.bufs, newbuf[i])
-      endif
-    endfor
-    unlet prev_b_bufs_nrs
-  endif
-  if prev_b.index < len(prev_b.bufs) && has_key(prev_b.bufs[prev_b.index], 'bufnr')
-        \ && prev_b.index < len(a:b.bufs) && has_key(a:b.bufs[prev_b.index], 'bufnr')
-        \ && a:b.bufs[prev_b.index].bufnr == prev_b.bufs[prev_b.index].bufnr
-    let a:b.index = prev_b.index
-    return a:b
-  endif
-  let direction = has_key(b:thumbnail, 'direction') ? b:thumbnail.direction : 1
-  let offset = 0
-  while offset < len(prev_b.bufs)
-    let i = prev_b.index + offset * direction
-    let offset = (offset <= 0 ? 1 : 0) - offset
-    if !(0 <= i && i < len(prev_b.bufs) && has_key(prev_b.bufs[i], 'bufnr'))
-      continue
-    endif
-    let nr = prev_b.bufs[i].bufnr
-    for j in range(len(a:b.bufs))
-      if a:b.bufs[j].bufnr == nr
-        let a:b.index = j
-        return a:b
-      endif
-    endfor
-  endwhile
-  return a:b
-endfunction
-
 function! thumbnail#init() abort
   call s:init(0)
 endfunction
@@ -468,11 +406,13 @@ function! s:init(isnewbuffer) abort
     return b
   endif
   call s:arrangement(b)
+  let index = index(map(copy(b.bufs), 'v:val.bufnr'), b:thumbnail.bufs[b:thumbnail.index].bufnr)
+  let b.index = index >= 0 ? index : 0
   call s:contents(b)
   let b.marker = s:marker(b)
   call s:mapping()
   if len(b.bufs) > 0
-    let b:thumbnail = s:unsave(b)
+    let b:thumbnail = b
     silent call s:update()
   endif
 endfunction
@@ -519,10 +459,12 @@ function! s:update(...) abort
       return
     endif
     call s:arrangement(b)
+    let index = index(map(copy(b.bufs), 'v:val.bufnr'), b:thumbnail.bufs[b:thumbnail.index].bufnr)
+    let b.index = index >= 0 ? index : 0
     call s:contents(b)
     let b.marker = s:marker(b)
     call s:mapping()
-    let b:thumbnail = s:unsave(b)
+    let b:thumbnail = b
   endif
   call thumbnail#setlocal#modifiable()
   let b.selection = 0
@@ -1244,7 +1186,6 @@ function! s:update_filter() abort
     endif
   endfor
   let b = {}
-  let b.bufs = []
   let b.input = ''
   let b.ftconfig = b:thumbnail.ftconfig
   let b.bufs = white
@@ -1258,9 +1199,11 @@ function! s:update_filter() abort
   let c = max([col('.'), len(padding) + 1])
   if len(white) > 0
     call s:arrangement(b)
+    let index = index(map(copy(b.bufs), 'v:val.bufnr'), bufs[b:thumbnail.index].bufnr)
+    let b.index = index >= 0 ? index : 0
     call s:contents(b)
     let b.marker = s:marker(b)
-    let b:thumbnail = s:unsave(b, 1)
+    let b:thumbnail = b
     call s:update()
     call s:start_insert(c)
   else
