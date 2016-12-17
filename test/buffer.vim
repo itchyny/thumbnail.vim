@@ -1,4 +1,4 @@
-let s:suite = themis#suite('mode')
+let s:suite = themis#suite('buffer')
 let s:assert = themis#helper('assert')
 
 function! s:suite.bufnr()
