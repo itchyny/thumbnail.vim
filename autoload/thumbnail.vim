@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/12/18 08:45:03.
+" Last Change: 2016/12/18 12:14:48.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -13,7 +13,7 @@ function! thumbnail#new(args) abort
   try | silent execute command | catch | return | endtry
   let b:thumbnail = thumbnail#controller#new(ftconfig)
   call b:thumbnail.gather()
-  if b:thumbnail.empty()
+  if b:thumbnail.len() == 0
     if isnewbuffer
       bdelete!
     endif

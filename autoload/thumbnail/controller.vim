@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail/controller.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/12/18 12:11:56.
+" Last Change: 2016/12/18 12:15:50.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -160,8 +160,8 @@ function! s:self.gather() dict abort
   return self.buffers.gather()
 endfunction
 
-function! s:self.empty() dict abort
-  return self.buffers.empty()
+function! s:self.len() dict abort
+  return self.buffers.len()
 endfunction
 
 function! s:self.drag() dict abort

@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail/buffers.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/12/18 09:41:59.
+" Last Change: 2016/12/18 12:14:56.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -50,10 +50,6 @@ endfunction
 
 function! s:self.len() dict abort
   return len(self.buffers)
-endfunction
-
-function! s:self.empty() dict abort
-  return empty(self.buffers)
 endfunction
 
 function! s:self.filter(words) dict abort
