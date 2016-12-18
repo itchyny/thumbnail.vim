@@ -96,7 +96,6 @@ function! s:suite.has_get_len()
   call s:assert.equals(buffers.get(1).name, 'buffers-test1')
   call s:assert.equals(buffers.get(2).name, 'buffers-test2')
   call s:assert.equals(buffers.len(), 3)
-  call s:assert.equals(buffers.empty(), 0)
 endfunction
 
 function! s:suite.has_get_len_no_buffers()
@@ -107,7 +106,6 @@ function! s:suite.has_get_len_no_buffers()
   call s:assert.equals(buffers.has(0), 0)
   call s:assert.equals(buffers.has(1), 0)
   call s:assert.equals(buffers.len(), 0)
-  call s:assert.equals(buffers.empty(), 1)
 endfunction
 
 function! s:suite.filter()
