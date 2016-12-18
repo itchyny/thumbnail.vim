@@ -2,7 +2,7 @@ let s:suite = themis#suite('buffers')
 let s:assert = themis#helper('assert')
 
 function! s:suite.before_each()
-  %bwipeout!
+  silent! %bwipeout!
 endfunction
 
 function! s:suite.gather()
