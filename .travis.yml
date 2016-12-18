@@ -14,6 +14,6 @@ cache:
     - $HOME/vim-7.3
 
 script:
-  - /tmp/themis/bin/themis --reporter spec
-  - PATH=$HOME/vim-7.4/bin/:$PATH /tmp/themis/bin/themis --reporter spec
-  - PATH=$HOME/vim-7.3/bin/:$PATH /tmp/themis/bin/themis --reporter spec
+  - /tmp/themis/bin/themis
+  - PATH=$HOME/vim-7.4/bin/:$PATH /tmp/themis/bin/themis
+  - PATH=$HOME/vim-7.3/bin/:$PATH /tmp/themis/bin/themis
