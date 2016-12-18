@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail/argument.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/12/08 23:18:43.
+" Last Change: 2016/12/17 18:46:44.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -109,8 +109,8 @@ endfunction
 
 function! thumbnail#argument#buffername(name) abort
   let buflist = []
-  for i in range(tabpagenr('$'))
-    call extend(buflist, tabpagebuflist(i + 1))
+  for i in range(1, tabpagenr('$'))
+    call extend(buflist, tabpagebuflist(i))
   endfor
   let matcher = 'bufname(v:val) =~# ("\\[" . a:name . "\\( \\d\\+\\)\\?\\]") && index(buflist, v:val) >= 0'
   let substituter = 'substitute(bufname(v:val), ".*\\(\\d\\+\\).*", "\\1", "") + 0'
