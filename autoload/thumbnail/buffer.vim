@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail/buffer.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/12/17 19:26:01.
+" Last Change: 2016/12/18 09:44:12.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -28,13 +28,6 @@ let s:self.contents_cache = {}
 
 function! s:self.set_bufname() dict abort
   let bufname = bufname(self.bufnr)
-  if bufloaded(self.bufnr) && bufexists(self.bufnr)
-    let lines = getbufline(self.bufnr, 1, &lines)
-  elseif bufname !=# '' && filereadable(bufname)
-    let lines = readfile(bufname, '', &lines)
-  else
-    let lines = []
-  endif
   let name = bufname
   let abbrnames = []
   call add(abbrnames, substitute(bufname, expand('~'), '~', ''))
