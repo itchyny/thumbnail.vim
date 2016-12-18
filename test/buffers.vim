@@ -154,19 +154,6 @@ function! s:suite.open_buffer_tabs()
   call s:assert.equals(map(tabpagebuflist(3), 'bufname(v:val)'), ['buffers-test0'])
 endfunction
 
-function! s:suite.close_buffer()
-  tabnew buffers-test0
-  tabnew buffers-test1
-  tabnew buffers-test2
-  tabnew
-  let buffers = thumbnail#buffers#new({})
-  call buffers.gather()
-  call s:assert.equals(buffers.len(), 3)
-  call buffers.close_buffer(buffers.get(1).bufnr)
-  call buffers.gather()
-  call s:assert.equals(map(copy(buffers.list()), 'v:val.name'), ['buffers-test0', 'buffers-test2'])
-endfunction
-
 function! s:suite.close_buffers()
   tabnew buffers-test0
   tabnew buffers-test1
