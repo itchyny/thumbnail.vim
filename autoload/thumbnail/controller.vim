@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail/controller.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/12/18 09:45:43.
+" Last Change: 2016/12/18 12:11:56.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -37,7 +37,7 @@ function! s:self.action(action) dict abort
     endif
   elseif self.view.action(a:action) == 0
     if self.view.delete_mode() " d{motion}, [count]d{motion}
-      if self.close_buffers(1)
+      if self.close_buffers()
         return
       endif
     endif
@@ -45,16 +45,16 @@ function! s:self.action(action) dict abort
   endif
 endfunction
 
-function! s:self.close_buffers(redraw, ...) dict abort " a:1: direction of deletion motion (x or X)
-  if a:redraw
+function! s:self.close_buffers(...) dict abort " a:1: redraw (default on), a:2: direction of deletion motion (x or X)
+  if get(a:000, 0, 1)
     call self.redraw()
     redraw
     sleep 100m
   endif
   let selections = add(copy(self.view.visual_selections), self.view.index)
-  let indices = filter([self.view.index, self.view.index + 1, max(selections), max(selections) + 1, min(selections) - 1], '0 <= v:val && v:val < self.view.len')
-  let bufnrs = map(indices, 'self.buffers.get(v:val).bufnr')
-  if self.buffers.close_buffers(self.view.delete_indices(get(a:000, 0)))
+  let indices = [self.view.index, self.view.index + 1, max(selections), max(selections) + 1, min(selections) - 1]
+  let bufnrs = map(filter(indices, '0 <= v:val && v:val < self.view.len'), 'self.buffers.get(v:val).bufnr')
+  if self.buffers.close_buffers(self.view.delete_indices(get(a:000, 1)))
     return 1
   endif
   call self.buffers.gather()
@@ -78,12 +78,12 @@ function! s:self.start_delete() dict abort
     call self.view.start_line_visual()
     call self.view.move_line_head()
     call self.view.move_down(max([v:count - 1, self.view.v_count - 1, 0]))
-    return self.close_buffers(1)
+    return self.close_buffers()
   elseif empty(self.view.visual_mode) " d, [count]d
     return self.view.start_delete()
   else " {Visual}d
     let self.view.line_move = 1
-    return self.close_buffers(1)
+    return self.close_buffers()
   endif
 endfunction
 
@@ -119,7 +119,7 @@ function! s:self.delete_to_end() dict abort
     call self.view.move_line_last()
   endif
   let self.view.delete_to_end = 1 " <C-v>G$D
-  return self.close_buffers(1)
+  return self.close_buffers()
 endfunction
 
 function! s:self.exit() dict abort
