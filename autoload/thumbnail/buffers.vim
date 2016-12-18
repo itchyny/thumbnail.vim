@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail/buffers.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/12/17 20:55:22.
+" Last Change: 2016/12/18 09:41:59.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -116,20 +116,40 @@ function! s:self.open_buffer_tabs(bufnrs) dict abort
   return 1
 endfunction
 
-function! s:self.close_buffer(bufnr) dict abort
-  if getbufvar(a:bufnr, '&modified')
-    echohl WarningMsg
-    echomsg 'Cannot delete buffer'
-    echohl None
-  elseif bufexists(a:bufnr)
-    execute a:bufnr 'bdelete!'
-  endif
-endfunction
-
 function! s:self.close_buffers(indices) dict abort
-  for bufnr in map(copy(a:indices), 'self.get(v:val).bufnr')
-    call self.close_buffer(bufnr)
+  let [type, yes_for_all, no_for_all] = [0, 1, 2]
+  let bufnrs = map(copy(a:indices), 'self.get(v:val).bufnr')
+  let multiple = len(filter(copy(bufnrs), 'getbufvar(v:val, "&modified")')) > 1
+  for bufnr in bufnrs
+    if getbufvar(bufnr, '&modified')
+      if type == yes_for_all
+        execute bufnr 'bdelete!'
+      elseif type != no_for_all
+        let message = printf('The buffer ' . (bufname(bufnr) ==# '' ? '[No Name]' : bufname(bufnr))
+              \ . ' is modified. Force to delete the buffer? [yes/no/edit%s] ',
+              \ (multiple ? '/Yes for all/No for all' : ''))
+        let yesno = input(message)
+        if yesno ==# ''
+          echo 'Canceled'
+          return
+        endif
+        if yesno =~# '^y\%[es]'
+          execute bufnr 'bdelete!'
+        elseif yesno =~# '^e\%[dit]'
+          return self.open(bufnr)
+        elseif yesno =~# '^Y\%[es for all]'
+          execute bufnr 'bdelete!'
+          let type = yes_for_all
+        elseif yesno =~# '^N\%[o for all]'
+          let type = no_for_all
+        endif
+      endif
+    elseif bufexists(bufnr)
+      execute bufnr 'bdelete!'
+    endif
   endfor
+  redraw
+  echo ''
 endfunction
 
 let &cpo = s:save_cpo
