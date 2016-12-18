@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail/autocmd.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/09/12 01:03:24.
+" Last Change: 2016/12/18 03:05:42.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -21,24 +21,16 @@ function! thumbnail#autocmd#new() abort
   augroup END
 
   augroup thumbnail-buffer
-    autocmd BufLeave,WinLeave <buffer>
-          \   if exists('b:thumbnail')
-          \ |   call thumbnail#cursor()
-          \ | endif
     autocmd ColorScheme <buffer>
           \ call thumbnail#setlocal#filetype_force()
-    autocmd BufEnter,ColorScheme <buffer>
-          \   if exists('b:thumbnail') && !b:thumbnail.visual_mode
-          \ |   call thumbnail#init()
-          \ | endif
-    autocmd WinEnter,WinLeave,VimResized <buffer>
-          \   if exists('b:thumbnail') && !b:thumbnail.selection
-          \ |   call thumbnail#update()
+    autocmd WinEnter,WinLeave,VimResized,ColorScheme <buffer>
+          \   if exists('b:thumbnail')
+          \ |   call b:thumbnail.update()
           \ | endif
     autocmd CursorMoved <buffer>
-          \ call thumbnail#cursor_moved()
+          \ call b:thumbnail.action('cursor_moved')
     autocmd CursorMovedI <buffer>
-          \ call thumbnail#update_filter()
+          \ call b:thumbnail.action('update_filter')
   augroup END
 
 endfunction
@@ -55,13 +47,15 @@ function! s:update_visible(bufnr) abort
       break
     endif
   endfor
-  if nr == -1 | return | endif
+  if nr == -1
+    return
+  endif
   let winnr = bufwinnr(nr)
   let newbuf = bufwinnr(str2nr(a:bufnr))
   let currentbuf = bufwinnr(bufnr('%'))
   execute winnr 'wincmd w'
   call thumbnail#setlocal#filetype_force()
-  call thumbnail#init()
+  call b:thumbnail.update()
   if winnr != newbuf && newbuf != -1
     call cursor(1, 1)
     execute newbuf 'wincmd w'
