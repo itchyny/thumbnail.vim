@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail/view.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/12/18 09:36:40.
+" Last Change: 2016/12/25 19:54:23.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -320,7 +320,7 @@ function! s:self.start_line_visual() dict abort
 endfunction
 
 function! s:self.start_block_visual() dict abort
-  call self.start_visual_mode('<C-v>')
+  call self.start_visual_mode("\<C-v>")
 endfunction
 
 function! s:self.start_delete() dict abort
@@ -360,7 +360,7 @@ function! s:self.update_visual_selections() dict abort
         call add(indices, i * self.width + j)
       endfor
     endfor
-  elseif self.visual_mode ==# '<C-v>'
+  elseif self.visual_mode ==# "\<C-v>"
     for i in range(start_index / self.width, self.index / self.width, start_index / self.width < self.index / self.width ? 1 : -1)
       for j in range(self.delete_to_end ? min([start_index % self.width, self.index % self.width]) : start_index % self.width,
             \ self.delete_to_end ? self.width - 1 : self.index % self.width,
