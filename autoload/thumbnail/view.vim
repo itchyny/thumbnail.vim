@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail/view.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/12/25 19:54:23.
+" Last Change: 2017/04/01 00:45:43.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -56,10 +56,8 @@ function! s:self.prepare(len, index) dict abort
     let self.margin_top += 1
   endif
   let self.marker = {}
-  if exists('b:thumbnail_conceal') && b:thumbnail_conceal ||
-        \ !exists('b:thumbnail_conceal') && has('conceal')
-        \ && self.winwidth > (self.width - 1)
-        \ * (self.offset_left + self.thumbnail_width + 4) + self.offset_left + 5
+  if has('conceal') && self.winwidth >
+        \ (self.width - 1) * (self.offset_left + self.thumbnail_width + 4) + self.offset_left + 5
     let self.marker.left_select = '  [|'
     let self.marker.right_select = '|]  '
     let self.marker.left_visual_select = '  [^'

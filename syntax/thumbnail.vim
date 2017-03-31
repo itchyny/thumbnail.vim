@@ -2,7 +2,7 @@
 " Filename: syntax/thumbnail.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2016/03/16 01:14:13.
+" Last Change: 2017/04/01 00:46:38.
 " =============================================================================
 
 if version < 700
@@ -17,11 +17,10 @@ set cpo&vim
 syntax match ThumbnailSelect '\[|.\{-}|\]' contains=ThumbnailSelectMarker,ThumbnailTab
 syntax match ThumbnailVisual '\[\^.\{-}\^\]' contains=ThumbnailVisualMarker,ThumbnailTab
 
-if has('conceal') && (!exists('b:thumbnail_conceal') || b:thumbnail_conceal)
+if has('conceal') && get(get(get(get(b:, 'thumbnail', {}), 'view', {}), 'marker', {}), 'conceal', 0)
   syntax match ThumbnailSelectMarker '\[|\||\]' contained conceal
   syntax match ThumbnailVisualMarker '\[\^\|\^\]' contained conceal
   syntax match ThumbnailMarker '\[\\\|\\\]' conceal
-  let b:thumbnail_conceal = 1
 else
   syntax match ThumbnailSelectMarker '\[|\||\]' contained
   syntax match ThumbnailVisualMarker '\[\^\|\^\]' contained
