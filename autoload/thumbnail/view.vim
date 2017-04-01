@@ -2,7 +2,7 @@
 " Filename: autoload/thumbnail/view.vim
 " Author: itchyny
 " License: MIT License
-" Last Change: 2017/04/01 00:45:43.
+" Last Change: 2017/04/01 12:06:55.
 " =============================================================================
 
 let s:save_cpo = &cpo
@@ -54,6 +54,9 @@ function! s:self.prepare(len, index) dict abort
   else
     let self.insert_pos = 1
     let self.margin_top += 1
+  endif
+  if has_key(self, 'marker')
+    return
   endif
   let self.marker = {}
   if has('conceal') && self.winwidth >
