@@ -2,7 +2,9 @@ let s:suite = themis#suite('buffers')
 let s:assert = themis#helper('assert')
 
 function! s:suite.before_each()
-  %bwipeout!
+  for bufnr in range(1, bufnr('$'))
+    execute 'silent!' bufnr 'bwipeout!'
+  endfor
 endfunction
 
 function! s:suite.gather()
