@@ -1,6 +1,10 @@
 let s:suite = themis#suite('buffer')
 let s:assert = themis#helper('assert')
 
+function! s:suite.before_each()
+  %bwipeout!
+endfunction
+
 function! s:suite.bufnr()
   tabnew thumbnail-buffer-bufnr-test
   let buffer = thumbnail#buffer#new(bufnr('%'))
