@@ -1,0 +1,5 @@
+function! BeforeEach() abort
+  for bufnr in filter(range(1, bufnr('$')), 'bufexists(v:val)')
+    execute bufnr 'bwipeout!'
+  endfor
+endfunction
